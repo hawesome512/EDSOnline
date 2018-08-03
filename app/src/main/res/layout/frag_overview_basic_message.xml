@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/view_margin_normal"
+    android:layout_marginTop="@dimen/view_margin_small"
+    android:orientation="vertical">
+
+    <LinearLayout style="@style/LinearLayoutHorBasicItem">
+
+        <ImageView
+            style="@style/ImageBasicItem"
+            android:src="@drawable/basic_status" />
+
+        <TextView
+            style="@style/TextBasicItemName"
+            android:text="@string/overview_status" />
+
+        <TextView
+            android:id="@+id/text_status"
+            style="@style/TextBasicItemValue"
+            android:layout_marginRight="@dimen/view_margin_normal"
+            tools:text="正常" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/image_status"
+            style="@style/ImageBasicItem"
+            android:src="@color/colorPrimary"/>
+    </LinearLayout>
+
+    <View style="@style/DividerLine" />
+
+    <LinearLayout style="@style/LinearLayoutHorBasicItem">
+
+        <ImageView
+            style="@style/ImageBasicItem"
+            android:src="@drawable/basic_device" />
+
+        <TextView
+            style="@style/TextBasicItemName"
+            android:text="@string/overview_device" />
+
+        <TextView
+            android:id="@+id/text_device"
+            style="@style/TextBasicItemValue"
+            android:layout_marginRight="@dimen/view_margin_normal"
+            tools:text="正常" />
+
+        <ImageView
+            android:id="@+id/image_device_list"
+            style="@style/ImageBasicItem"
+            android:src="@drawable/basic_device_signal"/>
+    </LinearLayout>
+
+    <View style="@style/DividerLine" />
+
+    <LinearLayout style="@style/LinearLayoutHorBasicItem">
+
+        <ImageView
+            style="@style/ImageBasicItem"
+            android:src="@drawable/basic_grid" />
+
+        <TextView
+            style="@style/TextBasicItemName"
+            android:text="@string/overview_grid" />
+
+        <ImageView
+            android:id="@+id/image_enlarge_grid"
+            style="@style/ImageBasicItem"
+            android:src="@drawable/basic_enlarge_grid"/>
+    </LinearLayout>
+
+    <View style="@style/DividerLine" />
+
+    <LinearLayout style="@style/LinearLayoutHorBasicItem">
+
+        <ImageView
+            style="@style/ImageBasicItem"
+            android:src="@drawable/basic_engineer"/>
+
+        <TextView
+            style="@style/TextBasicItemName"
+            android:text="@string/overview_engineer"
+            android:layout_gravity="top"/>
+
+        <TextView
+            android:id="@+id/text_engineer"
+            style="@style/TextBasicItemValue"
+            android:layout_marginRight="@dimen/view_margin_normal"
+            tools:text="正常" />
+
+        <ImageView
+            android:id="@+id/image_phone"
+            style="@style/ImageBasicItem"
+            android:src="@drawable/basic_phone"
+            android:layout_gravity="center_vertical"/>
+
+    </LinearLayout>
+
+    <View style="@style/DividerLine" />
+
+    <LinearLayout style="@style/LinearLayoutHorBasicItem">
+
+        <ImageView
+            style="@style/ImageBasicItem"
+            android:src="@drawable/basic_location" />
+
+        <TextView
+            style="@style/TextBasicItemName"
+            android:text="@string/overview_location" />
+
+        <TextView
+            android:id="@+id/text_location"
+            style="@style/TextBasicItemValue"
+            android:layout_marginRight="@dimen/view_margin_normal"
+            tools:text="正常" />
+
+        <ImageView
+            android:id="@+id/image_navigation"
+            style="@style/ImageBasicItem"
+            android:src="@drawable/basic_navigation"/>
+    </LinearLayout>
+
+    <View style="@style/DividerLine" />
+
+
+</LinearLayout>

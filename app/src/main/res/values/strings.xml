@@ -1,0 +1,42 @@
+<resources>
+    <string name="app_name">EDS云管理</string>
+
+    <!--Overview-->
+    <string name="overview_area">厦门士林厂</string>
+    <string name="overview_update">更新: %1$s</string>
+    <string name="overview_status">运行状态</string>
+    <string name="overview_device">管理设备</string>
+    <string name="overview_grid">配电图</string>
+    <string name="overview_engineer">维护人员</string>
+    <string name="overview_location">位置</string>
+    <string name="overview_device_value">%1$d 台</string>
+
+    <string-array name="overview_status">
+        <item>正常</item>
+        <item>异常</item>
+        <item>离线</item>
+    </string-array>
+
+    <!--Nav Items-->
+    <string name="nav_overview">主页</string>
+    <string name="nav_schedule">计划任务</string>
+    <string name="nav_alarm">异常记录</string>
+    <string name="nav_trend">运行趋势</string>
+    <string name="nav_setting">设置</string>
+    <string name="nav_exit">退出</string>
+
+    <!--WAService URL-->
+    <string name="was_login">http://%1$s/WaWebService/Json/GetUserInfo/%2$s</string>
+    <string name="was_tag_list">http://%1$s/WaWebService/Json/TagList/%2$s/%3$s/%4$s</string>
+    <string name="was_get_value">http://%1$s/WaWebService/Json/GetTagValue/%2$s</string>
+    <string name="was_set_value">http://%1$s/WaWebService/Json/SetTagValue/%2$s</string>
+    <string name="was_get_log">http://%1$s/WaWebService/Json/GetDataLog/%2$s</string>
+    <string name="was_tag_value_request">{\"Tags\":%1$s}</string>
+    <string name="was_tag_log_request">{\"StartTime\":\"%1$s\",\"IntervalType\":\"%2$s\",\"Interval\":%3$d,\"Records\":%4$d,\"Tags\":%5$s}</string>
+    <string name="was_readable_tag">{\"Name\":\"%1$s\"}</string>
+    <string name="was_writable_tag">{\"Name\":\"%1$s\",\"Value\":%2$s}</string>
+    <string name="was_storable_tag">{\"Name\":\"%1$s\",\"DataType\":\"%2$d\"}</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
