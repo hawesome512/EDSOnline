@@ -5,6 +5,8 @@ import android.content.Context;
 
 import com.xseec.eds.model.WAServicer;
 
+import org.litepal.LitePal;
+
 /**
  * Created by Administrator on 2018/7/9.
  */
@@ -18,6 +20,7 @@ public class EDSApplication extends Application {
         context=getApplicationContext();
         //与WAServicer互为耦合，不是良好的设计
         WAServicer.initWAServicer();
+        LitePal.initialize(this);
     }
 
     public static Context getContext(){

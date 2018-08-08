@@ -3,6 +3,7 @@ package com.xseec.eds.util;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Response;
+import com.xseec.eds.model.BasicInfo;
 import com.xseec.eds.model.Tags.Tag;
 
 import org.json.JSONArray;
@@ -73,5 +74,13 @@ public class WAJsonHelper {
         } catch (Exception exp) {
         }
         return tagLogs;
+    }
+
+    public static BasicInfo getBasicInfo(Response jsonData){
+        Gson gson=new Gson();
+        try {
+            return  gson.fromJson(jsonData.body().string(),BasicInfo.class);
+        }catch (Exception exp){}
+        return null;
     }
 }

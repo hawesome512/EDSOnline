@@ -1,10 +1,11 @@
 package com.xseec.eds.util;
 
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-
-import com.xseec.eds.R;
+import android.view.View;
+import android.view.ViewPropertyAnimator;
 
 /**
  * Created by Administrator on 2018/7/25.

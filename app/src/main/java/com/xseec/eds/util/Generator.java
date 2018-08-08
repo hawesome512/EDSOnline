@@ -5,6 +5,8 @@ import android.content.Context;
 import com.xseec.eds.R;
 import com.xseec.eds.model.Tags.OverviewTag;
 
+import org.litepal.LitePal;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -16,17 +18,34 @@ import java.util.Random;
 
 public class Generator {
 
-    public static void genOverviewTagList(List<OverviewTag> tagList){
-        tagList.clear();
-        Random random=new Random();
-        tagList.add(new OverviewTag("环境温度",String.valueOf(random.nextInt(10)+20), R.drawable.circle_tempreture,"℃"));
-        tagList.add(new OverviewTag("环境湿度",String.valueOf(random.nextInt(20)+40), R.drawable.circle_water,"%"));
-        tagList.add(new OverviewTag("有功功率",String.valueOf(random.nextInt(60)+90), R.drawable.circle_line_2,"kW"));
-        tagList.add(new OverviewTag("无功功率",String.valueOf(random.nextInt(10)+30), R.drawable.circle_line_4,"kVar"));
-        tagList.add(new OverviewTag("今日用电",String.valueOf(random.nextInt(500)+1000), R.drawable.circle_light,"kW·h"));
-        tagList.add(new OverviewTag("谐波监测","查看详情", R.drawable.circle_bar_hor,""));
-    }
+    public static void initOverviewTagStore(){
+        LitePal.getDatabase();
+        Context context=EDSApplication.getContext();
+        String name=context.getString(R.string.overview_item_tempreture);
+        OverviewTag tag0=new OverviewTag(0,R.drawable.circle_tempreture,name,null,"℃","AREA:Tempreture",true);
+        tag0.save();
 
+        name=context.getString(R.string.overview_item_humidity);
+        OverviewTag tag1=new OverviewTag(1,R.drawable.circle_water,name,null,"%","AREA:Humidity",true);
+        tag1.save();
+
+        name=context.getString(R.string.overview_item_activie_power);
+        OverviewTag tag2=new OverviewTag(2,R.drawable.circle_line_2,name,null,"kW","AREA:P",true);
+        tag2.save();
+
+        name=context.getString(R.string.overview_item_reactive_power);
+        OverviewTag tag3=new OverviewTag(3,R.drawable.circle_line_4,name,null,"kVar","AREA:Q",true);
+        tag3.save();
+
+        name=context.getString(R.string.overview_item_energy);
+        OverviewTag tag4=new OverviewTag(4,R.drawable.circle_light,name,null,"kW·h","AREA:Energy",true);
+        tag4.save();
+
+        name=context.getString(R.string.overview_item_harmonic);
+        String valueText=context.getString(R.string.overview_item_detail);
+        OverviewTag tag5=new OverviewTag(5,R.drawable.circle_bar_hor,name,valueText,null,"AREA:Harmonic",true);
+        tag5.save();
+    }
 
     public static String genString(String source, int repeat) {
         StringBuilder stringBuilder=new StringBuilder();

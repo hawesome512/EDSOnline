@@ -16,6 +16,18 @@ public class WAServicer {
     private static final String PREF_PROJECT="project";
     private static final String PREF_NODE="node";
 
+    public static String getHostUrl() {
+        return hostUrl;
+    }
+
+    public static String getProjectName() {
+        return projectName;
+    }
+
+    public static String getNodeName() {
+        return nodeName;
+    }
+
     private static String hostUrl;
     private static String projectName;
     private static String nodeName;
@@ -25,8 +37,8 @@ public class WAServicer {
         context= EDSApplication.getContext();
         SharedPreferences preferences=PreferenceManager.getDefaultSharedPreferences(context);
         hostUrl=preferences.getString(PREF_HOST,"www.eds.ink");
-        projectName=preferences.getString(PREF_PROJECT,"EDS-Cloud");
-        nodeName=preferences.getString(PREF_NODE,"RD");
+        projectName=preferences.getString(PREF_PROJECT,"EDS");
+        nodeName=preferences.getString(PREF_NODE,"XS");
     }
 
     public static void setWAServicer(String host, String project, String node) {
@@ -61,5 +73,13 @@ public class WAServicer {
 
     public static String getTagLogUrl(){
         return context.getString(R.string.was_get_log,hostUrl,projectName);
+    }
+
+    public static String getBasicInfoUrl(String deviceName){
+        return context.getString(R.string.was_basic_info,hostUrl,deviceName);
+    }
+
+    public static String getBasicHeaderImageUrl(String deviceName,String imageName){
+        return context.getString(R.string.was_basic_header_img,hostUrl,deviceName,imageName);
     }
 }

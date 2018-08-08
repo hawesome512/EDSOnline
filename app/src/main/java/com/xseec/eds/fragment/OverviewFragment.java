@@ -1,11 +1,10 @@
 package com.xseec.eds.fragment;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -19,17 +18,27 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 import com.xseec.eds.R;
 import com.xseec.eds.activity.DeviceListActivity;
 import com.xseec.eds.adapter.OverviewAdapter;
-import com.xseec.eds.model.ComListener;
+import com.xseec.eds.model.BasicInfo;
+import com.xseec.eds.model.State;
 import com.xseec.eds.model.Tags.OverviewTag;
 import com.xseec.eds.model.Tags.Tag;
 import com.xseec.eds.model.User;
-import com.xseec.eds.service.ComService;
+import com.xseec.eds.model.WAServicer;
 import com.xseec.eds.util.Generator;
+import com.xseec.eds.util.TagsFilter;
 import com.xseec.eds.util.ViewHelper;
+import com.xseec.eds.util.WAJsonHelper;
+import com.xseec.eds.util.WAServiceHelper;
 
+import org.litepal.LitePal;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,8 +47,8 @@ import butterknife.InjectView;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
-public class OverviewFragment extends ComFragment implements ComListener,View.OnClickListener {
-
+//public class OverviewFragment extends ComFragment implements View.OnClickListener {
+public class OverviewFragment extends Fragment implements View.OnClickListener {
 
     @InjectView(R.id.image_area)
     ImageView imageArea;
@@ -76,24 +85,47 @@ public class OverviewFragment extends ComFragment implements ComListener,View.On
     @InjectView(R.id.image_schedule)
     ImageView imageSchedule;
 
-    List<OverviewTag> tagList;
+    private static final String KEY_USER = "user";
+    private static final String KEY_BASIC="basic_info";
+    private static final String KEY_TAGS = "tag_list";
+    BasicInfo basicInfo;
+    User user;
+    List<Tag> tagList;
+    List<Tag> basicTagList;
+    List<OverviewTag> overviewTagList;
     OverviewAdapter overviewAdapter;
 
     public OverviewFragment() {
         // Required empty public constructor
     }
 
-    public static OverviewFragment newInstance(User user, List<Tag> tagList) {
+    public static OverviewFragment newInstance(User user,BasicInfo basicInfo, ArrayList<Tag> tagList) {
         OverviewFragment fragment = new OverviewFragment();
-        fragment.setArguments(getBundle(user, tagList));
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(KEY_USER, user);
+        bundle.putParcelable(KEY_BASIC,basicInfo);
+        bundle.putParcelableArrayList(KEY_TAGS, tagList);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = new Intent(getContext(), ComService.class);
-        getActivity().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+        Bundle bundle=getArguments();
+        user=bundle.getParcelable(KEY_USER);
+        basicInfo=bundle.getParcelable(KEY_BASIC);
+        tagList= bundle.getParcelableArrayList(KEY_TAGS);
+        overviewTagList = LitePal.findAll(OverviewTag.class);
+        if(overviewTagList==null||overviewTagList.size()==0){
+            Generator.initOverviewTagStore();
+            overviewTagList = LitePal.findAll(OverviewTag.class);
+        }
+        basicTagList=TagsFilter.getBasicTagList(tagList);
+
+        //绑定服务
+        //Intent intent = new Intent(getContext(), ComService.class);
+        //getActivity().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
@@ -108,14 +140,21 @@ public class OverviewFragment extends ComFragment implements ComListener,View.On
     }
 
     private void initViews() {
-        //init Title
-        getActivity().setTitle(R.string.overview_area);
+        //init BasicInfo
+        getActivity().setTitle(basicInfo.getTitle());
+        String headerImage=WAServicer.getBasicHeaderImageUrl(user.getDeviceName(),basicInfo.getHeaderImg());
+        Glide.with(this).load(headerImage).into(imageArea);
+        int deviceCount= TagsFilter.getDeviceCount(tagList);
+        textDevice.setText(getResources().getString(R.string.overview_device_value,deviceCount));
+        textEngineer.setText(basicInfo.getPricipal());
+        textLocation.setText(basicInfo.getLocation());
+        //init Schedule Card
+        //……
+        Glide.with(this).load(Generator.getScheduleImageRes()).into(imageSchedule);
         //init Overview Recycler
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
         recyclerOverview.setLayoutManager(layoutManager);
-        tagList = new ArrayList<OverviewTag>();
-        Generator.genOverviewTagList(tagList);
-        overviewAdapter = new OverviewAdapter(tagList);
+        overviewAdapter = new OverviewAdapter(overviewTagList);
         recyclerOverview.setAdapter(overviewAdapter);
         //init SwipeRefreshLayout
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
@@ -127,42 +166,48 @@ public class OverviewFragment extends ComFragment implements ComListener,View.On
         });
         //init ClickListener
         imageDeviceList.setOnClickListener(this);
-
-        setValues();
-    }
-
-    private void setValues() {
-        String[] basicInfos = Generator.getBasicInfo();
-        int statusRes = basicInfos[0].equals("正常") ? R.color.colorNormal : (basicInfos[0].equals
-                ("异常") ? R.color.colorError : R.color.colorAlarm);
-        imageStatus.setImageResource(statusRes);
-        textStatus.setText(basicInfos[0]);
-        textDevice.setText(basicInfos[1]);
-        textEngineer.setText(basicInfos[3]);
-        textLocation.setText(basicInfos[4]);//init Schedule Card
-        Glide.with(this).load(Generator.getScheduleImageRes()).into(imageSchedule);
+        refreshData();
     }
 
     private void refreshData() {
-        new Thread(new Runnable() {
+        WAServiceHelper.sendGetValueRequest(user.getAuthority(), basicTagList, new Callback() {
             @Override
-            public void run() {
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+            public void onFailure(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                List<Tag> tags=WAJsonHelper.refreshTagValue(response);
+                TagsFilter.refreshOverviewTagsByTags(tags,overviewTagList);
+                final State state=TagsFilter.getStateByTagList(tags);
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        setValues();
-                        Generator.genOverviewTagList(tagList);
                         overviewAdapter.notifyDataSetChanged();
-                        swipeRefreshLayout.setRefreshing(false);
+                        int stateColorRes;
+                        String stateText;
+                        switch (state){
+                            case ALARM:
+                                stateColorRes=R.color.colorError;
+                                stateText=getString(R.string.overview_state_alarm);
+                                break;
+                            case OFFLINE:
+                                stateColorRes=R.color.colorAlarm;
+                                stateText=getString(R.string.overview_state_offline);
+                                break;
+                            default:
+                                stateColorRes=R.color.colorNormal;
+                                stateText=getString(R.string.overview_state_on);
+                                break;
+                        }
+                        imageStatus.setImageResource(stateColorRes);
+                        textStatus.setText(stateText);
                     }
                 });
+                swipeRefreshLayout.setRefreshing(false);
             }
-        }).start();
+        });
     }
 
     @Override
@@ -176,16 +221,17 @@ public class OverviewFragment extends ComFragment implements ComListener,View.On
         ButterKnife.reset(this);
     }
 
-    @Override
-    public void onRefreshed(final List<Tag> validTagList) {
-        final String content = validTagList.get(0).getTagValue();
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                //Update ui here
-            }
-        });
-    }
+//    ComListener更新
+//    @Override
+//    public void onRefreshed(final List<Tag> validTagList) {
+//        final String content = validTagList.get(0).getTagValue();
+//        getActivity().runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                //Update ui here
+//            }
+//        });
+//    }
 
     @Override
     public void onClick(View v) {

@@ -47,7 +47,6 @@ public class WAServiceHelper {
         okHttpClient.newCall(request).enqueue(callback);
     }
 
-
     public static void sendLoginRequest(String authority, Callback callback) {
         String url = WAServicer.getLoginUrl();
         sendRequest(url, authority, null, callback);
@@ -63,20 +62,6 @@ public class WAServiceHelper {
         String content = context.getString(R.string.was_tag_value_request, tagList.toString());
         String url = WAServicer.getGetValueUrl();
         sendRequest(url, authority, content, callback);
-    }
-
-    public static Response getValueRequest(String authority, List<Tag> tagList) {
-        Context context = EDSApplication.getContext();
-        String content = context.getString(R.string.was_tag_value_request, tagList.toString());
-        String url = WAServicer.getGetValueUrl();
-        Request request = getRequest(url, authority, content);
-        OkHttpClient okHttpClient = new OkHttpClient();
-        try {
-            return okHttpClient.newCall(request).execute();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
     public static void sendSetValueRequest(String authority, List<ValidTag> tagList, Callback
@@ -95,5 +80,48 @@ public class WAServiceHelper {
                 .name(), interval, records, tagList.toString());
         String url = WAServicer.getTagLogUrl();
         sendRequest(url, authority, content, callback);
+    }
+
+    //登录，基本信息，点列表三条数据请求同时处理，不使用callback
+    private static Response executeRequest(String url, String authority, String content){
+        Request request = getRequest(url, authority, content);
+        OkHttpClient okHttpClient = new OkHttpClient();
+        try {
+            return okHttpClient.newCall(request).execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static Response getLoginRequest(String authority) {
+        String url = WAServicer.getLoginUrl();
+        return executeRequest(url,authority,null);
+    }
+
+    public static Response getTagListRequest(String authority, String deviceName) {
+        String url = WAServicer.getTagListUrl(deviceName);
+        return executeRequest(url,authority,null);
+    }
+
+    public static Response getValueRequest(String authority, List<Tag> tagList) {
+        Context context = EDSApplication.getContext();
+        String content = context.getString(R.string.was_tag_value_request, tagList.toString());
+        String url = WAServicer.getGetValueUrl();
+        return executeRequest(url,authority,content);
+    }
+
+    public static Response getBasicInfoRequest(String deviceName){
+        String url=WAServicer.getBasicInfoUrl(deviceName);
+        Request request=new Request.Builder()
+                .url(url)
+                .build();
+        OkHttpClient client=new OkHttpClient();
+        try {
+            return client.newCall(request).execute();
+        }catch (IOException exp){
+
+        }
+        return null;
     }
 }

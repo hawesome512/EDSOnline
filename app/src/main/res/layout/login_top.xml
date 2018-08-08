@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@drawable/login_top"
+    android:id="@+id/layout_top">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/view_margin_normal"
+        android:text="@string/login_title"
+        android:textSize="@dimen/font_display"
+        android:textColor="@color/colorWhite"
+        android:layout_above="@id/text_sub_title"/>
+    <TextView
+        android:id="@+id/text_sub_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/login_sub_title"
+        android:textColor="@color/colorWhite"
+        android:textSize="@dimen/font_big"
+        android:layout_marginLeft="@dimen/view_margin_normal"
+        android:layout_centerVertical="true"
+        />
+</RelativeLayout>
