@@ -4,4 +4,9 @@
     <style name="TransStatusBarTheme" parent="AppTheme">
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
+
+    <style name="DialogActivity" parent="DialogActivityBase">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
 </resources>

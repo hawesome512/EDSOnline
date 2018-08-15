@@ -28,8 +28,8 @@
         tools:text="状态：ON"/>
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/image_device_status"
-        android:layout_width="@dimen/circle_image_size_small"
-        android:layout_height="@dimen/circle_image_size_small"
+        android:layout_width="@dimen/image_size_small"
+        android:layout_height="@dimen/image_size_small"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         tools:src="@color/colorNormal"/>

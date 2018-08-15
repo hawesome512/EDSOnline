@@ -9,6 +9,7 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 import com.xseec.eds.R;
+import com.xseec.eds.model.DataLogFactor;
 import com.xseec.eds.model.Tags.StoredTag;
 import com.xseec.eds.model.Tags.Tag;
 import com.xseec.eds.model.WAServicer;
@@ -70,6 +71,10 @@ public class WAServiceHelper {
         String content = context.getString(R.string.was_tag_value_request, tagList.toString());
         String url = WAServicer.getSetValueUrl();
         sendRequest(url, authority, content, callback);
+    }
+
+    public static void sendTagLogRequest(String authority,DataLogFactor factor,List<StoredTag> tagList,Callback callback){
+        sendTagLogRequest(authority,factor.getStartTimeString(),factor.getIntervalType(),factor.getInterval(),factor.getRecords(),tagList,callback);
     }
 
     public static void sendTagLogRequest(String authority, String startTime, StoredTag

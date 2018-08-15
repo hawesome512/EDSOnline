@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/image_item"
-        android:layout_width="@dimen/circle_image_size"
-        android:layout_height="@dimen/circle_image_size"
+        android:layout_width="@dimen/image_size"
+        android:layout_height="@dimen/image_size"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/view_margin_normal"
         tools:src="@drawable/circle_water" />

@@ -62,6 +62,36 @@
         <item>离线</item>
     </string-array>
 
+    <!--Detail-->
+    <string name="detail_trend">运行趋势</string>
+    <string name="detail_max">最大值</string>
+    <string name="detail_min">最小值</string>
+    <string name="detail_avg">平均值</string>
+    <string name="detail_start">起始时间</string>
+    <string name="detail_interval">间隔时间</string>
+    <string name="detail_record">资料笔数</string>
+    <string name="detail_data_type">数据类型</string>
+    <!--Units Types选项顺序应严格与StoredTag Enum顺序一致,对应WebAccess说明文档【0-Last,1-Min,2-Max,3-Avg】-->
+    <string-array name="detail_units">
+        <item>秒</item>
+        <item>分</item>
+        <item>时</item>
+        <item>日</item>
+    </string-array>
+    <string-array name="detail_types">
+        <item>最后值</item>
+        <item>最大值</item>
+        <item>最小值</item>
+        <item>平均值</item>
+    </string-array>
+    <string name="detail_setting">查询</string>
+    <string name="detail_menu_config">设置</string>
+    <string name="detail_menu_time">时间</string>
+    <string name="detail_today">今日能耗</string>
+    <string name="detail_yesterday">昨日能耗</string>
+    <string name="detail_yesterday_same">昨日同期</string>
+    <string name="detail_link_ratio">环比</string>
+
     <!--WAService URL-->
     <string name="was_login">http://%1$s/WaWebService/Json/GetUserInfo/%2$s</string>
     <string name="was_tag_list">http://%1$s/WaWebService/Json/TagList/%2$s/%3$s/%4$s</string>
@@ -92,4 +122,5 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="title_activity_data_log_setting">DataLogSettingActivity</string>
 </resources>

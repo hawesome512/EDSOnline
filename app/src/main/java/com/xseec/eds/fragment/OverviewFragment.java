@@ -1,6 +1,7 @@
 package com.xseec.eds.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -22,7 +23,7 @@ import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import com.xseec.eds.R;
-import com.xseec.eds.activity.DeviceListActivity;
+import com.xseec.eds.activity.DetailActivity;
 import com.xseec.eds.adapter.OverviewAdapter;
 import com.xseec.eds.model.BasicInfo;
 import com.xseec.eds.model.State;
@@ -135,7 +136,7 @@ public class OverviewFragment extends Fragment implements View.OnClickListener {
         ButterKnife.inject(this, view);
 
         ViewHelper.initToolbar((AppCompatActivity) getActivity(), toolbar, R.drawable.menu);
-        initViews();
+        //initViews();
         return view;
     }
 
@@ -181,6 +182,10 @@ public class OverviewFragment extends Fragment implements View.OnClickListener {
                 List<Tag> tags=WAJsonHelper.refreshTagValue(response);
                 TagsFilter.refreshOverviewTagsByTags(tags,overviewTagList);
                 final State state=TagsFilter.getStateByTagList(tags);
+                //进行横竖屏切换时，getActivity为null
+                if(getActivity()==null){
+                    return;
+                }
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -213,6 +218,7 @@ public class OverviewFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        initViews();
     }
 
     @Override
@@ -237,7 +243,7 @@ public class OverviewFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.image_device_list:
-                DeviceListActivity.start(getContext());
+                DetailActivity.start(getContext(),null,null);
                 break;
             default:
                 break;

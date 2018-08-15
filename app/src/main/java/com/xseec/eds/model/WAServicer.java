@@ -31,6 +31,7 @@ public class WAServicer {
     private static String hostUrl;
     private static String projectName;
     private static String nodeName;
+    private static User user;
     private static Context context;
 
     public static void initWAServicer(){
@@ -81,5 +82,13 @@ public class WAServicer {
 
     public static String getBasicHeaderImageUrl(String deviceName,String imageName){
         return context.getString(R.string.was_basic_header_img,hostUrl,deviceName,imageName);
+    }
+
+    public static User getUser() {
+        return user;
+    }
+
+    public static void setUser(User user) {
+        WAServicer.user = user;
     }
 }

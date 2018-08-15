@@ -15,20 +15,16 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 import com.xseec.eds.R;
 import com.xseec.eds.model.BasicInfo;
 import com.xseec.eds.model.Tags.Tag;
 import com.xseec.eds.model.User;
+import com.xseec.eds.model.WAServicer;
 import com.xseec.eds.util.CodeHelper;
 import com.xseec.eds.util.WAJsonHelper;
 import com.xseec.eds.util.WAServiceHelper;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -76,16 +72,20 @@ public class LoginActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String deviceName=WAJsonHelper.getUserProjectInfo(WAServiceHelper.getLoginRequest(authority));
+                String deviceName = WAJsonHelper.getUserProjectInfo(WAServiceHelper
+                        .getLoginRequest(authority));
                 if (!TextUtils.isEmpty(deviceName)) {
                     setLoginInfo();
-                    final User user=new User(authority,deviceName);
-                    final BasicInfo basicInfo=WAJsonHelper.getBasicInfo(WAServiceHelper.getBasicInfoRequest(deviceName));
-                    final ArrayList<Tag> tagList=(ArrayList<Tag>) WAJsonHelper.getTagList(WAServiceHelper.getTagListRequest(authority,deviceName));
+                    final User user = new User(authority, deviceName);
+                    final BasicInfo basicInfo = WAJsonHelper.getBasicInfo(WAServiceHelper
+                            .getBasicInfoRequest(deviceName));
+                    final ArrayList<Tag> tagList = (ArrayList<Tag>) WAJsonHelper.getTagList
+                            (WAServiceHelper.getTagListRequest(authority, deviceName));
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            MainActivity.start(LoginActivity.this,user,basicInfo,tagList);
+                            WAServicer.setUser(user);
+                            MainActivity.start(LoginActivity.this, user, basicInfo, tagList);
                             finish();
                         }
                     });
@@ -102,7 +102,7 @@ public class LoginActivity extends AppCompatActivity {
         }).start();
     }
 
-    private void onLoginFailed(){
+    private void onLoginFailed() {
         resetLoginAnimator();
         textFailure.setVisibility(View.VISIBLE);
     }

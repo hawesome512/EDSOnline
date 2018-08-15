@@ -9,7 +9,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.xseec.eds.R;
+import com.xseec.eds.activity.DetailActivity;
 import com.xseec.eds.model.Tags.OverviewTag;
+import com.xseec.eds.model.Tags.StoredTag;
+import com.xseec.eds.util.EDSApplication;
 
 import java.util.List;
 
@@ -60,6 +63,15 @@ public class OverviewAdapter extends RecyclerView.Adapter<OverviewAdapter.ViewHo
             textName=itemView.findViewById(R.id.text_name);
             textValue=itemView.findViewById(R.id.text_value);
             textUnit=itemView.findViewById(R.id.text_unit);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String tagName=tagList.get(getAdapterPosition()).getMapTagName();
+                    StoredTag.IntervalType intervalType=tagName.contains("Energy")? StoredTag
+                            .IntervalType.H: StoredTag.IntervalType.M;
+                    DetailActivity.start(EDSApplication.getContext(),tagName,intervalType);
+                }
+            });
         }
     }
 
