@@ -33,13 +33,17 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".activity.DetailActivity" />
+        <activity android:name=".activity.ChartActivity" />
         <activity
             android:name=".activity.LoginSettingActivity"
             android:theme="@style/DialogActivity" />
         <activity
             android:name=".activity.DataLogSettingActivity"
-            android:theme="@style/DialogActivity" ></activity>
+            android:theme="@style/DialogActivity" />
+        <activity
+            android:name=".activity.ListActivity"
+            android:label="@string/title_activity_list"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>

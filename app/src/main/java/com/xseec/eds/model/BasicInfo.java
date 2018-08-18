@@ -5,6 +5,9 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Administrator on 2018/8/6.
  */
@@ -15,12 +18,14 @@ public class BasicInfo implements Parcelable {
     private String headerImg;
     private String pricipal;
     private String location;
+    private List<String> pictures=new ArrayList<>();
 
     protected BasicInfo(Parcel in) {
-        title=in.readString();
+        title = in.readString();
         headerImg = in.readString();
         pricipal = in.readString();
         location = in.readString();
+        in.readStringList(pictures);
     }
 
     public static final Creator<BasicInfo> CREATOR = new Creator<BasicInfo>() {
@@ -34,6 +39,14 @@ public class BasicInfo implements Parcelable {
             return new BasicInfo[size];
         }
     };
+
+    public List<String> getPictures() {
+        return pictures;
+    }
+
+    public void setPictures(List<String> pictures) {
+        this.pictures = pictures;
+    }
 
     public String getHeaderImg() {
         return headerImg;
@@ -78,5 +91,6 @@ public class BasicInfo implements Parcelable {
         dest.writeString(headerImg);
         dest.writeString(pricipal);
         dest.writeString(location);
+        dest.writeStringList(pictures);
     }
 }

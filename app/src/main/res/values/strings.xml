@@ -61,6 +61,7 @@
         <item>异常</item>
         <item>离线</item>
     </string-array>
+    <string name="overview_map_error">未找到地图APP</string>
 
     <!--Detail-->
     <string name="detail_trend">运行趋势</string>
@@ -91,6 +92,12 @@
     <string name="detail_yesterday">昨日能耗</string>
     <string name="detail_yesterday_same">昨日同期</string>
     <string name="detail_link_ratio">环比</string>
+    <string name="detail_THD">THD(vs基波)</string>
+    <string name="detail_thd">thd(vs有效值)</string>
+    <!--Device List-->
+    <string name="detail_title">设备列表</string>
+    <string name="detail_title_error">异常设备</string>
+    <string name="detail_state">状态: %1$s</string>
 
     <!--WAService URL-->
     <string name="was_login">http://%1$s/WaWebService/Json/GetUserInfo/%2$s</string>
@@ -123,4 +130,5 @@
         completions."
     </string>
     <string name="title_activity_data_log_setting">DataLogSettingActivity</string>
+    <string name="title_activity_list">ListActivity</string>
 </resources>

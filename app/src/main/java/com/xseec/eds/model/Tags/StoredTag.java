@@ -1,6 +1,7 @@
 package com.xseec.eds.model.Tags;
 
 import android.content.Context;
+import android.os.Parcelable;
 
 import com.xseec.eds.R;
 import com.xseec.eds.util.EDSApplication;
@@ -9,7 +10,7 @@ import com.xseec.eds.util.EDSApplication;
  * Created by Administrator on 2018/7/10.
  */
 
-public class StoredTag extends Tag {
+public class StoredTag extends Tag{
 
     //Units Types选项顺序应严格与StoredTag Enum顺序一致,对应WebAccess说明文档【0-Last,1-Min,2-Max,3-Avg】
     //但是经实际测试，文档中Max与Min的数据正好相反，故调整1-Max,2-Min

@@ -56,7 +56,7 @@ import static android.app.Activity.RESULT_OK;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class DataLogFragment extends Fragment {
+public class DataLogFragment extends BaseFragment {
 
     @InjectView(R.id.line_chart)
     LineChart lineChart;
@@ -79,17 +79,18 @@ public class DataLogFragment extends Fragment {
 
     private User user;
     private StoredTag.IntervalType defaultIntervalType;
-    private List<StoredTag> tagList;
+    private List<StoredTag> storedTagList;
     private DataLogFactor defaultFactor;
 
-    private static final String ARG_TAG = "tag_name";
-    private static final String ARG_INTERVAL_TYPE = "interval_type";
+    private static final String ARG_TAG = "tags";
+    private static final String ARG_INTERVAL_TYPE = "type";
     public static final String KEY_FACOTR = "factor";
     private static final int REQUEST_CODE_TIME = 1;
 
-    public static DataLogFragment newInstance(String tagName, StoredTag.IntervalType intervalType) {
+    public static DataLogFragment newInstance(List<String> tagNames, StoredTag.IntervalType
+            intervalType) {
         Bundle bundle = new Bundle();
-        bundle.putString(ARG_TAG, tagName);
+        bundle.putStringArrayList(ARG_TAG, (ArrayList<String>) tagNames);
         bundle.putInt(ARG_INTERVAL_TYPE, intervalType.ordinal());
         DataLogFragment fragment = new DataLogFragment();
         fragment.setArguments(bundle);
@@ -118,15 +119,17 @@ public class DataLogFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        String tagName = getArguments().getString(ARG_TAG);
+        List<String> tagNames = getArguments().getStringArrayList(ARG_TAG);
+        storedTagList = new ArrayList<>();
+        for (String tagName : tagNames) {
+            storedTagList.add(new StoredTag(tagName, StoredTag.DataType.MAX));
+        }
         int typeOrdinal = getArguments().getInt(ARG_INTERVAL_TYPE);
         defaultIntervalType = StoredTag.IntervalType.values()[typeOrdinal];
         initFactor();
         user = WAServicer.getUser();
-        tagList = new ArrayList<>();
-        tagList.add(new StoredTag(tagName, StoredTag.DataType.MAX));
         if (user != null) {
-            initChart(tagName);
+            initChart();
         } else {
             //直接返回
         }
@@ -165,7 +168,7 @@ public class DataLogFragment extends Fragment {
         }
     }
 
-    private void initChart(String tagName) {
+    private void initChart() {
         //lineChart.animateX(2000);
         lineChart.getDescription().setEnabled(false);
 
@@ -192,13 +195,13 @@ public class DataLogFragment extends Fragment {
         if (data != null) {
             data.clearValues();
         }
-        for (StoredTag tag : tagList) {
+        for (StoredTag tag : storedTagList) {
             tag.setDataType(defaultFactor.getDataType());
         }
 
         WAServiceHelper.sendTagLogRequest(user.getAuthority(), defaultFactor.getStartTimeString(),
                 defaultFactor.getIntervalType(), defaultFactor.getInterval(), defaultFactor
-                        .getRecords(), tagList, new Callback() {
+                        .getRecords(), storedTagList, new Callback() {
 
                     @Override
                     public void onFailure(Request request, IOException e) {
@@ -207,17 +210,7 @@ public class DataLogFragment extends Fragment {
 
                     @Override
                     public void onResponse(Response response) throws IOException {
-                        final List<String>[] values = WAJsonHelper.getTagLog(response);
-                        //横竖屏切换，getActivity可能为null
-                        if (getActivity() == null) {
-                            return;
-                        }
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                refreshViews(values[0]);
-                            }
-                        });
+                        refreshViewsInThread(response);
                     }
                 });
     }
@@ -227,10 +220,60 @@ public class DataLogFragment extends Fragment {
                 .getRecords() == 48;
     }
 
-    private void refreshViews(List<String> value) {
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset(this);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        //super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.query_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.query_time:
+                if (defaultFactor != null) {
+                    DataLogSettingActivity.start(getActivity(), REQUEST_CODE_TIME, defaultFactor);
+                }
+                break;
+            case R.id.query_config:
+
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    //在Activity中重写onActivityResult方法触发Fragment
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CODE_TIME:
+                if (resultCode == RESULT_OK) {
+                    defaultFactor = data.getParcelableExtra(KEY_FACOTR);
+                    setData();
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    protected void onRefreshViews(Response response) {
+        List<String>[] values = WAJsonHelper.getTagLog(response);
+        if (values.length == 0) {
+            return;
+        }
+        List<String> value = values[0];
         progressDataLog.setVisibility(View.GONE);
         LineData lineData = new LineData();
-        String legenName = tagList.get(0).getTagName();
+        String legenName = storedTagList.get(0).getTagName();
 
         //暂时方案,模拟值
         LineDataSet lineDataSet1 = null;
@@ -292,50 +335,6 @@ public class DataLogFragment extends Fragment {
             textFrist.setText(String.valueOf(lineData.getYMax()));
             textSecend.setText(String.valueOf(lineData.getYMin()));
             textLast.setText(String.valueOf(Generator.getAvgFromEntryList(entryList)));
-        }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.reset(this);
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        //super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.query_menu, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.query_time:
-                if (defaultFactor != null) {
-                    DataLogSettingActivity.start(getActivity(), REQUEST_CODE_TIME, defaultFactor);
-                }
-                break;
-            case R.id.query_config:
-
-                break;
-            default:
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    //在Activity中重写onActivityResult方法触发Fragment
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case REQUEST_CODE_TIME:
-                if (resultCode == RESULT_OK) {
-                    defaultFactor = data.getParcelableExtra(KEY_FACOTR);
-                    setData();
-                }
-                break;
-            default:
-                break;
         }
     }
 }

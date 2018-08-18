@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EE404040">
+
+    <com.youth.banner.Banner
+        android:id="@+id/banner"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></com.youth.banner.Banner>
+
+    <Button
+        android:id="@+id/btn_close"
+        style="@style/ImageButton"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/ic_close_red_a200_48dp" />
+</RelativeLayout>

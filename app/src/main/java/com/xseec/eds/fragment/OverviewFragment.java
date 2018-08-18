@@ -1,11 +1,14 @@
 package com.xseec.eds.fragment;
 
+import android.app.Dialog;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.v4.app.Fragment;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -14,6 +17,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -23,7 +28,7 @@ import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import com.xseec.eds.R;
-import com.xseec.eds.activity.DetailActivity;
+import com.xseec.eds.activity.ListActivity;
 import com.xseec.eds.adapter.OverviewAdapter;
 import com.xseec.eds.model.BasicInfo;
 import com.xseec.eds.model.State;
@@ -31,25 +36,33 @@ import com.xseec.eds.model.Tags.OverviewTag;
 import com.xseec.eds.model.Tags.Tag;
 import com.xseec.eds.model.User;
 import com.xseec.eds.model.WAServicer;
+import com.xseec.eds.util.EDSApplication;
 import com.xseec.eds.util.Generator;
+import com.xseec.eds.util.OpenMapUtil;
 import com.xseec.eds.util.TagsFilter;
 import com.xseec.eds.util.ViewHelper;
 import com.xseec.eds.util.WAJsonHelper;
 import com.xseec.eds.util.WAServiceHelper;
+import com.youth.banner.Banner;
+import com.youth.banner.BannerConfig;
+import com.youth.banner.loader.ImageLoader;
 
 import org.litepal.LitePal;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 
 //public class OverviewFragment extends ComFragment implements View.OnClickListener {
-public class OverviewFragment extends Fragment implements View.OnClickListener {
+public class OverviewFragment extends BaseFragment {
 
     @InjectView(R.id.image_area)
     ImageView imageArea;
@@ -87,7 +100,7 @@ public class OverviewFragment extends Fragment implements View.OnClickListener {
     ImageView imageSchedule;
 
     private static final String KEY_USER = "user";
-    private static final String KEY_BASIC="basic_info";
+    private static final String KEY_BASIC = "basic_info";
     private static final String KEY_TAGS = "tag_list";
     BasicInfo basicInfo;
     User user;
@@ -95,16 +108,27 @@ public class OverviewFragment extends Fragment implements View.OnClickListener {
     List<Tag> basicTagList;
     List<OverviewTag> overviewTagList;
     OverviewAdapter overviewAdapter;
+    @InjectView(R.id.text_schedule_title)
+    TextView textScheduleTitle;
+    @InjectView(R.id.text_schedule_time)
+    TextView textScheduleTime;
+    @InjectView(R.id.btn_schedule_execute)
+    Button btnScheduleExecute;
+    @InjectView(R.id.btn_schedule_notify)
+    Button btnScheduleNotify;
+    @InjectView(R.id.btn_schedule_cancel)
+    Button btnScheduleCancel;
 
     public OverviewFragment() {
         // Required empty public constructor
     }
 
-    public static OverviewFragment newInstance(User user,BasicInfo basicInfo, ArrayList<Tag> tagList) {
+    public static OverviewFragment newInstance(User user, BasicInfo basicInfo, ArrayList<Tag>
+            tagList) {
         OverviewFragment fragment = new OverviewFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable(KEY_USER, user);
-        bundle.putParcelable(KEY_BASIC,basicInfo);
+        bundle.putParcelable(KEY_BASIC, basicInfo);
         bundle.putParcelableArrayList(KEY_TAGS, tagList);
         fragment.setArguments(bundle);
         return fragment;
@@ -113,16 +137,16 @@ public class OverviewFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle bundle=getArguments();
-        user=bundle.getParcelable(KEY_USER);
-        basicInfo=bundle.getParcelable(KEY_BASIC);
-        tagList= bundle.getParcelableArrayList(KEY_TAGS);
+        Bundle bundle = getArguments();
+        user = bundle.getParcelable(KEY_USER);
+        basicInfo = bundle.getParcelable(KEY_BASIC);
+        tagList = bundle.getParcelableArrayList(KEY_TAGS);
         overviewTagList = LitePal.findAll(OverviewTag.class);
-        if(overviewTagList==null||overviewTagList.size()==0){
+        if (overviewTagList == null || overviewTagList.size() == 0) {
             Generator.initOverviewTagStore();
             overviewTagList = LitePal.findAll(OverviewTag.class);
         }
-        basicTagList=TagsFilter.getBasicTagList(tagList);
+        basicTagList = TagsFilter.getBasicTagList(tagList);
 
         //绑定服务
         //Intent intent = new Intent(getContext(), ComService.class);
@@ -143,12 +167,13 @@ public class OverviewFragment extends Fragment implements View.OnClickListener {
     private void initViews() {
         //init BasicInfo
         getActivity().setTitle(basicInfo.getTitle());
-        String headerImage=WAServicer.getBasicHeaderImageUrl(user.getDeviceName(),basicInfo.getHeaderImg());
+        String headerImage = WAServicer.getBasicImageUrl(user.getDeviceName(), basicInfo
+                .getHeaderImg());
         Glide.with(this).load(headerImage).into(imageArea);
-        int deviceCount= TagsFilter.getDeviceCount(tagList);
-        textDevice.setText(getResources().getString(R.string.overview_device_value,deviceCount));
+        int deviceCount = TagsFilter.getDeviceCount(tagList);
+        textDevice.setText(getResources().getString(R.string.overview_device_value, deviceCount));
         textEngineer.setText(basicInfo.getPricipal());
-        textLocation.setText(basicInfo.getLocation());
+        textLocation.setText(basicInfo.getLocation().split(",")[0]);
         //init Schedule Card
         //……
         Glide.with(this).load(Generator.getScheduleImageRes()).into(imageSchedule);
@@ -165,8 +190,6 @@ public class OverviewFragment extends Fragment implements View.OnClickListener {
                 refreshData();
             }
         });
-        //init ClickListener
-        imageDeviceList.setOnClickListener(this);
         refreshData();
     }
 
@@ -179,38 +202,7 @@ public class OverviewFragment extends Fragment implements View.OnClickListener {
 
             @Override
             public void onResponse(Response response) throws IOException {
-                List<Tag> tags=WAJsonHelper.refreshTagValue(response);
-                TagsFilter.refreshOverviewTagsByTags(tags,overviewTagList);
-                final State state=TagsFilter.getStateByTagList(tags);
-                //进行横竖屏切换时，getActivity为null
-                if(getActivity()==null){
-                    return;
-                }
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        overviewAdapter.notifyDataSetChanged();
-                        int stateColorRes;
-                        String stateText;
-                        switch (state){
-                            case ALARM:
-                                stateColorRes=R.color.colorError;
-                                stateText=getString(R.string.overview_state_alarm);
-                                break;
-                            case OFFLINE:
-                                stateColorRes=R.color.colorAlarm;
-                                stateText=getString(R.string.overview_state_offline);
-                                break;
-                            default:
-                                stateColorRes=R.color.colorNormal;
-                                stateText=getString(R.string.overview_state_on);
-                                break;
-                        }
-                        imageStatus.setImageResource(stateColorRes);
-                        textStatus.setText(stateText);
-                    }
-                });
-                swipeRefreshLayout.setRefreshing(false);
+                refreshViewsInThread(response);
             }
         });
     }
@@ -239,14 +231,100 @@ public class OverviewFragment extends Fragment implements View.OnClickListener {
 //        });
 //    }
 
+
     @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.image_device_list:
-                DetailActivity.start(getContext(),null,null);
-                break;
-            default:
-                break;
+    protected void onRefreshViews(Response response) {
+        basicTagList = WAJsonHelper.refreshTagValue(response);
+        TagsFilter.refreshOverviewTagsByTags(basicTagList, overviewTagList);
+        final State state = TagsFilter.getStateByTagList(basicTagList);
+        overviewAdapter.notifyDataSetChanged();
+        imageStatus.setImageResource(state.getStateColorRes());
+        state.setUnusualAnimator(imageStatus);
+        textStatus.setText(state.getStateText());
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
+    @OnClick(R.id.image_enlarge_grid)
+    public void onViewClicked() {
+        final Dialog dialog = new Dialog(getContext(), android.R.style
+                .Theme_Translucent_NoTitleBar_Fullscreen);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.preview_image);
+        List<String> images = new ArrayList<>();
+        List<String> titles = new ArrayList<>();
+        for (int i = 0; i < basicInfo.getPictures().size(); i++) {
+            String picture = basicInfo.getPictures().get(i);
+            titles.add(picture.split("\\.")[0]);
+            images.add(WAServicer.getBasicImageUrl(user.getDeviceName(), picture));
         }
+        Banner banner = dialog.findViewById(R.id.banner);
+        banner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR_TITLE_INSIDE)
+                .setBannerTitles(titles)
+                .setImages(images)
+                .isAutoPlay(false)
+                .setImageLoader(new ImageLoader() {
+                    @Override
+                    public void displayImage(Context context, Object path, ImageView imageView) {
+                        imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                        Glide.with(context).load((String) path).into(imageView);
+                    }
+                })
+                .start();
+        Button btnClose = dialog.findViewById(R.id.btn_close);
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+
+    @OnClick(R.id.image_phone)
+    public void onImagePhoneClicked() {
+        Pattern pattern = Pattern.compile("\\d+");
+        Matcher matcher = pattern.matcher(basicInfo.getPricipal());
+        if (matcher.find()) {
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+            intent.setData(Uri.parse("tel:" + matcher.group(0)));
+            startActivity(intent);
+        }
+    }
+
+    @OnClick(R.id.image_navigation)
+    public void onImageNavigationClicked() {
+        Pattern pattern = Pattern.compile("\\d+.\\d+");
+        Matcher matcher = pattern.matcher(basicInfo.getLocation());
+        List<String> locations = new ArrayList<>();
+        while (matcher.find()) {
+            locations.add(matcher.group());
+        }
+        if (locations.size() == 2) {
+            Intent intent = OpenMapUtil.getMapAppIntent(EDSApplication.getContext(), locations
+                    .get(0), locations.get(1));
+            if (intent == null) {
+                Snackbar.make(collapsingLayout, getString(R.string.overview_map_error), Snackbar
+                        .LENGTH_SHORT).show();
+            } else {
+                startActivity(intent);
+            }
+        }
+    }
+
+    @OnClick(R.id.image_status)
+    public void onImageStatusClicked() {
+        ArrayList<Tag> abnormalDevices = (ArrayList<Tag>) TagsFilter.getAbnormalStateList
+                (basicTagList);
+        if (abnormalDevices.size() != 0) {
+            ListActivity.start(getContext(), getString(R.string.detail_title_error),
+                    abnormalDevices);
+        }
+    }
+
+    @OnClick(R.id.image_device_list)
+    public void onImageDeviceListClicked() {
+        ArrayList<Tag> devices = (ArrayList<Tag>) TagsFilter.getStateList(basicTagList);
+        ListActivity.start(getContext(), getString(R.string.detail_title), devices);
     }
 }

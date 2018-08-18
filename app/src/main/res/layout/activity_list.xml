@@ -4,9 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.xseec.eds.activity.ChartActivity">
-    <FrameLayout
-        android:id="@+id/layout_container"
+    tools:context="com.xseec.eds.activity.ListActivity"
+    android:orientation="vertical">
+    <include layout="@layout/toolbar"/>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></FrameLayout>
+        android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
 </LinearLayout>

@@ -5,6 +5,7 @@
     <color name="colorPrimaryDark">#1976D2</color>
     <color name="colorPrimaryLight">#BBDEFB</color>
     <color name="colorAccent">#FF5252</color>
+    <color name="colorAccentLight">#FFCDD2</color>
     <color name="colorPrimaryText">#212121</color>
     <color name="colorSecondaryText">#757575</color>
     <color name="colorWhite">#FFFFFF</color>
@@ -17,8 +18,10 @@
     <color name="colorGrayLight">#FAFAFA</color>
 
     <color name="colorNormal">#2196F3</color>
-    <color name="colorError">#FF5252</color>
     <color name="colorAlarm">#FFC107</color>
+    <color name="colorOn">#FF5252</color>
+    <color name="colorOff">#35CF89</color>
+    <color name="colorOffline">#9E9E9E</color>
 
     <color name="colorPhaseA">#88c057</color>
     <color name="colorPhaseB">#56b3e5</color>

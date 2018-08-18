@@ -80,7 +80,7 @@ public class WAServicer {
         return context.getString(R.string.was_basic_info,hostUrl,deviceName);
     }
 
-    public static String getBasicHeaderImageUrl(String deviceName,String imageName){
+    public static String getBasicImageUrl(String deviceName,String imageName){
         return context.getString(R.string.was_basic_header_img,hostUrl,deviceName,imageName);
     }
 

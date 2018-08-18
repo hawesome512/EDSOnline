@@ -74,12 +74,16 @@
         <item name="android:backgroundDimEnabled">true</item>
     </style>
 
-    <style name="DialogActivity" parent="DialogActivityBase">
-    </style>
+    <style name="DialogActivity" parent="DialogActivityBase"></style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="ImageButton" parent="Base.Widget.AppCompat.ImageButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/view_margin_normal</item>
+    </style>
 
 </resources>

@@ -9,18 +9,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.xseec.eds.R;
-import com.xseec.eds.activity.DetailActivity;
+import com.xseec.eds.activity.ChartActivity;
 import com.xseec.eds.model.Tags.OverviewTag;
 import com.xseec.eds.model.Tags.StoredTag;
 import com.xseec.eds.util.EDSApplication;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * Created by Administrator on 2018/7/25.
  */
 
-public class OverviewAdapter extends RecyclerView.Adapter<OverviewAdapter.ViewHolder>{
+public class OverviewAdapter extends RecyclerView.Adapter<OverviewAdapter.ViewHolder> {
 
     private List<OverviewTag> tagList;
 
@@ -31,14 +33,15 @@ public class OverviewAdapter extends RecyclerView.Adapter<OverviewAdapter.ViewHo
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view=LayoutInflater.from(parent.getContext()).inflate(R.layout.item_overview,parent,false);
-        ViewHolder holder=new ViewHolder(view);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_overview,
+                parent, false);
+        ViewHolder holder = new ViewHolder(view);
         return holder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        OverviewTag tag=tagList.get(position);
+        OverviewTag tag = tagList.get(position);
         holder.imageItem.setImageResource(tag.getTagResId());
         holder.textName.setText(tag.getTagName());
         holder.textValue.setText(tag.getTagValue());
@@ -50,7 +53,7 @@ public class OverviewAdapter extends RecyclerView.Adapter<OverviewAdapter.ViewHo
         return tagList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView imageItem;
         private TextView textName;
@@ -59,17 +62,19 @@ public class OverviewAdapter extends RecyclerView.Adapter<OverviewAdapter.ViewHo
 
         public ViewHolder(View itemView) {
             super(itemView);
-            imageItem=itemView.findViewById(R.id.image_item);
-            textName=itemView.findViewById(R.id.text_name);
-            textValue=itemView.findViewById(R.id.text_value);
-            textUnit=itemView.findViewById(R.id.text_unit);
+            imageItem = itemView.findViewById(R.id.image_item);
+            textName = itemView.findViewById(R.id.text_name);
+            textValue = itemView.findViewById(R.id.text_value);
+            textUnit = itemView.findViewById(R.id.text_unit);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String tagName=tagList.get(getAdapterPosition()).getMapTagName();
-                    StoredTag.IntervalType intervalType=tagName.contains("Energy")? StoredTag
-                            .IntervalType.H: StoredTag.IntervalType.M;
-                    DetailActivity.start(EDSApplication.getContext(),tagName,intervalType);
+                    String tagName = tagList.get(getAdapterPosition()).getMapTagName();
+                    StoredTag.IntervalType intervalType = tagName.contains("Energy") ? StoredTag
+                            .IntervalType.H : StoredTag.IntervalType.M;
+                    ArrayList<String> tags = new ArrayList<>();
+                    tags.add(tagName);
+                    ChartActivity.start(EDSApplication.getContext(), tags, intervalType);
                 }
             });
         }

@@ -17,10 +17,12 @@ import android.widget.TextView;
 
 import com.xseec.eds.R;
 import com.xseec.eds.model.BasicInfo;
+import com.xseec.eds.model.State;
 import com.xseec.eds.model.Tags.Tag;
 import com.xseec.eds.model.User;
 import com.xseec.eds.model.WAServicer;
 import com.xseec.eds.util.CodeHelper;
+import com.xseec.eds.util.TagsFilter;
 import com.xseec.eds.util.WAJsonHelper;
 import com.xseec.eds.util.WAServiceHelper;
 
@@ -81,6 +83,7 @@ public class LoginActivity extends AppCompatActivity {
                             .getBasicInfoRequest(deviceName));
                     final ArrayList<Tag> tagList = (ArrayList<Tag>) WAJsonHelper.getTagList
                             (WAServiceHelper.getTagListRequest(authority, deviceName));
+                    TagsFilter.setAllTagList(tagList);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

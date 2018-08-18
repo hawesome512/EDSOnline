@@ -5,6 +5,7 @@ import android.content.Context;
 import com.github.mikephil.charting.data.Entry;
 import com.xseec.eds.R;
 import com.xseec.eds.model.Tags.OverviewTag;
+import com.xseec.eds.model.Tags.Tag;
 
 import org.litepal.LitePal;
 
@@ -50,7 +51,7 @@ public class Generator {
         name = context.getString(R.string.overview_item_harmonic);
         String valueText = context.getString(R.string.overview_item_detail);
         OverviewTag tag5 = new OverviewTag(5, R.drawable.circle_bar_hor, name, valueText, null,
-                "AREA:Harmonic", true);
+                "RD_A3_6:THD", true);
         tag5.save();
     }
 
@@ -108,7 +109,7 @@ public class Generator {
         return tmp;
     }
 
-    private static float floatTryParse(String source) {
+    public static float floatTryParse(String source) {
         try {
             return Float.parseFloat(source);
         } catch (Exception exp) {

@@ -1,0 +1,17 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.xseec.eds.fragment.HorBarChartFragment">
+
+    <include layout="@layout/toolbar" />
+
+    <include layout="@layout/item_progress" />
+
+    <com.github.mikephil.charting.charts.HorizontalBarChart
+        android:id="@+id/hor_bar_chart"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></com.github.mikephil.charting.charts.HorizontalBarChart>
+
+</LinearLayout>
