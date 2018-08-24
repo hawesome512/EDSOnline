@@ -2,14 +2,21 @@ package com.xseec.eds.util;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.support.v4.view.animation.FastOutSlowInInterpolator;
+import android.databinding.DataBindingUtil;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.ViewPropertyAnimator;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.xseec.eds.R;
+import com.xseec.eds.databinding.ItemCardSubBinding;
+import com.xseec.eds.model.Tags.Tag;
+
+import java.util.List;
 
 /**
  * Created by Administrator on 2018/7/25.

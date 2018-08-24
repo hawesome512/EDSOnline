@@ -4,8 +4,13 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.xseec.eds.R;
 import com.xseec.eds.util.EDSApplication;
+import com.xseec.eds.util.IOHelper;
+
+import java.util.List;
 
 /**
  * Created by Administrator on 2018/7/9.
@@ -33,6 +38,7 @@ public class WAServicer {
     private static String nodeName;
     private static User user;
     private static Context context;
+    private static List<DeviceConfig> deviceConfigs;
 
     public static void initWAServicer(){
         context= EDSApplication.getContext();
@@ -40,6 +46,7 @@ public class WAServicer {
         hostUrl=preferences.getString(PREF_HOST,"www.eds.ink");
         projectName=preferences.getString(PREF_PROJECT,"EDS");
         nodeName=preferences.getString(PREF_NODE,"XS");
+        initDeviceConfigsinThread();
     }
 
     public static void setWAServicer(String host, String project, String node) {
@@ -54,6 +61,21 @@ public class WAServicer {
         editor.putString(PREF_HOST,hostUrl);
         editor.putString(PREF_PROJECT,projectName);
         editor.putString(PREF_NODE,nodeName);
+    }
+
+    private static void initDeviceConfigsinThread(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String strJson= IOHelper.inputStreamToString(context.getResources().openRawResource(R.raw.device_config));
+                Gson gson=new Gson();
+                deviceConfigs=gson.fromJson(strJson,new TypeToken<List<DeviceConfig>>(){}.getType());
+            }
+        }).start();
+    }
+
+    public static List<DeviceConfig> getDeviceConfigs() {
+        return deviceConfigs;
     }
 
     public static String getLoginUrl(){

@@ -26,6 +26,7 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
+        <item name="android:layout_gravity">center</item>
         <item name="android:layout_margin">@dimen/view_margin_tiny</item>
     </style>
 
@@ -84,6 +85,21 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_margin">@dimen/view_margin_normal</item>
+    </style>
+
+    <style name="Card">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/view_margin_small</item>
+    </style>
+
+    <style name="CardTextTitle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">@dimen/view_padding_normal</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:background">@color/colorGrayLight</item>
+        <item name="android:textSize">@dimen/font_big</item>
     </style>
 
 </resources>

@@ -41,6 +41,20 @@ public class TagsFilter {
         return target;
     }
 
+    public static List<Tag> filterDeviceTagList(List<Tag> source,List<String> filters){
+        List<Tag> target=new ArrayList<>();
+        for(String filter:filters){
+            for(Tag tag:source){
+                String[] tmps=tag.getTagName().split(":");
+                if(tmps.length==2&&tmps[1].equals(filter)){
+                    target.add(tag);
+                    break;
+                }
+            }
+        }
+        return target;
+    }
+
     public static List getAbnormalStateList(List<Tag> source) {
         List<Tag> target = filterTagList(source, FILTER_STATE);
         for (int i = target.size() - 1; i >= 0; i--) {

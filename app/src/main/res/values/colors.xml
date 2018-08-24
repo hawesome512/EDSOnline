@@ -15,7 +15,8 @@
 
     <color name="colorVectorWhite">#F0F1F1</color>
     <color name="colorGrayNormal">#737373</color>
-    <color name="colorGrayLight">#FAFAFA</color>
+    <!--<color name="colorGrayLight">#FAFAFA</color>-->
+    <color name="colorGrayLight">#F5F5F5</color>
 
     <color name="colorNormal">#2196F3</color>
     <color name="colorAlarm">#FFC107</color>

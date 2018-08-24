@@ -99,6 +99,12 @@
     <string name="detail_title_error">异常设备</string>
     <string name="detail_state">状态: %1$s</string>
 
+    <!--Device Activity-->
+    <string name="device_state">状态</string>
+    <string name="device_record">运行记录</string>
+    <string name="device_peak">电流峰值</string>
+    <string name="device_trip">脱扣故障</string>
+
     <!--WAService URL-->
     <string name="was_login">http://%1$s/WaWebService/Json/GetUserInfo/%2$s</string>
     <string name="was_tag_list">http://%1$s/WaWebService/Json/TagList/%2$s/%3$s/%4$s</string>
@@ -131,4 +137,5 @@
     </string>
     <string name="title_activity_data_log_setting">DataLogSettingActivity</string>
     <string name="title_activity_list">ListActivity</string>
+    <string name="title_activity_device">DeviceActivity</string>
 </resources>

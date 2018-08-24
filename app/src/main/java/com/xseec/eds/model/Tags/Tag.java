@@ -1,6 +1,7 @@
 package com.xseec.eds.model.Tags;
 
 import android.content.Context;
+import android.databinding.BaseObservable;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -8,14 +9,11 @@ import com.google.gson.annotations.SerializedName;
 import com.xseec.eds.R;
 import com.xseec.eds.util.EDSApplication;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by Administrator on 2018/7/10.
  */
 
-public class Tag implements Parcelable {
+public class Tag extends BaseObservable implements Parcelable {
 
     @SerializedName("Name")
     private String tagName;
@@ -58,6 +56,7 @@ public class Tag implements Parcelable {
 
     public void setTagValue(String tagValue) {
         this.tagValue = tagValue;
+        notifyChange();
     }
 
     @Override

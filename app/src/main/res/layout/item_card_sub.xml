@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="tag"
+            type="com.xseec.eds.model.Tags.Tag" />
+    </data>
+
+    <LinearLayout xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/view_margin_normal"
+        android:orientation="vertical">
+
+        <LinearLayout style="@style/LinearLayoutHorBasicItem">
+
+            <TextView
+                android:id="@+id/text_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/view_margin_tiny"
+                android:text="@{tag.tagName}" />
+
+            <TextView
+                android:id="@+id/text_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/view_margin_tiny"
+                android:gravity="right"
+                android:text="@{tag.tagValue}" />
+        </LinearLayout>
+
+        <View style="@style/DividerLine"
+            android:layout_margin="0dp"/>
+    </LinearLayout>
+</layout>
