@@ -5,20 +5,25 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/view_padding_normal"
         tools:context="com.xseec.eds.fragment.TabControlFragment">
+
+        <ProgressBar
+            android:id="@+id/progress"
+            style="@style/HorProgressBar" />
 
         <TextView
             android:id="@+id/text_state"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/view_margin_normal"
-            android:background="@drawable/state_alarm_gradient"
+            android:background="@drawable/state_offline_gradient"
             android:gravity="center"
             android:padding="@dimen/view_padding_normal"
-            android:text="Alarm"
             android:textColor="@color/colorWhite"
-            android:textSize="@dimen/font_display" />
+            android:textSize="@dimen/font_display"
+            tools:text="Alarm" />
 
         <Button
             android:id="@+id/btn_on"
@@ -27,11 +32,11 @@
             android:layout_below="@id/text_state"
             android:layout_centerHorizontal="true"
             android:layout_margin="@dimen/view_margin_normal"
-            android:padding="@dimen/view_padding_normal"
-            android:text="ON"
-            android:textSize="@dimen/font_display"
             android:background="@color/colorOn"
-            android:textColor="@color/colorWhite"/>
+            android:padding="@dimen/view_padding_normal"
+            android:text="@string/device_on"
+            android:textColor="@color/colorWhite"
+            android:textSize="@dimen/font_display" />
 
         <Button
             android:id="@+id/btn_off"
@@ -40,11 +45,11 @@
             android:layout_below="@id/btn_on"
             android:layout_centerHorizontal="true"
             android:layout_margin="@dimen/view_margin_normal"
+            android:background="@color/colorOff"
             android:padding="@dimen/view_padding_normal"
-            android:text="OFF"
-            android:textSize="@dimen/font_display"
+            android:text="@string/device_off"
             android:textColor="@color/colorWhite"
-            android:background="@color/colorGrayNormal"/>
+            android:textSize="@dimen/font_display" />
 
     </RelativeLayout>
 </android.support.v4.widget.NestedScrollView>

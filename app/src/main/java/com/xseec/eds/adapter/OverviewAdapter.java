@@ -10,12 +10,11 @@ import android.widget.TextView;
 
 import com.xseec.eds.R;
 import com.xseec.eds.activity.ChartActivity;
-import com.xseec.eds.model.Tags.OverviewTag;
-import com.xseec.eds.model.Tags.StoredTag;
+import com.xseec.eds.model.tags.OverviewTag;
+import com.xseec.eds.model.tags.StoredTag;
 import com.xseec.eds.util.EDSApplication;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**

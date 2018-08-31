@@ -12,7 +12,8 @@
         android:layout_height="@dimen/device_list_size"
         android:layout_marginRight="@dimen/view_margin_normal"
         android:layout_marginVertical="@dimen/view_margin_small"
-        tools:src="@drawable/device_a65" />
+        tools:src="@drawable/device_a65"
+        android:transitionName="@string/trans_image_device"/>
 
     <TextView
         android:id="@+id/text_device_name"

@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Response;
 import com.xseec.eds.model.BasicInfo;
-import com.xseec.eds.model.Tags.Tag;
+import com.xseec.eds.model.tags.Tag;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

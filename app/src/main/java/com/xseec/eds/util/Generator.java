@@ -4,8 +4,7 @@ import android.content.Context;
 
 import com.github.mikephil.charting.data.Entry;
 import com.xseec.eds.R;
-import com.xseec.eds.model.Tags.OverviewTag;
-import com.xseec.eds.model.Tags.Tag;
+import com.xseec.eds.model.tags.OverviewTag;
 
 import org.litepal.LitePal;
 

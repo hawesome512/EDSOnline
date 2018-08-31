@@ -4,16 +4,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
-import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.xseec.eds.R;
 import com.xseec.eds.fragment.DataLogFragment;
 import com.xseec.eds.fragment.HorBarChartFragment;
-import com.xseec.eds.fragment.ListFragment;
-import com.xseec.eds.model.Tags.StoredTag;
-import com.xseec.eds.model.Tags.Tag;
+import com.xseec.eds.model.tags.StoredTag;
 
 import java.util.ArrayList;
 import java.util.List;

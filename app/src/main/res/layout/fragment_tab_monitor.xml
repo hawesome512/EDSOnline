@@ -3,9 +3,15 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     tools:context="com.xseec.eds.fragment.TabBaseFragment">
+
     <LinearLayout
         android:id="@+id/layout_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"></LinearLayout>
+        android:orientation="vertical">
+
+        <ProgressBar
+            android:id="@+id/progress"
+            style="@style/HorProgressBar" />
+    </LinearLayout>
 </android.support.v4.widget.NestedScrollView>

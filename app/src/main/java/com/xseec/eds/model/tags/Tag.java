@@ -1,4 +1,4 @@
-package com.xseec.eds.model.Tags;
+package com.xseec.eds.model.tags;
 
 import android.content.Context;
 import android.databinding.BaseObservable;
@@ -17,8 +17,10 @@ public class Tag extends BaseObservable implements Parcelable {
 
     @SerializedName("Name")
     private String tagName;
+    private String tagAlias;
     @SerializedName("Value")
     private String tagValue;
+
 
     public Tag(String tagName) {
         this.tagName = tagName;
@@ -52,6 +54,10 @@ public class Tag extends BaseObservable implements Parcelable {
 
     public String getTagValue() {
         return tagValue;
+    }
+
+    public String getTagAlias() {
+        return tagName.split(":")[1];
     }
 
     public void setTagValue(String tagValue) {

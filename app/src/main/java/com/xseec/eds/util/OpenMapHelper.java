@@ -13,7 +13,7 @@ import java.util.List;
  * Created by Administrator on 2018/8/15.
  */
 
-public class OpenMapUtil {
+public class OpenMapHelper {
 
     private static Intent openGaoDeNavi(String lat, String lng) {
         StringBuffer stringBuffer = new StringBuffer("androidamap://navi?sourceApplication=")

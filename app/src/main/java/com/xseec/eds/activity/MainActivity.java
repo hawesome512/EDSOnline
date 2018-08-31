@@ -3,7 +3,6 @@ package com.xseec.eds.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
@@ -15,21 +14,13 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 import com.xseec.eds.R;
 import com.xseec.eds.fragment.OverviewFragment;
 import com.xseec.eds.model.BasicInfo;
-import com.xseec.eds.model.Tags.Tag;
-import com.xseec.eds.model.User;
-import com.xseec.eds.util.CodeHelper;
-import com.xseec.eds.util.WAJsonHelper;
-import com.xseec.eds.util.WAServiceHelper;
+import com.xseec.eds.model.tags.Tag;
+import com.xseec.eds.model.WAServicer;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -37,10 +28,8 @@ import butterknife.InjectView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String EXT_USER = "user";
     private static final String EXT_BASIC = "basic_info";
     private static final String EXT_TAGS = "tag_list";
-    private User user;
     private BasicInfo basicInfo;
     private ArrayList<Tag> tagList;
 
@@ -52,10 +41,9 @@ public class MainActivity extends AppCompatActivity {
     @InjectView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
 
-    public static void start(Context context, User user, BasicInfo basicInfo, ArrayList<Tag>
+    public static void start(Context context, BasicInfo basicInfo, ArrayList<Tag>
             tagList) {
         Intent intent = new Intent(context, MainActivity.class);
-        intent.putExtra(EXT_USER, user);
         intent.putExtra(EXT_BASIC, basicInfo);
         //传递到Intent里时，参数类型必须为ArrayList,而非List
         intent.putParcelableArrayListExtra(EXT_TAGS, tagList);
@@ -67,15 +55,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
-        user =getIntent().getParcelableExtra(EXT_USER);
         basicInfo = getIntent().getParcelableExtra(EXT_BASIC);
         tagList = getIntent().getParcelableArrayListExtra(EXT_TAGS);
-        if (user != null && basicInfo != null && tagList != null) {
+        if (basicInfo != null && tagList != null) {
             TextView textUser=navView.getHeaderView(0).findViewById(R.id.text_account);
-            textUser.setText(getString(R.string.nav_account,user.getUsername()));
+            textUser.setText(getString(R.string.nav_account, WAServicer.getUser().getUsername()));
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.layout_container, OverviewFragment
-                    .newInstance(user, basicInfo, tagList)).commit();
+                    .newInstance(basicInfo, tagList)).commit();
         }else {
             Snackbar.make(drawerLayout,R.string.main_failure,Snackbar.LENGTH_LONG).setAction(R.string.main_exit, new View.OnClickListener() {
                 @Override

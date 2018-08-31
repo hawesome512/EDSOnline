@@ -17,8 +17,7 @@ import android.widget.TextView;
 
 import com.xseec.eds.R;
 import com.xseec.eds.model.BasicInfo;
-import com.xseec.eds.model.State;
-import com.xseec.eds.model.Tags.Tag;
+import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.model.User;
 import com.xseec.eds.model.WAServicer;
 import com.xseec.eds.util.CodeHelper;
@@ -74,21 +73,19 @@ public class LoginActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String deviceName = WAJsonHelper.getUserProjectInfo(WAServiceHelper
-                        .getLoginRequest(authority));
+                String deviceName = WAJsonHelper.getUserProjectInfo(WAServiceHelper.getLoginRequest(authority));
                 if (!TextUtils.isEmpty(deviceName)) {
                     setLoginInfo();
                     final User user = new User(authority, deviceName);
-                    final BasicInfo basicInfo = WAJsonHelper.getBasicInfo(WAServiceHelper
-                            .getBasicInfoRequest(deviceName));
+                    WAServicer.setUser(user);
+                    final BasicInfo basicInfo = WAJsonHelper.getBasicInfo(WAServiceHelper.getBasicInfoRequest(deviceName));
                     final ArrayList<Tag> tagList = (ArrayList<Tag>) WAJsonHelper.getTagList
-                            (WAServiceHelper.getTagListRequest(authority, deviceName));
+                            (WAServiceHelper.getTagListRequest(deviceName));
                     TagsFilter.setAllTagList(tagList);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            WAServicer.setUser(user);
-                            MainActivity.start(LoginActivity.this, user, basicInfo, tagList);
+                            MainActivity.start(LoginActivity.this, basicInfo, tagList);
                             finish();
                         }
                     });

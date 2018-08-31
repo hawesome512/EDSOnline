@@ -9,11 +9,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.xseec.eds.R;
 import com.xseec.eds.databinding.ItemCardSubBinding;
-import com.xseec.eds.model.Tags.Tag;
+import com.xseec.eds.model.tags.Tag;
+import com.xseec.eds.util.TagsFilter;
 
 import java.util.List;
 
@@ -23,10 +25,12 @@ import butterknife.InjectView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public abstract class TabBaseFragment extends Fragment implements View.OnClickListener {
+public abstract class TabBaseFragment extends ComFragment implements View.OnClickListener {
 
     @InjectView(R.id.layout_container)
     LinearLayout layoutContainer;
+    @InjectView(R.id.progress)
+    ProgressBar progress;
 
     public TabBaseFragment() {
         // Required empty public constructor
@@ -55,8 +59,10 @@ public abstract class TabBaseFragment extends Fragment implements View.OnClickLi
         LinearLayout layout = getLinearLayout(LinearLayout.VERTICAL);
         addTitle(layout, title);
         for (String item : items) {
-            Tag tag = new Tag(item);
-            addSubItem(layout, tag);
+            List<Tag> tags = TagsFilter.filterDeviceTagList(tagList, item);
+            if (tags != null && tags.size() > 0) {
+                addSubItem(layout, tags.get(0));
+            }
         }
         cardView.addView(layout);
         layoutContainer.addView(cardView);
@@ -89,5 +95,19 @@ public abstract class TabBaseFragment extends Fragment implements View.OnClickLi
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
+    }
+
+    @Override
+    public void onRefreshed(List<Tag> validTagList) {
+        super.onRefreshed(validTagList);
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                progress.setVisibility(View.GONE);
+            }
+        });
+        for (int i = 0; i < validTagList.size(); i++) {
+            tagList.get(i).setTagValue(validTagList.get(i).getTagValue());
+        }
     }
 }

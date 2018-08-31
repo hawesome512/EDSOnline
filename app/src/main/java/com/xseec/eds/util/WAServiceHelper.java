@@ -10,10 +10,10 @@ import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 import com.xseec.eds.R;
 import com.xseec.eds.model.DataLogFactor;
-import com.xseec.eds.model.Tags.StoredTag;
-import com.xseec.eds.model.Tags.Tag;
+import com.xseec.eds.model.tags.StoredTag;
+import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.model.WAServicer;
-import com.xseec.eds.model.Tags.ValidTag;
+import com.xseec.eds.model.tags.ValidTag;
 
 import java.io.IOException;
 import java.util.List;
@@ -53,37 +53,41 @@ public class WAServiceHelper {
         sendRequest(url, authority, null, callback);
     }
 
-    public static void sendTagListRequest(String authority, String deviceName, Callback callback) {
+    public static void sendTagListRequest(String deviceName, Callback callback) {
         String url = WAServicer.getTagListUrl(deviceName);
+        String authority=WAServicer.getUser().getAuthority();
         sendRequest(url, authority, null, callback);
     }
 
-    public static void sendGetValueRequest(String authority, List<Tag> tagList, Callback callback) {
+    public static void sendGetValueRequest(List<Tag> tagList, Callback callback) {
         Context context = EDSApplication.getContext();
         String content = context.getString(R.string.was_tag_value_request, tagList.toString());
         String url = WAServicer.getGetValueUrl();
+        String authority=WAServicer.getUser().getAuthority();
         sendRequest(url, authority, content, callback);
     }
 
-    public static void sendSetValueRequest(String authority, List<ValidTag> tagList, Callback
+    public static void sendSetValueRequest(List<ValidTag> tagList, Callback
             callback) {
         Context context = EDSApplication.getContext();
         String content = context.getString(R.string.was_tag_value_request, tagList.toString());
         String url = WAServicer.getSetValueUrl();
+        String authority=WAServicer.getUser().getAuthority();
         sendRequest(url, authority, content, callback);
     }
 
-    public static void sendTagLogRequest(String authority,DataLogFactor factor,List<StoredTag> tagList,Callback callback){
-        sendTagLogRequest(authority,factor.getStartTimeString(),factor.getIntervalType(),factor.getInterval(),factor.getRecords(),tagList,callback);
+    public static void sendTagLogRequest(DataLogFactor factor,List<StoredTag> tagList,Callback callback){
+        sendTagLogRequest(factor.getStartTimeString(),factor.getIntervalType(),factor.getInterval(),factor.getRecords(),tagList,callback);
     }
 
-    public static void sendTagLogRequest(String authority, String startTime, StoredTag
+    public static void sendTagLogRequest( String startTime, StoredTag
             .IntervalType intervalType, int interval, int records, List<StoredTag> tagList,
             Callback callback) {
         Context context = EDSApplication.getContext();
         String content = context.getString(R.string.was_tag_log_request, startTime, intervalType
                 .name(), interval, records, tagList.toString());
         String url = WAServicer.getTagLogUrl();
+        String authority=WAServicer.getUser().getAuthority();
         sendRequest(url, authority, content, callback);
     }
 
@@ -104,15 +108,17 @@ public class WAServiceHelper {
         return executeRequest(url,authority,null);
     }
 
-    public static Response getTagListRequest(String authority, String deviceName) {
+    public static Response getTagListRequest(String deviceName) {
         String url = WAServicer.getTagListUrl(deviceName);
+        String authority=WAServicer.getUser().getAuthority();
         return executeRequest(url,authority,null);
     }
 
-    public static Response getValueRequest(String authority, List<Tag> tagList) {
+    public static Response getValueRequest(List<Tag> tagList) {
         Context context = EDSApplication.getContext();
         String content = context.getString(R.string.was_tag_value_request, tagList.toString());
         String url = WAServicer.getGetValueUrl();
+        String authority=WAServicer.getUser().getAuthority();
         return executeRequest(url,authority,content);
     }
 

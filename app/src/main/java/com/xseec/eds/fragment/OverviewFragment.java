@@ -32,13 +32,12 @@ import com.xseec.eds.activity.ListActivity;
 import com.xseec.eds.adapter.OverviewAdapter;
 import com.xseec.eds.model.BasicInfo;
 import com.xseec.eds.model.State;
-import com.xseec.eds.model.Tags.OverviewTag;
-import com.xseec.eds.model.Tags.Tag;
-import com.xseec.eds.model.User;
 import com.xseec.eds.model.WAServicer;
+import com.xseec.eds.model.tags.OverviewTag;
+import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.util.EDSApplication;
 import com.xseec.eds.util.Generator;
-import com.xseec.eds.util.OpenMapUtil;
+import com.xseec.eds.util.OpenMapHelper;
 import com.xseec.eds.util.TagsFilter;
 import com.xseec.eds.util.ViewHelper;
 import com.xseec.eds.util.WAJsonHelper;
@@ -99,11 +98,9 @@ public class OverviewFragment extends BaseFragment {
     @InjectView(R.id.image_schedule)
     ImageView imageSchedule;
 
-    private static final String KEY_USER = "user";
     private static final String KEY_BASIC = "basic_info";
     private static final String KEY_TAGS = "tag_list";
     BasicInfo basicInfo;
-    User user;
     List<Tag> tagList;
     List<Tag> basicTagList;
     List<OverviewTag> overviewTagList;
@@ -118,16 +115,25 @@ public class OverviewFragment extends BaseFragment {
     Button btnScheduleNotify;
     @InjectView(R.id.btn_schedule_cancel)
     Button btnScheduleCancel;
+    @InjectView(R.id.layout_status)
+    LinearLayout layoutStatus;
+    @InjectView(R.id.layout_device)
+    LinearLayout layoutDevice;
+    @InjectView(R.id.layout_grid)
+    LinearLayout layoutGrid;
+    @InjectView(R.id.layout_engineer)
+    LinearLayout layoutEngineer;
+    @InjectView(R.id.layout_location)
+    LinearLayout layoutLocation;
 
     public OverviewFragment() {
         // Required empty public constructor
     }
 
-    public static OverviewFragment newInstance(User user, BasicInfo basicInfo, ArrayList<Tag>
+    public static OverviewFragment newInstance(BasicInfo basicInfo, ArrayList<Tag>
             tagList) {
         OverviewFragment fragment = new OverviewFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(KEY_USER, user);
         bundle.putParcelable(KEY_BASIC, basicInfo);
         bundle.putParcelableArrayList(KEY_TAGS, tagList);
         fragment.setArguments(bundle);
@@ -138,7 +144,6 @@ public class OverviewFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
-        user = bundle.getParcelable(KEY_USER);
         basicInfo = bundle.getParcelable(KEY_BASIC);
         tagList = bundle.getParcelableArrayList(KEY_TAGS);
         overviewTagList = LitePal.findAll(OverviewTag.class);
@@ -167,8 +172,8 @@ public class OverviewFragment extends BaseFragment {
     private void initViews() {
         //init BasicInfo
         getActivity().setTitle(basicInfo.getTitle());
-        String headerImage = WAServicer.getBasicImageUrl(user.getDeviceName(), basicInfo
-                .getHeaderImg());
+        String deviceName = WAServicer.getUser().getDeviceName();
+        String headerImage = WAServicer.getBasicImageUrl(deviceName, basicInfo.getHeaderImg());
         Glide.with(this).load(headerImage).into(imageArea);
         int deviceCount = TagsFilter.getDeviceCount(tagList);
         textDevice.setText(getResources().getString(R.string.overview_device_value, deviceCount));
@@ -194,7 +199,7 @@ public class OverviewFragment extends BaseFragment {
     }
 
     private void refreshData() {
-        WAServiceHelper.sendGetValueRequest(user.getAuthority(), basicTagList, new Callback() {
+        WAServiceHelper.sendGetValueRequest(basicTagList, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
 
@@ -219,19 +224,6 @@ public class OverviewFragment extends BaseFragment {
         ButterKnife.reset(this);
     }
 
-//    ComListener更新
-//    @Override
-//    public void onRefreshed(final List<Tag> validTagList) {
-//        final String content = validTagList.get(0).getTagValue();
-//        getActivity().runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                //Update ui here
-//            }
-//        });
-//    }
-
-
     @Override
     protected void onRefreshViews(Response response) {
         basicTagList = WAJsonHelper.refreshTagValue(response);
@@ -244,8 +236,24 @@ public class OverviewFragment extends BaseFragment {
         swipeRefreshLayout.setRefreshing(false);
     }
 
-    @OnClick(R.id.image_enlarge_grid)
-    public void onViewClicked() {
+    @OnClick(R.id.layout_status)
+    public void onLayoutStatusClicked() {
+        ArrayList<Tag> abnormalDevices = (ArrayList<Tag>) TagsFilter.getAbnormalStateList
+                (basicTagList);
+        if (abnormalDevices.size() != 0) {
+            ListActivity.start(getContext(), getString(R.string.detail_title_error),
+                    abnormalDevices);
+        }
+    }
+
+    @OnClick(R.id.layout_device)
+    public void onLayoutDeviceClicked() {
+        ArrayList<Tag> devices = (ArrayList<Tag>) TagsFilter.getStateList(basicTagList);
+        ListActivity.start(getContext(), getString(R.string.detail_title), devices);
+    }
+
+    @OnClick(R.id.layout_grid)
+    public void onLayoutGridClicked() {
         final Dialog dialog = new Dialog(getContext(), android.R.style
                 .Theme_Translucent_NoTitleBar_Fullscreen);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -255,7 +263,7 @@ public class OverviewFragment extends BaseFragment {
         for (int i = 0; i < basicInfo.getPictures().size(); i++) {
             String picture = basicInfo.getPictures().get(i);
             titles.add(picture.split("\\.")[0]);
-            images.add(WAServicer.getBasicImageUrl(user.getDeviceName(), picture));
+            images.add(WAServicer.getBasicImageUrl(WAServicer.getUser().getDeviceName(), picture));
         }
         Banner banner = dialog.findViewById(R.id.banner);
         banner.setBannerStyle(BannerConfig.CIRCLE_INDICATOR_TITLE_INSIDE)
@@ -280,9 +288,8 @@ public class OverviewFragment extends BaseFragment {
         dialog.show();
     }
 
-
-    @OnClick(R.id.image_phone)
-    public void onImagePhoneClicked() {
+    @OnClick(R.id.layout_engineer)
+    public void onLayoutEngineerClicked() {
         Pattern pattern = Pattern.compile("\\d+");
         Matcher matcher = pattern.matcher(basicInfo.getPricipal());
         if (matcher.find()) {
@@ -292,8 +299,8 @@ public class OverviewFragment extends BaseFragment {
         }
     }
 
-    @OnClick(R.id.image_navigation)
-    public void onImageNavigationClicked() {
+    @OnClick(R.id.layout_location)
+    public void onLayoutLocationClicked() {
         Pattern pattern = Pattern.compile("\\d+.\\d+");
         Matcher matcher = pattern.matcher(basicInfo.getLocation());
         List<String> locations = new ArrayList<>();
@@ -301,7 +308,7 @@ public class OverviewFragment extends BaseFragment {
             locations.add(matcher.group());
         }
         if (locations.size() == 2) {
-            Intent intent = OpenMapUtil.getMapAppIntent(EDSApplication.getContext(), locations
+            Intent intent = OpenMapHelper.getMapAppIntent(EDSApplication.getContext(), locations
                     .get(0), locations.get(1));
             if (intent == null) {
                 Snackbar.make(collapsingLayout, getString(R.string.overview_map_error), Snackbar
@@ -310,21 +317,5 @@ public class OverviewFragment extends BaseFragment {
                 startActivity(intent);
             }
         }
-    }
-
-    @OnClick(R.id.image_status)
-    public void onImageStatusClicked() {
-        ArrayList<Tag> abnormalDevices = (ArrayList<Tag>) TagsFilter.getAbnormalStateList
-                (basicTagList);
-        if (abnormalDevices.size() != 0) {
-            ListActivity.start(getContext(), getString(R.string.detail_title_error),
-                    abnormalDevices);
-        }
-    }
-
-    @OnClick(R.id.image_device_list)
-    public void onImageDeviceListClicked() {
-        ArrayList<Tag> devices = (ArrayList<Tag>) TagsFilter.getStateList(basicTagList);
-        ListActivity.start(getContext(), getString(R.string.detail_title), devices);
     }
 }

@@ -1,6 +1,5 @@
 package com.xseec.eds.activity;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -18,10 +17,9 @@ import android.widget.TimePicker;
 import com.xseec.eds.R;
 import com.xseec.eds.fragment.DataLogFragment;
 import com.xseec.eds.model.DataLogFactor;
-import com.xseec.eds.model.Tags.StoredTag;
+import com.xseec.eds.model.tags.StoredTag;
 import com.xseec.eds.util.ApiLevelHelper;
 import com.xseec.eds.util.DateHelper;
-import com.xseec.eds.util.EDSApplication;
 
 import java.util.Calendar;
 

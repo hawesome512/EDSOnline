@@ -1,8 +1,7 @@
-package com.xseec.eds.model.Tags;
+package com.xseec.eds.model.tags;
 
 import android.support.annotation.NonNull;
 
-import org.litepal.crud.DataSupport;
 import org.litepal.crud.LitePalSupport;
 
 /**

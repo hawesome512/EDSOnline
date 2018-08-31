@@ -2,6 +2,7 @@
   {
     "Type":"A1",
     "Name":"ACB",
+    "Overview":["State","Ir","IdA","IdB","IdC","TripDH","TripMS","TripYM"],
     "Real":{
       "Current":["Ia","Ib","Ic","In","Igf"],
       "Voltage":["Ua","Ub","Uc"],
@@ -22,11 +23,12 @@
       {"Name":"Ig","Items":[0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1]},
       {"Name":"Tg","Items":[0.1,0.2,0.4,0.8]}
     ],
-    "Control":"FarCtrl"
+    "Control":["State","FarCtrl"]
   },
   {
     "Type":"A2",
     "Name":"ACB",
+    "Overview":["State","Ir","IdA","IdB","IdC","TripDH","TripMS","TripYM"],
     "Real":{
       "Current":["Ia","Ib","Ic","In","Igf"],
       "Voltage":["Ua","Ub","Uc"],
@@ -47,11 +49,12 @@
       {"Name":"Ig","Items":[0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1]},
       {"Name":"Tg","Items":[-0.4,-0.3,-0.2,-0.1,0,0.1,0.2,0.3,0.4]}
     ],
-    "Control":"FarCtrl"
+    "Control":["State","FarCtrl"]
   },
   {
     "Type":"A3",
     "Name":"ACB",
+    "Overview":["State","Ir","IdA","IdB","IdC","TripDH","TripMS","TripYM"],
     "Real":{
       "Current":["Ia","Ib","Ic","In","Igf"],
       "Voltage":["Ua","Ub","Uc","Uab","Ubc","Uca"],
@@ -72,11 +75,12 @@
       {"Name":"Ig","Items":[0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1]},
       {"Name":"Tg","Items":[-0.4,-0.3,-0.2,-0.1,0,0.1,0.2,0.3,0.4]}
     ],
-    "Control":"FarCtrl"
+    "Control":["State","FarCtrl"]
   },
   {
     "Type":"M2",
     "Name":"MCCB",
+    "Overview":["State","IrReal","IdA","IdB","IdC","TripDH","TripMS","TripYM"],
     "Real":{
       "Current":["Ia","Ib","Ic","In","Igf"],
       "Voltage":[],
@@ -97,6 +101,6 @@
       {"Name":"Ig","Items":[0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1]},
       {"Name":"Tg","Items":[0.1,0.2,0.3,0.4]}
     ],
-    "Control":"FarCtrl"
+    "Control":["State","FarCtrl"]
   }
 ]

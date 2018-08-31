@@ -1,9 +1,5 @@
 package com.xseec.eds.adapter;
 
-import android.animation.AnimatorInflater;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -14,11 +10,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.xseec.eds.R;
+import com.xseec.eds.activity.DeviceActivity;
 import com.xseec.eds.model.Device;
 import com.xseec.eds.model.State;
-import com.xseec.eds.model.Tags.Tag;
+import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.util.EDSApplication;
-import com.xseec.eds.util.TagsFilter;
 
 import java.util.List;
 
@@ -49,13 +45,11 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
         Context context= EDSApplication.getContext();
         Tag tag= stateTags.get(position);
         State state=State.getState(tag.getTagValue());
-        String[] info=tag.getTagName().split(":")[0].split("_");
-        Device device=Device.valueOf(info[1]);
-        String deviceName=String.format("%s (%s#%s)",device.getDeviceType(),info[0],info[2]);
+        Device device=Device.initWithTagName(tag.getTagName());;
         String stateText=context.getString(R.string.detail_state,state.getStateText());
         holder.imageDevice.setImageResource(device.getDeviceResId());
         holder.textState.setText(stateText);
-        holder.textName.setText(deviceName);
+        holder.textName.setText(device.getDeviceAlias());
         holder.imageState.setImageResource(state.getStateColorRes());
         state.setUnusualAnimator(holder.imageState);
     }
@@ -71,12 +65,19 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
         private TextView textState;
         private CircleImageView imageState;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(final View itemView) {
             super(itemView);
             imageDevice=itemView.findViewById(R.id.image_device);
             textName=itemView.findViewById(R.id.text_device_name);
             textState=itemView.findViewById(R.id.text_device_state);
             imageState=itemView.findViewById(R.id.image_device_state);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String tagName=stateTags.get(getAdapterPosition()).getTagName();
+                    DeviceActivity.start(itemView.getContext(),tagName);
+                }
+            });
         }
     }
 }

@@ -1,7 +1,8 @@
 package com.xseec.eds.model;
 
+import android.text.TextUtils;
+
 import com.xseec.eds.R;
-import com.xseec.eds.model.Tags.Tag;
 
 /**
  * Created by Administrator on 2018/8/16.
@@ -18,6 +19,7 @@ public enum Device {
     P1("METER",R.drawable.device_meter);
     private String deviceType;
     private int deviceResId;
+    private static String[] infos;
     private Device(String deviceType,int deviceResId){
         this.deviceType=deviceType;
         this.deviceResId=deviceResId;
@@ -29,5 +31,18 @@ public enum Device {
 
     public int getDeviceResId() {
         return deviceResId;
+    }
+
+    public static Device initWithTagName(String tagName){
+        infos=tagName.split(":")[0].split("_");
+        return valueOf(infos[1]);
+    }
+    
+    public String getDeviceName(){
+        return TextUtils.join("_",infos);
+    }
+
+    public String getDeviceAlias(){
+        return String.format("%s (%s#%s)",deviceType,infos[0],infos[2]);
     }
 }

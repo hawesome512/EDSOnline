@@ -6,8 +6,9 @@ import android.os.Binder;
 import android.os.IBinder;
 
 import com.xseec.eds.model.ComListener;
-import com.xseec.eds.model.Tags.Tag;
+import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.model.WAComTask;
+import com.xseec.eds.model.WAServicer;
 
 import java.util.List;
 
@@ -29,8 +30,9 @@ public class ComService extends Service {
 
     public class ComBinder extends Binder{
 
-        public void startCom(ComListener comListener, List<Tag> tagList,String authority){
+        public void startCom(ComListener comListener, List<Tag> tagList){
             comTask=new WAComTask(comListener,tagList);
+            String authority= WAServicer.getUser().getAuthority();
             comTask.execute(authority);
         }
 

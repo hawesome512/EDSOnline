@@ -1,11 +1,9 @@
-package com.xseec.eds.model.Tags;
+package com.xseec.eds.model.tags;
 
 import android.content.Context;
 
 import com.xseec.eds.R;
 import com.xseec.eds.util.EDSApplication;
-
-import java.util.Date;
 
 /**
  * Created by Administrator on 2018/7/10.

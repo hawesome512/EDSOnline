@@ -7,7 +7,7 @@
     android:layout_marginTop="@dimen/view_margin_small"
     android:orientation="vertical">
 
-    <LinearLayout style="@style/LinearLayoutHorBasicItem">
+    <LinearLayout android:id="@+id/layout_status" style="@style/LinearLayoutHorBasicItem">
 
         <ImageView
             style="@style/ImageBasicItem"
@@ -31,7 +31,7 @@
 
     <View style="@style/DividerLine" />
 
-    <LinearLayout style="@style/LinearLayoutHorBasicItem">
+    <LinearLayout android:id="@+id/layout_device" style="@style/LinearLayoutHorBasicItem">
 
         <ImageView
             style="@style/ImageBasicItem"
@@ -55,7 +55,7 @@
 
     <View style="@style/DividerLine" />
 
-    <LinearLayout style="@style/LinearLayoutHorBasicItem">
+    <LinearLayout android:id="@+id/layout_grid" style="@style/LinearLayoutHorBasicItem">
 
         <ImageView
             style="@style/ImageBasicItem"
@@ -73,7 +73,7 @@
 
     <View style="@style/DividerLine" />
 
-    <LinearLayout style="@style/LinearLayoutHorBasicItem">
+    <LinearLayout android:id="@+id/layout_engineer" style="@style/LinearLayoutHorBasicItem">
 
         <ImageView
             style="@style/ImageBasicItem"
@@ -100,7 +100,7 @@
 
     <View style="@style/DividerLine" />
 
-    <LinearLayout style="@style/LinearLayoutHorBasicItem">
+    <LinearLayout android:id="@+id/layout_location" style="@style/LinearLayoutHorBasicItem">
 
         <ImageView
             style="@style/ImageBasicItem"

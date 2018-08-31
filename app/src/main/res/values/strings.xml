@@ -104,6 +104,22 @@
     <string name="device_record">运行记录</string>
     <string name="device_peak">电流峰值</string>
     <string name="device_trip">脱扣故障</string>
+    <string name="device_demand">需量%%Ir(Ir=%1$sA)</string>
+    <string name="device_trip_time">%1$s-%2$s-%3$s %4$s:%5$s:%6$s</string>
+    <string name="device_current">电流</string>
+    <string name="device_voltage">电压</string>
+    <string name="device_grid">电网</string>
+    <string name="device_power">功率</string>
+    <string name="device_energy">电能</string>
+    <string name="device_long">过载保护</string>
+    <string name="device_short">短路保护</string>
+    <string name="device_instant">瞬时保护</string>
+    <string name="device_ground">接地保护</string>
+    <string name="device_on">ON</string>
+    <string name="device_off">OFF</string>
+
+    <!--TransitionName-->
+    <string name="trans_image_device">image_device</string>
 
     <!--WAService URL-->
     <string name="was_login">http://%1$s/WaWebService/Json/GetUserInfo/%2$s</string>

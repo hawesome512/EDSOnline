@@ -1,7 +1,6 @@
-package com.xseec.eds.model.Tags;
+package com.xseec.eds.model.tags;
 
 import android.content.Context;
-import android.os.Parcelable;
 
 import com.xseec.eds.R;
 import com.xseec.eds.util.EDSApplication;

@@ -4,7 +4,7 @@
     <data>
         <variable
             name="tag"
-            type="com.xseec.eds.model.Tags.Tag" />
+            type="com.xseec.eds.model.tags.Tag" />
     </data>
 
     <LinearLayout xmlns:tools="http://schemas.android.com/tools"
@@ -20,7 +20,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="@dimen/view_margin_tiny"
-                android:text="@{tag.tagName}" />
+                android:text="@{tag.tagAlias}" />
 
             <TextView
                 android:id="@+id/text_value"
@@ -28,7 +28,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="@dimen/view_margin_tiny"
                 android:gravity="right"
-                android:text="@{tag.tagValue}" />
+                android:text="@{tag.tagValue}"
+                android:textColor="@color/colorPrimaryText"/>
         </LinearLayout>
 
         <View style="@style/DividerLine"

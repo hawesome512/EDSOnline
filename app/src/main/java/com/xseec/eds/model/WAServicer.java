@@ -7,6 +7,7 @@ import android.preference.PreferenceManager;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.xseec.eds.R;
+import com.xseec.eds.model.deviceconfig.DeviceConfig;
 import com.xseec.eds.util.EDSApplication;
 import com.xseec.eds.util.IOHelper;
 

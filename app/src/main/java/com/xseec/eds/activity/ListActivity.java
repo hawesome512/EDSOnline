@@ -3,14 +3,13 @@ package com.xseec.eds.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
 import com.xseec.eds.R;
 import com.xseec.eds.adapter.DeviceAdapter;
-import com.xseec.eds.model.Tags.Tag;
+import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.util.ViewHelper;
 
 import java.util.ArrayList;

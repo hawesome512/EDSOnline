@@ -6,7 +6,7 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 
 import com.squareup.okhttp.Response;
-import com.xseec.eds.model.Tags.Tag;
+import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.util.EDSApplication;
 import com.xseec.eds.util.WAJsonHelper;
 import com.xseec.eds.util.WAServiceHelper;
@@ -47,7 +47,7 @@ public class WAComTask extends AsyncTask<String, Void, Boolean> {
         String authority = strings[0];
         while (!isCanceled) {
             try {
-                Response response = WAServiceHelper.getValueRequest(authority, tagList);
+                Response response = WAServiceHelper.getValueRequest(tagList);
                 List<Tag> validTagList = WAJsonHelper.refreshTagValue(response);
                 comListener.onRefreshed(validTagList);
                 Thread.sleep(1000 * interval);

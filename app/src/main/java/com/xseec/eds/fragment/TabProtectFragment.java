@@ -1,6 +1,13 @@
 package com.xseec.eds.fragment;
 
+import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.v4.app.Fragment;
 import android.view.View;
+
+import com.xseec.eds.R;
+import com.xseec.eds.model.deviceconfig.Protect;
+import com.xseec.eds.model.tags.Tag;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,26 +20,30 @@ import java.util.List;
 
 public class TabProtectFragment extends TabBaseFragment {
 
-    private List<String> longList,shortList,instantList,groundList;
-
-    private void initItems(){
-        longList=Arrays.asList("Ir","Tr");
-        shortList=Arrays.asList("Isd","Tsd");
-        instantList=Arrays.asList("Ii");
-        groundList=Arrays.asList("Ig","Tg");
+    private static final String KEY_PROTECTS="protects";
+    public static Fragment newInstance(String deviceName,List<Protect> protectList){
+        Fragment fragment=new TabProtectFragment();
+        List<Tag> tags=new ArrayList<>();
+        for(Protect protect:protectList){
+            tags.add(new Tag(deviceName+":"+protect.getName()));
+        }
+        Bundle bundle=getBundle(tags);
+        bundle.putParcelableArrayList(KEY_PROTECTS, (ArrayList<? extends Parcelable>) protectList);
+        fragment.setArguments(getBundle(tags));
+        return fragment;
     }
 
     @Override
     protected void initLayout() {
-        initItems();
-        addCard("过载保护",longList);
-        addCard("短路保护",shortList);
-        addCard("瞬时保护",instantList);
-        addCard("接地保护",groundList);
+        addCard(getString(R.string.device_long), Arrays.asList("Ir","Tr"));
+        addCard(getString(R.string.device_short), Arrays.asList("Isd","Tsd"));
+        addCard(getString(R.string.device_instant), Arrays.asList("Ii"));
+        addCard(getString(R.string.device_ground), Arrays.asList("Ig","Tg"));
     }
 
     @Override
     public void onClick(View v) {
 
     }
+
 }

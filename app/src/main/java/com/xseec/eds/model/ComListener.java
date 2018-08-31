@@ -1,6 +1,6 @@
 package com.xseec.eds.model;
 
-import com.xseec.eds.model.Tags.Tag;
+import com.xseec.eds.model.tags.Tag;
 
 import java.util.List;
 

@@ -21,8 +21,7 @@ import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import com.xseec.eds.R;
-import com.xseec.eds.model.Tags.Tag;
-import com.xseec.eds.model.WAServicer;
+import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.util.Generator;
 import com.xseec.eds.util.TagsFilter;
 import com.xseec.eds.util.ViewHelper;
@@ -110,7 +109,7 @@ public class HorBarChartFragment extends BaseFragment {
 
     private void setData() {
         progress.setVisibility(View.VISIBLE);
-        WAServiceHelper.sendGetValueRequest(WAServicer.getUser().getAuthority(), tagList, new
+        WAServiceHelper.sendGetValueRequest(tagList, new
                 Callback() {
 
                     @Override

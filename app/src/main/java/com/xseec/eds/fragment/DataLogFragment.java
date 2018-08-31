@@ -31,9 +31,7 @@ import com.squareup.okhttp.Response;
 import com.xseec.eds.R;
 import com.xseec.eds.activity.DataLogSettingActivity;
 import com.xseec.eds.model.DataLogFactor;
-import com.xseec.eds.model.Tags.StoredTag;
-import com.xseec.eds.model.User;
-import com.xseec.eds.model.WAServicer;
+import com.xseec.eds.model.tags.StoredTag;
 import com.xseec.eds.util.ApiLevelHelper;
 import com.xseec.eds.util.DateHelper;
 import com.xseec.eds.util.Generator;
@@ -77,7 +75,6 @@ public class DataLogFragment extends BaseFragment {
     @InjectView(R.id.text_item_last)
     TextView textItemLast;
 
-    private User user;
     private StoredTag.IntervalType defaultIntervalType;
     private List<StoredTag> storedTagList;
     private DataLogFactor defaultFactor;
@@ -127,12 +124,7 @@ public class DataLogFragment extends BaseFragment {
         int typeOrdinal = getArguments().getInt(ARG_INTERVAL_TYPE);
         defaultIntervalType = StoredTag.IntervalType.values()[typeOrdinal];
         initFactor();
-        user = WAServicer.getUser();
-        if (user != null) {
-            initChart();
-        } else {
-            //直接返回
-        }
+        initChart();
     }
 
     private void initFactor() {
@@ -199,7 +191,7 @@ public class DataLogFragment extends BaseFragment {
             tag.setDataType(defaultFactor.getDataType());
         }
 
-        WAServiceHelper.sendTagLogRequest(user.getAuthority(), defaultFactor.getStartTimeString(),
+        WAServiceHelper.sendTagLogRequest(defaultFactor.getStartTimeString(),
                 defaultFactor.getIntervalType(), defaultFactor.getInterval(), defaultFactor
                         .getRecords(), storedTagList, new Callback() {
 

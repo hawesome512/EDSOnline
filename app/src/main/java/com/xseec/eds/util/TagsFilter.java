@@ -1,15 +1,24 @@
 package com.xseec.eds.util;
 
-import com.xseec.eds.model.Device;
 import com.xseec.eds.model.State;
-import com.xseec.eds.model.Tags.OverviewTag;
-import com.xseec.eds.model.Tags.Tag;
+import com.xseec.eds.model.tags.OverviewTag;
+import com.xseec.eds.model.tags.Tag;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Administrator on 2018/7/12.
+ * allTagList:工程所有点列表
+ * filterTagList:模糊匹配，包含filter的点列表
+ * filterDeviceTagList：精准匹配，在Device中查点列表
+ * getBasicTagList：所有基本点
+ * getStateList：所有State点
+ * getAbnormalStateList:所有异常State点
+ * getDeviceList：筛选出设备列表
+ * getDeviceCount：计算设备数量
+ * refreshOverviewTagsByTags：更新OverviewTags
+ * getStateByTagList：获取工程状态
  */
 
 public class TagsFilter {
@@ -27,28 +36,32 @@ public class TagsFilter {
         TagsFilter.allTagList = allTagList;
     }
 
-    public static List<Tag> filterTagList(List<Tag> source, String filter) {
-        if(source==null){
-            source=allTagList;
+    public static List<Tag> filterTagList(List<Tag> source, String... filters) {
+        if (source == null) {
+            source = allTagList;
         }
         List<Tag> target = new ArrayList<>();
-        for (int i = 0; i < source.size(); i++) {
-            Tag tag = source.get(i);
-            if (tag.getTagName().contains(filter)) {
-                target.add(tag);
+        //此处嵌套顺序重要：保证返回List按filters匹配顺序进行
+        for (String filter : filters) {
+            for (Tag tag : source) {
+                if (tag.getTagName().contains(filter)) {
+                    target.add(tag);
+                }
             }
         }
         return target;
     }
 
-    public static List<Tag> filterDeviceTagList(List<Tag> source,List<String> filters){
-        List<Tag> target=new ArrayList<>();
-        for(String filter:filters){
-            for(Tag tag:source){
-                String[] tmps=tag.getTagName().split(":");
-                if(tmps.length==2&&tmps[1].equals(filter)){
-                    target.add(tag);
-                    break;
+    public static List<Tag> filterDeviceTagList(List<Tag> source, String... filters) {
+        List<Tag> target = new ArrayList<>();
+        if (source != null) {
+            //此处嵌套顺序重要：保证返回List按filters匹配顺序进行
+            //使用equals精准匹配
+            for (String filter : filters) {
+                for (Tag tag : source) {
+                    if (tag.getTagName().split(":")[1].equals(filter)) {
+                        target.add(tag);
+                    }
                 }
             }
         }

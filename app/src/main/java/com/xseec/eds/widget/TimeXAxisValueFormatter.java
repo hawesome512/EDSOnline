@@ -1,17 +1,14 @@
 package com.xseec.eds.widget;
 
-import android.util.Log;
-
 import com.github.mikephil.charting.charts.BarLineChartBase;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.xseec.eds.model.DataLogFactor;
-import com.xseec.eds.model.Tags.StoredTag;
+import com.xseec.eds.model.tags.StoredTag;
 import com.xseec.eds.util.DateHelper;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /**

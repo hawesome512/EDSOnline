@@ -3,7 +3,7 @@ package com.xseec.eds.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.xseec.eds.model.Tags.StoredTag;
+import com.xseec.eds.model.tags.StoredTag;
 import com.xseec.eds.util.DateHelper;
 
 import java.util.Calendar;
