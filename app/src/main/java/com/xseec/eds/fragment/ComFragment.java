@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 
 import com.xseec.eds.model.ComListener;
 import com.xseec.eds.model.tags.Tag;
@@ -89,7 +90,7 @@ public abstract class ComFragment extends Fragment implements ComListener {
 
     protected void onBindService() {
         //DeviceActivity在Resume中触发，context可能为null
-        if (getContext() != null) {
+        if (getContext() != null&&binded==false) {
             Intent intent = new Intent(getContext(), ComService.class);
             getActivity().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
             binded = true;

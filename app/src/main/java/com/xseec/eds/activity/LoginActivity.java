@@ -17,9 +17,9 @@ import android.widget.TextView;
 
 import com.xseec.eds.R;
 import com.xseec.eds.model.BasicInfo;
-import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.model.User;
 import com.xseec.eds.model.WAServicer;
+import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.util.CodeHelper;
 import com.xseec.eds.util.TagsFilter;
 import com.xseec.eds.util.WAJsonHelper;

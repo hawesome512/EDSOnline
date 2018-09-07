@@ -8,6 +8,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 import com.xseec.eds.R;
 import com.xseec.eds.util.EDSApplication;
+import com.xseec.eds.util.ViewHelper;
 
 /**
  * Created by Administrator on 2018/7/10.
@@ -57,6 +58,12 @@ public class Tag extends BaseObservable implements Parcelable {
     }
 
     public String getTagAlias() {
+        String alias= getTagShortName();
+        String value=ViewHelper.getStringByName("tag_"+alias);
+        return value!=null?value:alias;
+    }
+
+    public String getTagShortName(){
         return tagName.split(":")[1];
     }
 

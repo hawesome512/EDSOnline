@@ -1,6 +1,8 @@
 package com.xseec.eds.util;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -29,5 +31,24 @@ public class ViewHelper {
         Context context = EDSApplication.getContext();
         return context.getResources().getConfiguration().orientation == Configuration
                 .ORIENTATION_PORTRAIT;
+    }
+
+    public static void lockOrientation(Activity activity){
+        int orientation=activity.getResources().getConfiguration().orientation;
+        if(orientation==Configuration.ORIENTATION_PORTRAIT){
+            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+        }else {
+            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+        }
+    }
+
+    public static String getStringByName(String name){
+        Context context=EDSApplication.getContext();
+        int resId=context.getResources().getIdentifier(name,"string",context.getPackageName());
+        if(resId!=0){
+            return context.getString(resId);
+        }else {
+            return null;
+        }
     }
 }

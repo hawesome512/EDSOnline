@@ -106,8 +106,8 @@
     <string name="device_trip">脱扣故障</string>
     <string name="device_demand">需量%%Ir(Ir=%1$sA)</string>
     <string name="device_trip_time">%1$s-%2$s-%3$s %4$s:%5$s:%6$s</string>
-    <string name="device_current">电流</string>
-    <string name="device_voltage">电压</string>
+    <string name="device_current">电流(A)</string>
+    <string name="device_voltage">电压(V)</string>
     <string name="device_grid">电网</string>
     <string name="device_power">功率</string>
     <string name="device_energy">电能</string>
@@ -117,6 +117,39 @@
     <string name="device_ground">接地保护</string>
     <string name="device_on">ON</string>
     <string name="device_off">OFF</string>
+    <string name="device_protect_off">关闭</string>
+
+    <!--Tag Alias-->
+    <string name="tag_In">N相</string>
+    <string name="tag_Igf">接地</string>
+    <string name="tag_Iavg">相电流平均值(A)</string>
+    <string name="tag_Ip">电流最大不平衡(%)</string>
+    <string name="tag_Uavg">相电压平均值(V)</string>
+    <string name="tag_Up">电压最大不平衡(%)</string>
+    <string name="tag_T">温度(℃)</string>
+    <string name="tag_F">频率(Hz)</string>
+    <string name="tag_Phase">相序</string>
+    <string name="tag_Phase_0">逆序(A-C-B)</string>
+    <string name="tag_Phase_1">正序(A-B-C)</string>
+    <string name="tag_Phase_2">断相</string>
+    <string name="tag_P">有功(kW)</string>
+    <string name="tag_Q">无功(kVar)</string>
+    <string name="tag_S">视在(kVA)</string>
+    <string name="tag_COS">功率因素</string>
+    <string name="tag_EP">有功(kW·h)</string>
+    <string name="tag_EQ">无功(kVar·h)</string>
+    <string name="tag_ES">视在(kVA·h)</string>
+    <string name="tag_EPin">有功输入(kW·h)</string>
+    <string name="tag_EQin">无功输入(kVar·h)</string>
+    <string name="tag_EPout">有功输出(kW·h)</string>
+    <string name="tag_EQout">无功输出(kVar·h)</string>
+    <string name="tag_Ir">Ir(A)</string>
+    <string name="tag_Tr">Tr(s)</string>
+    <string name="tag_Isd">Isd(A)</string>
+    <string name="tag_Tsd">Tsd(s)</string>
+    <string name="tag_Ii">Ii(A)</string>
+    <string name="tag_Ig">Ig(A)</string>
+    <string name="tag_Tg">Tg(s)</string>
 
     <!--TransitionName-->
     <string name="trans_image_device">image_device</string>

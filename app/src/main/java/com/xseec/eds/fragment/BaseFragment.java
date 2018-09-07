@@ -10,11 +10,11 @@ import com.squareup.okhttp.Response;
 
 public abstract class BaseFragment extends Fragment {
 
-    protected boolean refreshViewsInThread(final Response response){
+    protected boolean refreshViewsInThread(final Response response) {
         //横竖屏切换时，可能造成getActivity==null
-        if(getActivity()==null){
+        if (getActivity() == null) {
             return false;
-        }else {
+        } else {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {

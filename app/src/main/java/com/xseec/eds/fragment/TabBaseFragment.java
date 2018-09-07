@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.xseec.eds.R;
 import com.xseec.eds.databinding.ItemCardSubBinding;
+import com.xseec.eds.model.TagListener;
 import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.util.TagsFilter;
 
@@ -25,7 +26,7 @@ import butterknife.InjectView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public abstract class TabBaseFragment extends ComFragment implements View.OnClickListener {
+public abstract class TabBaseFragment extends ComFragment implements TagListener {
 
     @InjectView(R.id.layout_container)
     LinearLayout layoutContainer;
@@ -53,19 +54,20 @@ public abstract class TabBaseFragment extends ComFragment implements View.OnClic
         super.onResume();
     }
 
-    protected void addCard(String title, List<String> items) {
+    protected View addCard(String title, List<String> items) {
         CardView cardView = (CardView) getLayoutInflater().inflate(R.layout.item_card,
                 layoutContainer, false);
         LinearLayout layout = getLinearLayout(LinearLayout.VERTICAL);
         addTitle(layout, title);
-        for (String item : items) {
-            List<Tag> tags = TagsFilter.filterDeviceTagList(tagList, item);
+        for (int i = 0; i < items.size(); i++) {
+            List<Tag> tags = TagsFilter.filterDeviceTagList(tagList, items.get(i));
             if (tags != null && tags.size() > 0) {
-                addSubItem(layout, tags.get(0));
+                addSubItem(layout, tags.get(0), i == items.size() - 1);
             }
         }
         cardView.addView(layout);
         layoutContainer.addView(cardView);
+        return cardView;
     }
 
     protected LinearLayout getLinearLayout(int orientation) {
@@ -84,8 +86,17 @@ public abstract class TabBaseFragment extends ComFragment implements View.OnClic
         parent.addView(textView);
     }
 
-    protected void addSubItem(ViewGroup parent, Tag tag) {
+    protected void addSubItem(ViewGroup parent, final Tag tag, boolean last) {
         View view = getLayoutInflater().inflate(R.layout.item_card_sub, parent, false);
+        if (last) {
+            view.findViewById(R.id.view_divider).setVisibility(View.GONE);
+        }
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onTagClick(tag);
+            }
+        });
         ItemCardSubBinding binding = DataBindingUtil.bind(view);
         binding.setTag(tag);
         parent.addView(view);
@@ -106,8 +117,5 @@ public abstract class TabBaseFragment extends ComFragment implements View.OnClic
                 progress.setVisibility(View.GONE);
             }
         });
-        for (int i = 0; i < validTagList.size(); i++) {
-            tagList.get(i).setTagValue(validTagList.get(i).getTagValue());
-        }
     }
 }

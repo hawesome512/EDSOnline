@@ -7,6 +7,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -20,8 +21,10 @@ import com.xseec.eds.fragment.TabProtectFragment;
 import com.xseec.eds.model.Device;
 import com.xseec.eds.model.deviceconfig.DeviceConfig;
 import com.xseec.eds.model.WAServicer;
+import com.xseec.eds.model.deviceconfig.Protect;
 import com.xseec.eds.util.ViewHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -54,6 +57,9 @@ public class DeviceActivity extends BaseActivity implements ViewPager.OnPageChan
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device);
         ButterKnife.inject(this);
+        //ComService在设备页面因旋转屏幕重新生成，造成service与fragment不匹配问题，不能更新数据
+        //故，在设备页面锁定屏幕方向
+        ViewHelper.lockOrientation(this);
         String tagName = getIntent().getStringExtra(KEY_DEVICE_NAME);
         Device device = Device.initWithTagName(tagName);
         DeviceConfig deviceConfig = getDeviceConfig(device);
@@ -62,9 +68,12 @@ public class DeviceActivity extends BaseActivity implements ViewPager.OnPageChan
         fragmentList = new Fragment[4];
         fragmentList[0] = (TabOerviewFragment.newInstance(device.getDeviceName(), deviceConfig
                 .getOverviewZone()));
-        fragmentList[1] = (TabMonitorFragment.newInstance(device.getDeviceName(),deviceConfig.getRealZone()));
-        fragmentList[2] = (TabProtectFragment.newInstance(device.getDeviceName(),deviceConfig.getProtectZone()));
-        fragmentList[3] = (TabControlFragment.newInstance(device.getDeviceName(),deviceConfig.getFarControl()));
+        fragmentList[1] = (TabMonitorFragment.newInstance(device.getDeviceName(),
+                deviceConfig.getRealZone()));
+        fragmentList[2] = (TabProtectFragment.newInstance(device.getDeviceName(),
+                deviceConfig.getProtectZone()));
+        fragmentList[3] = (TabControlFragment.newInstance(device.getDeviceName(),
+                deviceConfig.getFarControl()));
         viewPager.addOnPageChangeListener(this);
         viewPager.setAdapter(new MyFragmentPagerApdater(getSupportFragmentManager(), fragmentList));
         ViewHelper.initToolbar(this, toolbar, ViewHelper.DEFAULT_HOME_RES);
@@ -91,8 +100,8 @@ public class DeviceActivity extends BaseActivity implements ViewPager.OnPageChan
     @Override
     protected void onResume() {
         super.onResume();
-        int index=viewPager.getCurrentItem();
-        fragmentList[index].setUserVisibleHint(true);
+        //恢复可视状态，恢复ComService
+        onPageSelected(viewPager.getCurrentItem());
     }
 
     @Override
@@ -115,4 +124,6 @@ public class DeviceActivity extends BaseActivity implements ViewPager.OnPageChan
     public void onPageScrollStateChanged(int state) {
 
     }
+
+
 }

@@ -265,7 +265,7 @@ public class DataLogFragment extends BaseFragment {
         List<String> value = values[0];
         progressDataLog.setVisibility(View.GONE);
         LineData lineData = new LineData();
-        String legenName = storedTagList.get(0).getTagName();
+        String legenName = storedTagList.get(0).getTagAlias();
 
         //暂时方案,模拟值
         LineDataSet lineDataSet1 = null;

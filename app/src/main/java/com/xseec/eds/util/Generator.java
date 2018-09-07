@@ -5,6 +5,7 @@ import android.content.Context;
 import com.github.mikephil.charting.data.Entry;
 import com.xseec.eds.R;
 import com.xseec.eds.model.tags.OverviewTag;
+import com.xseec.eds.model.tags.Tag;
 
 import org.litepal.LitePal;
 
@@ -114,6 +115,30 @@ public class Generator {
         } catch (Exception exp) {
             return 0;
         }
+    }
+
+    public static boolean checkProtectState(String switchValue,List<String> items,String item){
+        int value= (int) floatTryParse(switchValue);
+        int index=items.indexOf(item);
+        return (value&(int)Math.pow(2,index))==0;
+    }
+
+    public static float getAvgTagsValue(List<Tag> tagList){
+        float sum=0;
+        for(Tag tag:tagList){
+            sum+=floatTryParse(tag.getTagValue());
+        }
+        return Math.round(sum/tagList.size());
+    }
+
+    public static float getMaxDeltaTagsValue(List<Tag> tagList){
+        float avg=getAvgTagsValue(tagList);
+        float max=0;
+        for(Tag tag:tagList){
+            float tmp=Math.abs(floatTryParse(tag.getTagValue())-avg)/avg*100;
+            max=tmp>max?tmp:max;
+        }
+        return Math.round(max*10)/10f;
     }
 
     public static List<String> genYesTodayEntryList(Calendar startTime) {
