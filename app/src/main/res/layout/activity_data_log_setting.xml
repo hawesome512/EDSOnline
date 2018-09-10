@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:focusableInTouchMode="true"
+        android:clickable="true"
         android:paddingHorizontal="@dimen/view_padding_normal"
         android:paddingTop="@dimen/view_padding_normal"
         android:background="@color/colorWhite"

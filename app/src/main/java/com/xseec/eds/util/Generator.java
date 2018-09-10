@@ -101,9 +101,9 @@ public class Generator {
         return Math.round(tmp / entryList.size() * 100) / 100f;
     }
 
-    public static float getSumFromEntryList(List<Entry> entryList,int limitSize){
+    public static float getSumFromEntryList(List<Entry> entryList, int limitSize) {
         float tmp = 0;
-        for (int i=0;i<limitSize;i++) {
+        for (int i = 0; i < limitSize; i++) {
             tmp += entryList.get(i).getY();
         }
         return tmp;
@@ -117,36 +117,48 @@ public class Generator {
         }
     }
 
-    public static boolean checkProtectState(String switchValue,List<String> items,String item){
-        int value= (int) floatTryParse(switchValue);
-        int index=items.indexOf(item);
-        return (value&(int)Math.pow(2,index))==0;
+    public static boolean checkProtectState(String switchValue, List<String> items, String item) {
+        int value = (int) floatTryParse(switchValue);
+        int index = items.indexOf(item);
+        return (value & (int) Math.pow(2, index)) == 0;
     }
 
-    public static float getAvgTagsValue(List<Tag> tagList){
-        float sum=0;
-        for(Tag tag:tagList){
-            sum+=floatTryParse(tag.getTagValue());
+    public static int setProtectState(String switchValue, List<String> items, String item,
+            boolean switchOn) {
+        int value = (int) floatTryParse(switchValue);
+        int index = items.indexOf(item);
+        if (index == -1) {
+            return value;
+        } else {
+            return switchOn ? (value | (int) (Math.pow(2, index))) : (value & (int) (Math.pow(2,
+                    16) - 1 - Math.pow(2, index)));
         }
-        return Math.round(sum/tagList.size());
     }
 
-    public static float getMaxDeltaTagsValue(List<Tag> tagList){
-        float avg=getAvgTagsValue(tagList);
-        float max=0;
-        for(Tag tag:tagList){
-            float tmp=Math.abs(floatTryParse(tag.getTagValue())-avg)/avg*100;
-            max=tmp>max?tmp:max;
+    public static float getAvgTagsValue(List<Tag> tagList) {
+        float sum = 0;
+        for (Tag tag : tagList) {
+            sum += floatTryParse(tag.getTagValue());
         }
-        return Math.round(max*10)/10f;
+        return Math.round(sum / tagList.size());
+    }
+
+    public static float getMaxDeltaTagsValue(List<Tag> tagList) {
+        float avg = getAvgTagsValue(tagList);
+        float max = 0;
+        for (Tag tag : tagList) {
+            float tmp = Math.abs(floatTryParse(tag.getTagValue()) - avg) / avg * 100;
+            max = tmp > max ? tmp : max;
+        }
+        return Math.round(max * 10) / 10f;
     }
 
     public static List<String> genYesTodayEntryList(Calendar startTime) {
         Random random = new Random();
-        Calendar now=Calendar.getInstance();
-        Calendar target= (Calendar) startTime.clone();
+        Calendar now = Calendar.getInstance();
+        Calendar target = (Calendar) startTime.clone();
         List<String> values = new ArrayList<>();
-        for (int i = 0; i < 48&&target.before(now); i++) {
+        for (int i = 0; i < 48 && target.before(now); i++) {
             int hour = target.get(Calendar.HOUR_OF_DAY);
             int value;
             if (hour >= 8 && hour <= 20) {
@@ -155,7 +167,7 @@ public class Generator {
                 value = (80 + random.nextInt(40));
             }
             values.add(String.valueOf(value));
-            target.add(Calendar.HOUR,1);
+            target.add(Calendar.HOUR, 1);
         }
         return values;
     }

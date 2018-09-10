@@ -20,7 +20,7 @@
                 android:id="@+id/text_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/view_margin_tiny"
+                android:layout_marginVertical="@dimen/view_margin_small"
                 android:textColor="@color/colorPrimary"
                 android:text="@{tag.tagAlias}" />
 
@@ -28,7 +28,7 @@
                 android:id="@+id/text_value"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginVertical="@dimen/view_margin_tiny"
+                android:layout_marginVertical="@dimen/view_margin_small"
                 android:gravity="right"
                 android:text="@{tag.tagValue}"
                 android:textColor="@color/colorPrimaryText" />

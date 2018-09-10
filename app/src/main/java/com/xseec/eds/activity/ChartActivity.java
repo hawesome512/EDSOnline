@@ -51,11 +51,4 @@ public class ChartActivity extends BaseActivity {
                 fragment).commit();
     }
 
-    //在Activity中重写onActivityResult方法触发Fragment
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
-            fragment.onActivityResult(requestCode, resultCode, data);
-        }
-    }
 }

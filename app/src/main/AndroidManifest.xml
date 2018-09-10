@@ -47,7 +47,12 @@
         <activity
             android:name=".activity.DeviceActivity"
             android:label="@string/title_activity_device"
-            android:theme="@style/TransStatusBarTheme"></activity>
+            android:theme="@style/TransStatusBarTheme" />
+        <activity
+            android:name=".activity.ProtectSettingActivity"
+            android:label="@string/title_activity_protect_setting"
+            android:theme="@style/DialogActivity">
+        </activity>
     </application>
 
 </manifest>

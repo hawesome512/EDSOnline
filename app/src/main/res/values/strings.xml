@@ -118,6 +118,9 @@
     <string name="device_on">ON</string>
     <string name="device_off">OFF</string>
     <string name="device_protect_off">关闭</string>
+    <string name="device_modify">修改</string>
+    <string name="device_modify_success">修改成功，等待刷新</string>
+    <string name="device_modify_fail">修改失败，请重试</string>
 
     <!--Tag Alias-->
     <string name="tag_In">N相</string>
@@ -187,4 +190,5 @@
     <string name="title_activity_data_log_setting">DataLogSettingActivity</string>
     <string name="title_activity_list">ListActivity</string>
     <string name="title_activity_device">DeviceActivity</string>
+    <string name="title_activity_protect_setting">ProtectSettingActivity</string>
 </resources>
