@@ -34,10 +34,19 @@ public class TabProtectFragment extends TabBaseFragment {
 
     private static final String KEY_PROTECTS = "protects";
     public static final String RESULT_TAG = "tag";
-    private static final int REQUEST_MODIFY = 1;
+    private static final int REQUEST_MODIFY = 2;
+    private static final String NAME_IR = "Ir";
+    private static final String NAME_TR = "Tr";
+    private static final String NAME_ISD = "Isd";
+    private static final String NAME_TSD = "Tsd";
+    private static final String NAME_II = "Ii";
+    private static final String NAME_IG = "Ig";
+    private static final String NAME_TG = "Tg";
+    private static final String NAME_SWITCH = "Switch";
 
     private List<Protect> protectList;
     private String strSwitchOff;
+    private Tag modifyTag;
 
     public static Fragment newInstance(String deviceName, List<Protect> protectList) {
         Fragment fragment = new TabProtectFragment();
@@ -55,32 +64,32 @@ public class TabProtectFragment extends TabBaseFragment {
     protected void initLayout() {
         protectList = getArguments().getParcelableArrayList(KEY_PROTECTS);
         strSwitchOff = getString(R.string.device_protect_off);
-        addCard(getString(R.string.device_long), Arrays.asList("Ir", "Tr"));
-        addCard(getString(R.string.device_short), Arrays.asList("Isd", "Tsd"));
-        addCard(getString(R.string.device_instant), Arrays.asList("Ii"));
-        addCard(getString(R.string.device_ground), Arrays.asList("Ig", "Tg"));
+        addCard(getString(R.string.device_long), Arrays.asList(NAME_IR, NAME_TR));
+        addCard(getString(R.string.device_short), Arrays.asList(NAME_ISD, NAME_TSD));
+        addCard(getString(R.string.device_instant), Arrays.asList(NAME_II));
+        addCard(getString(R.string.device_ground), Arrays.asList(NAME_IG, NAME_TG));
     }
 
     @Override
     public void onRefreshed(List<Tag> validTagList) {
         super.onRefreshed(validTagList);
-        List<Tag> switchTags = TagsFilter.filterDeviceTagList(validTagList, "Switch");
+        List<Tag> switchTags = TagsFilter.filterDeviceTagList(validTagList, NAME_SWITCH);
         String switchValue = switchTags.get(0).getTagValue();
-        List<String> switchItems = getProtect("Switch").getItems();
+        List<String> switchItems = getProtect(NAME_SWITCH).getItems();
         for (int i = 0; i < validTagList.size(); i++) {
             String value = "";
             Tag tag = validTagList.get(i);
             boolean isOff;
             String alias = tag.getTagShortName();
             switch (alias) {
-                case "Isd":
-                case "Ii":
-                case "Ig":
+                case NAME_ISD:
+                case NAME_II:
+                case NAME_IG:
                     isOff = Generator.checkProtectState(switchValue, switchItems, alias);
                     value = isOff ? strSwitchOff : tag.getTagValue();
                     break;
-                case "Tsd":
-                case "Tg":
+                case NAME_TSD:
+                case NAME_TG:
                     isOff = Generator.checkProtectState(switchValue, switchItems, alias);
                     value += (isOff ? Protect.I2T_OFF : Protect.I2T_ON) + tag.getTagValue();
                     break;
@@ -111,63 +120,92 @@ public class TabProtectFragment extends TabBaseFragment {
 
     @Override
     public void onTagClick(Tag tag) {
-        Protect protect = getProtect(tag.getTagShortName());
-        //因对tag.value的修改会直接反馈于界面，故传递副本
-        String tv = tag.getTagValue();
-        Tag target = new Tag(tag.getTagName(), tv);
-        if (!tv.equals(strSwitchOff)) {
-            float factor = getFactor(protect.getUnit());
-            if (factor != 0) {
-                float value = Generator.floatTryParse(tag.getTagValue()) / factor;
-                NumberFormat nf = NumberFormat.getInstance();
-                target.setTagValue(nf.format(value));
-            }
+        modifyTag = tag;
+        checkCtrlAuthority();
+        if (hasCode) {
+            selectItems();
         }
-        ProtectSettingActivity.start(getActivity(), REQUEST_MODIFY, target, getProtect(tag
-                .getTagShortName()));
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_MODIFY && resultCode == Activity.RESULT_OK) {
-            List<ValidTag> targets = new ArrayList<>();
-            String result = data.getStringExtra(RESULT_TAG);
-            //result→①Ir:1In ②Ir:1xIn ③Isd:关闭 ④Tsd:(I2t on)0.4s
-            result = result.replace(Protect.IN, Protect.IE);
-            String[] tmps = result.split(":");
-            //保护开关设置
-            Tag switchTag = TagsFilter.filterDeviceTagList(tagList, "Switch").get(0);
-            boolean switchOff = tmps[1].contains(Protect.I2T_OFF) || tmps[1].contains(strSwitchOff);
-            List<String> switchItems = getProtect("Switch").getItems();
-            int switchValue = Generator.setProtectState(switchTag.getTagValue(), switchItems,
-                    tmps[0], !switchOff);
-            targets.add(new ValidTag(switchTag.getTagName(), String.valueOf(switchValue)));
-            //保护值设置
-            Tag protectTag = TagsFilter.filterDeviceTagList(tagList, tmps[0]).get(0);
-            if (!tmps[1].contains(strSwitchOff)) {
-                Protect protect = getProtect(tmps[0]);
-                float factor = getFactor(protect.getUnit());
-                String strValue = tmps[1].replaceAll(Protect.I2T_OFF, "").replaceAll(Protect
-                        .I2T_ON, "").replaceAll(protect.getUnit(), "").replaceAll("\\(\\)", "");
-                if (factor != 0) {
-                    strValue = String.valueOf(Float.valueOf(strValue) * factor);
+        switch (requestCode) {
+            case REQUEST_MODIFY:
+                if (resultCode == Activity.RESULT_OK) {
+                    modifyTags(data);
                 }
-                targets.add(new ValidTag(protectTag.getTagName(), strValue));
+                break;
+            case REQUEST_CODE:
+                if (resultCode == Activity.RESULT_OK) {
+                    hasCode = true;
+                    selectItems();
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private void selectItems() {
+        if (modifyTag != null) {
+            Protect protect = getProtect(modifyTag.getTagShortName());
+            //因对tag.value的修改会直接反馈于界面，故传递副本
+            String tv = modifyTag.getTagValue();
+            Tag target = new Tag(modifyTag.getTagName(), tv);
+            if (!tv.equals(strSwitchOff)) {
+                float factor = getFactor(protect.getUnit());
+                if (factor != 0) {
+                    float value = Generator.floatTryParse(modifyTag.getTagValue()) / factor;
+                    NumberFormat nf = NumberFormat.getInstance();
+                    target.setTagValue(nf.format(value));
+                }
+            }
+            ProtectSettingActivity.start(getActivity(), REQUEST_MODIFY, target, getProtect(modifyTag
+                    .getTagShortName()));
+        }
+    }
+
+    private void modifyTags(Intent data) {
+        List<ValidTag> targets = new ArrayList<>();
+
+        //result→①Ir:1In ②Ir:1xIn ③Isd:关闭 ④Tsd:(I2t on)0.4s
+        String result = data.getStringExtra(RESULT_TAG);
+        result = result.replace(Protect.IN, Protect.IE);
+        String[] tmps = result.split(":");
+
+        //保护开关设置
+        Tag switchTag = TagsFilter.filterDeviceTagList(tagList, NAME_SWITCH).get(0);
+        boolean switchOff = tmps[1].contains(Protect.I2T_OFF) || tmps[1].contains(strSwitchOff);
+        List<String> switchItems = getProtect(NAME_SWITCH).getItems();
+        int switchValue = Generator.setProtectState(switchTag.getTagValue(), switchItems,
+                tmps[0], !switchOff);
+        targets.add(new ValidTag(switchTag.getTagName(), String.valueOf(switchValue)));
+
+        //保护值设置
+        Tag protectTag = TagsFilter.filterDeviceTagList(tagList, tmps[0]).get(0);
+        if (!tmps[1].contains(strSwitchOff)) {
+            Protect protect = getProtect(tmps[0]);
+            float factor = getFactor(protect.getUnit());
+            //(I2t on)0.4s→0.4
+            String strValue = tmps[1].replaceAll(Protect.I2T_OFF, "").replaceAll(Protect
+                    .I2T_ON, "").replaceAll(protect.getUnit(), "").replaceAll("\\(\\)", "");
+            if (factor != 0) {
+                strValue = String.valueOf(Float.valueOf(strValue) * factor);
+            }
+            targets.add(new ValidTag(protectTag.getTagName(), strValue));
+        }
+
+        WAServiceHelper.sendSetValueRequest(targets, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+
             }
 
-            WAServiceHelper.sendSetValueRequest(targets, new Callback() {
-                @Override
-                public void onFailure(Request request, IOException e) {
-
-                }
-
-                @Override
-                public void onResponse(Response response) throws IOException {
-                    Snackbar.make(layoutContainer, R.string.device_modify_success, Snackbar
-                            .LENGTH_LONG).show();
-                }
-            });
-            Log.d("Protect", "onActivityResult: " + result);
-        }
+            @Override
+            public void onResponse(Response response) throws IOException {
+                Snackbar.make(layoutContainer, R.string.device_modify_success, Snackbar
+                        .LENGTH_LONG).show();
+            }
+        });
     }
 }

@@ -4,17 +4,22 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 
+import com.xseec.eds.R;
+import com.xseec.eds.activity.VerificationCodeActivity;
 import com.xseec.eds.model.ComListener;
 import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.service.ComService;
+import com.xseec.eds.util.TagsFilter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,6 +33,9 @@ import static android.content.Context.ACTIVITY_SERVICE;
 public abstract class ComFragment extends Fragment implements ComListener {
 
     private static final String KEY_TAGS = "tag_list";
+    private static final String CTRL_MODE = "CtrlMode";
+    private static final String CTRL_CODE = "CtrlCode";
+    private static final String CTRL_LOCAL = "76";
 
     protected static Bundle getBundle(List<Tag> tagList) {
         Bundle bundle = new Bundle();
@@ -38,6 +46,8 @@ public abstract class ComFragment extends Fragment implements ComListener {
     protected List<Tag> tagList;
     //在unbind service过程中经常出现service not registered
     private boolean binded = false;
+    protected static final int REQUEST_CODE = 1;
+    protected boolean hasCode = false;
 
     private ComService.ComBinder comBinder;
     protected ServiceConnection serviceConnection = new ServiceConnection() {
@@ -90,7 +100,7 @@ public abstract class ComFragment extends Fragment implements ComListener {
 
     protected void onBindService() {
         //DeviceActivity在Resume中触发，context可能为null
-        if (getContext() != null&&binded==false) {
+        if (getContext() != null && binded == false) {
             Intent intent = new Intent(getContext(), ComService.class);
             getActivity().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
             binded = true;
@@ -121,9 +131,33 @@ public abstract class ComFragment extends Fragment implements ComListener {
 
     @Override
     public void onRefreshed(List<Tag> validTagList) {
-        Activity activity=getActivity();
-        if(validTagList==null||validTagList.size()==0||getActivity()==null){
+        Activity activity = getActivity();
+        if (validTagList == null || validTagList.size() == 0 || getActivity() == null) {
             return;
+        }
+    }
+
+    protected void checkCtrlAuthority() {
+        List<Tag> ctrlTags = TagsFilter.filterDeviceTagList(tagList, CTRL_MODE, CTRL_CODE);
+        if (ctrlTags.size() == 2) {
+            String mode = ctrlTags.get(0).getTagValue();
+            if (mode.equals(CTRL_LOCAL)) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
+                        .setTitle(R.string.device_modify_refuse)
+                        .setMessage(R.string.device_modify_local)
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        });
+                builder.show();
+                return;
+            }
+            if (!hasCode) {
+                int code = Integer.valueOf(ctrlTags.get(1).getTagValue());
+                String BCDCode=String.format("%04x",code);
+                VerificationCodeActivity.start(getActivity(), REQUEST_CODE, BCDCode);
+            }
         }
     }
 }

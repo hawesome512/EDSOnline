@@ -116,5 +116,23 @@
         <item name="android:layout_margin">@dimen/view_margin_normal</item>
     </style>
 
+    <declare-styleable name="VericationCodeInput">
+        <attr name="box" format="integer" />
+        <attr name="boxPadding" format="dimension" />
+        <attr name="boxMargin" format="dimension" />
+        <attr name="boxWidth" format="dimension" />
+        <attr name="boxHeight" format="dimension" />
+        <attr name="boxBgFocus" format="reference" />
+        <attr name="boxBgNormal" format="reference" />
+        <attr name="boxInputType" format="string" />
+    </declare-styleable>
+
+    <style name="RadiusButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/colorWhite</item>
+        <item name="android:textSize">@dimen/font_big</item>
+        <item name="android:background">@drawable/button_radius_conner</item>
+    </style>
 
 </resources>

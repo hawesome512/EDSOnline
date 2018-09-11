@@ -51,6 +51,11 @@
         <activity
             android:name=".activity.ProtectSettingActivity"
             android:label="@string/title_activity_protect_setting"
+            android:theme="@style/DialogActivity"></activity>
+        <activity
+            android:name=".activity.VerificationCodeActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:label="@string/title_activity_verification_code"
             android:theme="@style/DialogActivity">
         </activity>
     </application>
