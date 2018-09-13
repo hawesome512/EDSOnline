@@ -14,6 +14,7 @@ import com.xseec.eds.fragment.TabProtectFragment;
 import com.xseec.eds.model.deviceconfig.Protect;
 import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.util.ApiLevelHelper;
+import com.xseec.eds.util.Generator;
 
 import java.util.List;
 
@@ -60,7 +61,9 @@ public class ProtectSettingActivity extends AppCompatActivity implements SeekBar
         seekBar.setMax(items.size() - 1);
         seekBar.incrementProgressBy(1);
         seekBar.setOnSeekBarChangeListener(this);
-        seekBar.setProgress(items.indexOf(tag.getTagValue()));
+        seekBar.setProgress(Generator.getNearestIndex(tag.getTagValue(),items));
+        //seek.progress初始值与index一样时，不会触发onProgressChanged
+        changeShowValueWithProgress(seekBar.getProgress());
         textFirst.setText(items.get(0));
         textLast.setText(items.get(items.size()-1));
     }
@@ -74,6 +77,10 @@ public class ProtectSettingActivity extends AppCompatActivity implements SeekBar
 
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+        changeShowValueWithProgress(progress);
+    }
+
+    private void changeShowValueWithProgress(int progress) {
         String value=protect.getItems().get(progress);
         String unit=value.equals(getString(R.string.device_protect_off))?"":protect.getUnit();
         unit=unit.replace(Protect.IE,Protect.IN);

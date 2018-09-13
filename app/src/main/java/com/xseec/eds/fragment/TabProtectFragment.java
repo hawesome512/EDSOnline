@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.squareup.okhttp.Callback;
@@ -21,10 +22,13 @@ import com.xseec.eds.util.TagsFilter;
 import com.xseec.eds.util.WAServiceHelper;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Administrator on 2018/8/24.
@@ -82,15 +86,24 @@ public class TabProtectFragment extends TabBaseFragment {
             boolean isOff;
             String alias = tag.getTagShortName();
             switch (alias) {
+                case NAME_IR:
                 case NAME_ISD:
                 case NAME_II:
                 case NAME_IG:
-                    isOff = Generator.checkProtectState(switchValue, switchItems, alias);
-                    value = isOff ? strSwitchOff : tag.getTagValue();
+                    String tagValue = tag.getTagValue();
+                    //BMA之Ir=10In转换为Ir=1000A等
+                    String xUnit = getXUnit(alias);
+                    if (!TextUtils.isEmpty(xUnit)) {
+                        Tag base = TagsFilter.filterDeviceTagList(tagList, xUnit).get(0);
+                        tagValue = Generator.calFloatValue(base.getTagValue(), tagValue, Generator
+                                .Operator.MULTIPLY);
+                    }
+                    isOff = Generator.checkProtectStateZero(switchValue, switchItems, alias);
+                    value = isOff ? strSwitchOff : tagValue;
                     break;
                 case NAME_TSD:
                 case NAME_TG:
-                    isOff = Generator.checkProtectState(switchValue, switchItems, alias);
+                    isOff = Generator.checkProtectStateZero(switchValue, switchItems, alias);
                     value += (isOff ? Protect.I2T_OFF : Protect.I2T_ON) + tag.getTagValue();
                     break;
                 default:
@@ -109,12 +122,18 @@ public class TabProtectFragment extends TabBaseFragment {
         return null;
     }
 
-    private float getFactor(String name) {
+    private String getXUnit(String tagShortName) {
+        Protect protect = getProtect(tagShortName);
+        Matcher matcher = Pattern.compile("^x(\\w+)").matcher(protect.getUnit());
+        return matcher.find() ? matcher.group(1) : null;
+    }
+
+    private String getFactor(String name) {
         List<Tag> tags = TagsFilter.filterDeviceTagList(tagList, name);
         if (tags.size() == 0) {
-            return 0;
+            return null;
         } else {
-            return Generator.floatTryParse(tags.get(0).getTagValue());
+            return tags.get(0).getTagValue();
         }
     }
 
@@ -153,11 +172,14 @@ public class TabProtectFragment extends TabBaseFragment {
             String tv = modifyTag.getTagValue();
             Tag target = new Tag(modifyTag.getTagName(), tv);
             if (!tv.equals(strSwitchOff)) {
-                float factor = getFactor(protect.getUnit());
-                if (factor != 0) {
-                    float value = Generator.floatTryParse(modifyTag.getTagValue()) / factor;
-                    NumberFormat nf = NumberFormat.getInstance();
-                    target.setTagValue(nf.format(value));
+                //对应单位为：xIr,xIn
+                String xUnit = getXUnit(modifyTag.getTagShortName());
+                String unit = TextUtils.isEmpty(xUnit) ? protect.getUnit() : xUnit;
+                String factor = getFactor(unit);
+                if (factor != null) {
+                    String value = Generator.calFloatValue(modifyTag.getTagValue(), factor,
+                            Generator.Operator.DIVIDE);
+                    target.setTagValue(String.valueOf(value));
                 }
             }
             ProtectSettingActivity.start(getActivity(), REQUEST_MODIFY, target, getProtect(modifyTag
@@ -185,14 +207,25 @@ public class TabProtectFragment extends TabBaseFragment {
         Tag protectTag = TagsFilter.filterDeviceTagList(tagList, tmps[0]).get(0);
         if (!tmps[1].contains(strSwitchOff)) {
             Protect protect = getProtect(tmps[0]);
-            float factor = getFactor(protect.getUnit());
+            String factor = getFactor(protect.getUnit());
             //(I2t on)0.4s→0.4
             String strValue = tmps[1].replaceAll(Protect.I2T_OFF, "").replaceAll(Protect
                     .I2T_ON, "").replaceAll(protect.getUnit(), "").replaceAll("\\(\\)", "");
-            if (factor != 0) {
-                strValue = String.valueOf(Float.valueOf(strValue) * factor);
+            if (factor != null) {
+                //处理:630A*0.95=598.5A
+                strValue = Generator.calFloatValue(strValue, factor, Generator.Operator.MULTIPLY);
+                strValue = String.valueOf(Math.round(Float.valueOf(strValue)));
             }
             targets.add(new ValidTag(protectTag.getTagName(), strValue));
+
+            //Isd为Ir的倍数，当Ir改变时，Isd应跟着改变，以保持不变的倍数,而以xIr为单位的不处理
+            if (tmps[0].equals(NAME_IR) && TextUtils.isEmpty(getXUnit(NAME_IR))) {
+                Tag IsdTag = TagsFilter.filterDeviceTagList(tagList, NAME_ISD).get(0);
+                String times = Generator.calFloatValue(IsdTag.getTagValue(), protectTag
+                        .getTagValue(), Generator.Operator.DIVIDE);
+                strValue = Generator.calFloatValue(strValue, times, Generator.Operator.MULTIPLY);
+                targets.add(new ValidTag(IsdTag.getTagName(), strValue));
+            }
         }
 
         WAServiceHelper.sendSetValueRequest(targets, new Callback() {

@@ -70,7 +70,7 @@
       {"Name":"CtrlMode","Items":[]},
       {"Name":"CtrlCode","Items":[]},
       {"Name":"Switch","Items":["","Isd","Ii","Ig","Tsd","Tg"]},
-      {"Name":"Ir","Items":[0.4,0.005,1],"Unit":"Ie"},
+      {"Name":"Ir","Items":["*",0.4,0.005,1],"Unit":"Ie"},
       {"Name":"Tr","Items":[0.5,1,2,4,8,12,16,20,24],"Unit":"s"},
       {"Name":"Isd","Items":[1.5,2,2.5,3,4,5,6,8,10,"off"],"Unit":"Ir"},
       {"Name":"Tsd","Items":["(I2t on)0.4","(I2t on)0.3","(I2t on)0.2","(I2t on)0.1","(I2t off)0","(I2t off)0.1","(I2t off)0.2","(I2t off)0.3","(I2t off)0.4"],"Unit":"s"},

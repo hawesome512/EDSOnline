@@ -7,7 +7,10 @@ import android.os.Parcelable;
 import com.google.gson.annotations.SerializedName;
 import com.xseec.eds.R;
 import com.xseec.eds.util.EDSApplication;
+import com.xseec.eds.util.Generator;
 
+import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,6 +24,7 @@ public class Protect implements Parcelable {
     public static final String I2T_OFF="(I2t off)";
     public static final String IN="In";
     public static final String IE="Ie";
+    private static final String STEP="*";
 
     @SerializedName("Name")
     private String name;
@@ -56,6 +60,17 @@ public class Protect implements Parcelable {
     }
 
     public List<String> getItems() {
+        if(items.contains(STEP)&&items.size()>=4){
+            List<String> tmps=new ArrayList<>();
+            float start=Generator.floatTryParse(items.get(1));
+            float step=Generator.floatTryParse(items.get(2));
+            float end=Generator.floatTryParse(items.get(3));
+            NumberFormat nf=NumberFormat.getInstance();
+            for(float i =start;i<=end;i+=step){
+                tmps.add(nf.format(i));
+            }
+            return tmps;
+        }
         int index=items.indexOf(SWITCH_OFF);
         //device_config.json中“关闭”固定为“off"，而在界面中动态映射于strings
         if(index>=0){

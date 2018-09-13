@@ -9,6 +9,7 @@ import com.xseec.eds.model.tags.Tag;
 
 import org.litepal.LitePal;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -117,9 +118,12 @@ public class Generator {
         }
     }
 
-    public static boolean checkProtectState(String switchValue, List<String> items, String item) {
+    public static boolean checkProtectStateZero(String switchValue, List<String> items, String item) {
         int value = (int) floatTryParse(switchValue);
         int index = items.indexOf(item);
+        if(index<0){
+            return false;
+        }
         return (value & (int) Math.pow(2, index)) == 0;
     }
 
@@ -170,5 +174,42 @@ public class Generator {
             target.add(Calendar.HOUR, 1);
         }
         return values;
+    }
+
+    public static int getNearestIndex(String item,List<String> items){
+        if(items.contains(item)){
+            return items.indexOf(item);
+        }else {
+            float f0=Generator.floatTryParse(item);
+            float delta0=Float.MAX_VALUE;
+            int index=0;
+            for (int i = 0; i < items.size(); i++) {
+                float f=Generator.floatTryParse(items.get(i));
+                float delta=Math.abs(f-f0);
+                if(delta<delta0){
+                    index=i;
+                    delta0=delta;
+                }
+            }
+            return index;
+        }
+    }
+
+    public enum Operator{ADD,SUBTRACT,MULTIPLY,DIVIDE}
+    public static String calFloatValue(String value1,String value2,Operator operator){
+        BigDecimal d1=new BigDecimal(value1);
+        BigDecimal d2=new BigDecimal(value2);
+        switch (operator){
+            case ADD:
+                return d1.add(d2).toString();
+            case SUBTRACT:
+                return d1.subtract(d2).toString();
+            case MULTIPLY:
+                return d1.multiply(d2).toString();
+            case DIVIDE:
+                return d1.divide(d2,3,BigDecimal.ROUND_HALF_UP).toString();
+            default:
+                return null;
+        }
     }
 }
