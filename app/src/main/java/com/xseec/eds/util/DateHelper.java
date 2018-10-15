@@ -11,10 +11,30 @@ import java.util.Locale;
 
 public class DateHelper {
 
-    private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private static SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMddHHmmss");
+    private static SimpleDateFormat sdfYMD=new SimpleDateFormat("yyyy-MM-dd");
+    private static SimpleDateFormat sdfMD=new SimpleDateFormat("MM-dd");
 
     public static String getString(Date date) {
         return simpleDateFormat.format(date);
+    }
+
+    public static String getYMDString(Date date){
+        return sdfYMD.format(date);
+    }
+
+    public static Date getYMDDate(String strDate){
+        try {
+            return sdfYMD.parse(strDate);
+
+        } catch (Exception exp) {
+            return null;
+        }
+    }
+
+    public static String getMDString(Date date){
+        return sdfMD.format(date);
     }
 
     public static Date getDate(String strDate) {
@@ -24,6 +44,11 @@ public class DateHelper {
         } catch (Exception exp) {
             return null;
         }
+    }
+
+    public static String getNowForId(){
+        Calendar now=Calendar.getInstance();
+        return sdf.format(now.getTime());
     }
 
     public static String getSecondTime(Calendar calendar) {

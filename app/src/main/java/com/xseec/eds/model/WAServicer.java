@@ -3,11 +3,16 @@ package com.xseec.eds.model;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.xseec.eds.R;
 import com.xseec.eds.model.deviceconfig.DeviceConfig;
+import com.xseec.eds.model.servlet.Action;
+import com.xseec.eds.model.servlet.Alarm;
+import com.xseec.eds.model.servlet.Workorder;
 import com.xseec.eds.util.EDSApplication;
 import com.xseec.eds.util.IOHelper;
 
@@ -113,5 +118,47 @@ public class WAServicer {
 
     public static void setUser(User user) {
         WAServicer.user = user;
+    }
+
+    public static String getWorkorderQueryUrl(@NonNull Workorder workorder,String start,String end){
+        String url=context.getString(R.string.svl_workorder_query,hostUrl);
+        url+=workorder;
+        return getServletQuery(url,start,end);
+    }
+
+    public static String getWorkorderUpdateUrl(){
+        return context.getString(R.string.svl_workorder_update,hostUrl);
+    }
+
+    public static String getUploadImageUrl(){
+        return context.getString(R.string.svl_upload,hostUrl);
+    }
+
+    public static String getDownloadImageUrl(){
+        return context.getString(R.string.svl_download,hostUrl);
+    }
+
+    public static String getAlarmUpdateUrl(@NonNull Alarm alarm,String start,String end){
+        String url=context.getString(R.string.svl_alarm,hostUrl);
+        url+=alarm;
+        return getServletQuery(url,start,end);
+    }
+
+    public static String getActionUpdateUrl(@NonNull Action action,String start,String end){
+        String url=context.getString(R.string.svl_action,hostUrl);
+        url+=action;
+        return getServletQuery(url,start,end);
+    }
+
+    private static String getServletQuery(String url,String start,String end){
+        StringBuilder builder=new StringBuilder();
+        builder.append(url);
+        if(!TextUtils.isEmpty(start)){
+            builder.append("&start="+start);
+        }
+        if(!TextUtils.isEmpty(end)){
+            builder.append("&end="+end);
+        }
+        return builder.toString();
     }
 }

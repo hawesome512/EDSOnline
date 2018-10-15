@@ -1,14 +1,20 @@
 package com.xseec.eds.util;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Response;
+import com.xseec.eds.model.servlet.Action;
+import com.xseec.eds.model.servlet.Alarm;
 import com.xseec.eds.model.BasicInfo;
+import com.xseec.eds.model.servlet.ResponseResult;
+import com.xseec.eds.model.servlet.Workorder;
 import com.xseec.eds.model.tags.Tag;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,5 +88,58 @@ public class WAJsonHelper {
             return  gson.fromJson(jsonData.body().string(),BasicInfo.class);
         }catch (Exception exp){}
         return null;
+    }
+
+    /*
+        Servlet Json处理区域
+     */
+    public static List<Workorder> getWorkorderList(Response response){
+        try {
+            String json=response.body().string();
+            json=filterServletJson(json);
+            return getServletDateFormatGson().fromJson(filterServletJson(json),new TypeToken<List<Workorder>>(){}.getType());
+        }catch (Exception exp){
+            String s=exp.getMessage();
+        }
+        return null;
+    }
+
+    public static List<Alarm> getAlarmList(Response response){
+        try {
+            String json=response.body().string();
+            return getServletDateFormatGson().fromJson(filterServletJson(json),new TypeToken<List<Alarm>>(){}.getType());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static List<Action> getActionList(Response response){
+        try {
+            String json=response.body().string();
+            return getServletDateFormatGson().fromJson(filterServletJson(json),new TypeToken<List<Action>>(){}.getType());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static String filterServletJson(String json){
+        //从Servlet返回的数据包含：【……，"key":""null""……】应该过滤，否则gson转换格式会出错
+        return json.replaceAll(",\"\\w+\":\"+null\"+","");
+    }
+
+    private static Gson getServletDateFormatGson(){
+        //使用此语句：Gson有能力将“2018-09-10”格式字符串转换为Date类型变量
+        return new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+    }
+
+    public static ResponseResult getServletResult(Response response){
+        Gson gson=new Gson();
+        try {
+            return gson.fromJson(response.body().string(),new TypeToken<ResponseResult>(){}.getType());
+        } catch (IOException e) {
+            return null;
+        }
     }
 }

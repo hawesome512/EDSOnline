@@ -1,8 +1,11 @@
 package com.xseec.eds.fragment;
 
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +16,7 @@ import android.widget.TextView;
 import com.xseec.eds.R;
 import com.xseec.eds.model.State;
 import com.xseec.eds.model.tags.Tag;
+import com.xseec.eds.model.tags.ValidTag;
 import com.xseec.eds.util.TagsFilter;
 
 import java.util.ArrayList;
@@ -28,6 +32,8 @@ import butterknife.OnClick;
 public class TabControlFragment extends ComFragment {
 
     private static final String KEY_CONTROL = "control";
+    private static final int VALUE_ON = 0xAAAA;
+    private static final int VALUE_OFF = 0x5555;
     @InjectView(R.id.text_state)
     TextView textState;
     @InjectView(R.id.btn_on)
@@ -36,6 +42,10 @@ public class TabControlFragment extends ComFragment {
     Button btnOff;
     @InjectView(R.id.progress)
     ProgressBar progress;
+    @InjectView(R.id.layout_container)
+    NestedScrollView layoutContainer;
+
+    private int farCtrlCode = VALUE_OFF;
 
     public static Fragment newInstance(String deviceName, List<String> farControl) {
         Fragment fragment = new TabControlFragment();
@@ -64,6 +74,9 @@ public class TabControlFragment extends ComFragment {
     @Override
     public void onRefreshed(final List<Tag> validTagList) {
         super.onRefreshed(validTagList);
+        for (int i = 0; i < validTagList.size(); i++) {
+            tagList.get(i).setTagValue(validTagList.get(i).getTagValue());
+        }
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -94,9 +107,11 @@ public class TabControlFragment extends ComFragment {
                     textState.setBackgroundResource(bgColorRes);
                     textState.setText(state.getStateText());
                     btnOff.setEnabled(openable);
-                    btnOff.setBackgroundResource(openable?R.color.colorOff:R.color.colorGrayNormal);
+                    btnOff.setBackgroundResource(openable ? R.color.colorOff : R.color
+                            .colorGrayNormal);
                     btnOn.setEnabled(!openable);
-                    btnOn.setBackgroundResource(openable?R.color.colorGrayNormal:R.color.colorOn);
+                    btnOn.setBackgroundResource(openable ? R.color.colorGrayNormal : R.color
+                            .colorOn);
                 }
             }
         });
@@ -111,10 +126,29 @@ public class TabControlFragment extends ComFragment {
 
     @OnClick({R.id.btn_on, R.id.btn_off})
     public void onViewClicked(View view) {
+        checkCtrlAuthority();
         switch (view.getId()) {
             case R.id.btn_on:
+                farCtrlCode = VALUE_ON;
                 break;
             case R.id.btn_off:
+                farCtrlCode = VALUE_OFF;
+                break;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CODE:
+                //输入正确设备密码
+                if (resultCode == Activity.RESULT_OK) {
+                    List<ValidTag> targets=new ArrayList<>();
+                    targets.add(new ValidTag("FarCtrl",String.valueOf(farCtrlCode)));
+                    onModifyTags(targets,layoutContainer);
+                }
+                break;
+            default:
                 break;
         }
     }

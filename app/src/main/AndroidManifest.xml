@@ -3,6 +3,7 @@
     package="com.xseec.eds">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -51,12 +52,13 @@
         <activity
             android:name=".activity.ProtectSettingActivity"
             android:label="@string/title_activity_protect_setting"
-            android:theme="@style/DialogActivity"></activity>
+            android:theme="@style/DialogActivity" />
         <activity
             android:name=".activity.VerificationCodeActivity"
-            android:windowSoftInputMode="adjustResize"
             android:label="@string/title_activity_verification_code"
-            android:theme="@style/DialogActivity">
+            android:theme="@style/DialogActivity"
+            android:windowSoftInputMode="adjustResize"></activity>
+        <activity android:name=".activity.WorkorderCreatorActivity">
         </activity>
     </application>
 

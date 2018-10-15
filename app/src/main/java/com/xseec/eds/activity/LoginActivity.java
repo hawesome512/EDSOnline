@@ -5,11 +5,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
-import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.ViewPropertyAnimator;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Switch;
@@ -22,6 +20,7 @@ import com.xseec.eds.model.WAServicer;
 import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.util.CodeHelper;
 import com.xseec.eds.util.TagsFilter;
+import com.xseec.eds.util.ViewHelper;
 import com.xseec.eds.util.WAJsonHelper;
 import com.xseec.eds.util.WAServiceHelper;
 
@@ -62,7 +61,12 @@ public class LoginActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_login)
     public void onBtnLoginClicked() {
-        startLoginAnimator();
+
+        //==============程序模块调试区域=====================
+
+        //=================================================
+
+        ViewHelper.startViewAnimator(btnLogin);
         String username = editUsername.getText().toString();
         String password = editPassword.getText().toString();
         final String authority = CodeHelper.encode(username + ":" + password);
@@ -103,23 +107,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void onLoginFailed() {
-        resetLoginAnimator();
+        ViewHelper.resetViewAnimator(btnLogin);
         textFailure.setVisibility(View.VISIBLE);
-    }
-
-    private void startLoginAnimator() {
-        ViewPropertyAnimator animator = btnLogin.animate();
-        float scaleValue = btnLogin.getHeight() * 1.0f / btnLogin.getWidth();
-        animator.scaleX(scaleValue);
-        animator.alpha(0f);
-        animator.setDuration(500);
-        animator.setInterpolator(new FastOutSlowInInterpolator());
-        animator.start();
-    }
-
-    private void resetLoginAnimator() {
-        btnLogin.setScaleX(1f);
-        btnLogin.setAlpha(1f);
     }
 
     private void getLoginInfo() {

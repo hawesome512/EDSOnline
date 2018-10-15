@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">EDS云管理</string>
     <string name="cancel">取消</string>
+    <string name="permission_checked">权限已获取，可继续操作</string>
+    <string name="permission_unchecked">获取权限失败，拒绝此项操作</string>
 
     <!--Login-->
     <string name="login_title">EDS</string>
@@ -31,8 +33,9 @@
 
     <!--Nav Items-->
     <string name="nav_overview">主页</string>
-    <string name="nav_schedule">计划任务</string>
-    <string name="nav_alarm">异常记录</string>
+    <string name="nav_schedule">运维工单</string>
+    <string name="nav_alarm">异常管理</string>
+    <string name="nav_action">操作记录</string>
     <string name="nav_trend">报表分析</string>
     <string name="nav_setting">设置</string>
     <string name="nav_exit">退出</string>
@@ -127,6 +130,31 @@
     <string name="device_modify_code">设备密码</string>
     <string name="device_modify_code_error">密码错误</string>
 
+    <!--Workorder-->
+    <string name="workorder_filter">筛选</string>
+    <string name="workorder_done">完成</string>
+    <string name="workorder_due">近期</string>
+    <string name="workorder_overdue">逾期</string>
+    <string name="workorder_time">%1$s至%2$s</string>
+    <string name="workorder_title">主旨</string>
+    <string name="workorder_type">工单类型</string>
+    <string name="workorder_task">工单任务</string>
+    <string name="workorder_task_tips">建议多行区分任务点</string>
+    <string name="workorder_range">建议时间</string>
+    <string name="workorder_location">运维位置</string>
+    <string name="workorder_worker">作业员</string>
+    <string name="workorder_creator">工单创建人</string>
+    <string name="workorder_to">至</string>
+    <string name="workorder_save">创建工单</string>
+    <string name="workorder_required">必填</string>
+    <string name="workorder_nonull">必填项不能为空</string>
+    <string name="workorder_fail">创建工单失败</string>
+    <string-array name="workorder_types">
+        <item>计划任务</item>
+        <item>异常维护</item>
+        <item>随工运维</item>
+    </string-array>
+
     <!--Tag Alias-->
     <string name="tag_In">N相</string>
     <string name="tag_Igf">接地</string>
@@ -175,6 +203,13 @@
     <string name="was_storable_tag">{\"Name\":\"%1$s\",\"DataType\":\"%2$d\"}</string>
     <string name="was_basic_info">http://%1$s/basic/%2$s/basic.json</string>
     <string name="was_basic_header_img">http://%1$s/basic/%2$s/%3$s</string>
+    <string name="svl_workorder_query">http://%1$s:8080/EDSServlet/QueryWorkorderServlet?</string>
+    <string name="svl_workorder_update">http://%1$s:8080/EDSServlet/UpdateWorkorderServlet</string>
+    <string name="svl_workorder_request">{\"id\":\"%1$s\",\"state\":%2$d,\"type\":%3$d,\"title\":\"%4$s\",\"task\":\"%5$s\",\"start\":\"%6$s\",\"end\":\"%7$s\",\"location\":\"%8$s\",\"worker\":\"%9$s\",\"log\":\"%10$s\",\"image\":\"%11$s\",\"creator\":\"%12$s\"}</string>
+    <string name="svl_upload">http://%1$s:8080/EDSServlet/UploadServlet</string>
+    <string name="svl_download">http://%1$s:8080/EDSServlet/upload/</string>
+    <string name="svl_alarm">http://%1$s:8080/EDSServlet/UpdateAlarmServlet?</string>
+    <string name="svl_action">http://%1$s:8080/EDSServlet/UpdateActionServlet?</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

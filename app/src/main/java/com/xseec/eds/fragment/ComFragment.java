@@ -10,17 +10,25 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.View;
 
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 import com.xseec.eds.R;
 import com.xseec.eds.activity.VerificationCodeActivity;
 import com.xseec.eds.model.ComListener;
 import com.xseec.eds.model.tags.Tag;
+import com.xseec.eds.model.tags.ValidTag;
 import com.xseec.eds.service.ComService;
 import com.xseec.eds.util.TagsFilter;
+import com.xseec.eds.util.WAServiceHelper;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -159,5 +167,20 @@ public abstract class ComFragment extends Fragment implements ComListener {
                 VerificationCodeActivity.start(getActivity(), REQUEST_CODE, BCDCode);
             }
         }
+    }
+
+    protected void onModifyTags(List<ValidTag> targets, final View view){
+        WAServiceHelper.sendSetValueRequest(targets, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                Snackbar.make(view, R.string.device_modify_success, Snackbar
+                        .LENGTH_LONG).show();
+            }
+        });
     }
 }

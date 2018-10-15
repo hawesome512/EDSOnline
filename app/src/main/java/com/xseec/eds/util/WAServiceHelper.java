@@ -1,6 +1,7 @@
 package com.xseec.eds.util;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.MediaType;
@@ -9,7 +10,10 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 import com.xseec.eds.R;
+import com.xseec.eds.model.servlet.Action;
+import com.xseec.eds.model.servlet.Alarm;
 import com.xseec.eds.model.DataLogFactor;
+import com.xseec.eds.model.servlet.Workorder;
 import com.xseec.eds.model.tags.StoredTag;
 import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.model.WAServicer;
@@ -32,8 +36,9 @@ public class WAServiceHelper {
     private static Request getRequest(String url, String authority, String requestContent) {
         Request.Builder builder = new Request.Builder()
                 .url(url)
-                .addHeader("Content-Type", "application/json;charset=utf-8")
-                .addHeader("Authorization", "Basic " + authority);
+                .addHeader("Content-Type", "application/json;charset=utf-8");
+        if(!TextUtils.isEmpty(authority))     {
+                builder.addHeader("Authorization", "Basic " + authority);}
         if (requestContent != null) {
             RequestBody requestBody = RequestBody.create(BODY_TYPE, requestContent);
             builder.post(requestBody);
@@ -134,5 +139,30 @@ public class WAServiceHelper {
 
         }
         return null;
+    }
+
+    public static void sendWorkorderQueryRequest(Workorder workorder,String startTime,String endTime,Callback callback){
+        String url=WAServicer.getWorkorderQueryUrl(workorder,startTime,endTime);
+        sendRequest(url,null,null,callback);
+    }
+
+    public static void sendWorkorderUpdateRequest(Workorder workorder,Callback callback){
+        String url=WAServicer.getWorkorderUpdateUrl();
+        String content=workorder.toJson();
+        sendRequest(url,null,content,callback);
+    }
+
+    public static void sendAlarmUpdateRequest(Alarm alarm,String startTime,String endTime,Callback callback){
+        String url=WAServicer.getAlarmUpdateUrl(alarm,startTime,endTime);
+        sendRequest(url,null,null,callback);
+    }
+
+    public static void sendActionUpdateRequest(Action action,String startTime,String endTime,Callback callback){
+        String url=WAServicer.getActionUpdateUrl(action,startTime,endTime);
+        sendRequest(url,null,null,callback);
+    }
+
+    public static String uploadImage(String imageUrl){
+        return UploadHelper.formUpload(WAServicer.getUploadImageUrl(),imageUrl);
     }
 }

@@ -91,7 +91,7 @@ public class TabProtectFragment extends TabBaseFragment {
                 case NAME_II:
                 case NAME_IG:
                     String tagValue = tag.getTagValue();
-                    //BMA之Ir=10In转换为Ir=1000A等
+                    //eg. TabProtect统一电流显示单位“A",以xIr,xIn为单位的需调整
                     String xUnit = getXUnit(alias);
                     if (!TextUtils.isEmpty(xUnit)) {
                         Tag base = TagsFilter.filterDeviceTagList(tagList, xUnit).get(0);
@@ -123,6 +123,7 @@ public class TabProtectFragment extends TabBaseFragment {
     }
 
     private String getXUnit(String tagShortName) {
+        //eg. xIr → Ir
         Protect protect = getProtect(tagShortName);
         Matcher matcher = Pattern.compile("^x(\\w+)").matcher(protect.getUnit());
         return matcher.find() ? matcher.group(1) : null;
@@ -150,11 +151,13 @@ public class TabProtectFragment extends TabBaseFragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case REQUEST_MODIFY:
+                //返回修改值
                 if (resultCode == Activity.RESULT_OK) {
                     modifyTags(data);
                 }
                 break;
             case REQUEST_CODE:
+                //输入正确设备密码
                 if (resultCode == Activity.RESULT_OK) {
                     hasCode = true;
                     selectItems();
@@ -172,7 +175,7 @@ public class TabProtectFragment extends TabBaseFragment {
             String tv = modifyTag.getTagValue();
             Tag target = new Tag(modifyTag.getTagName(), tv);
             if (!tv.equals(strSwitchOff)) {
-                //对应单位为：xIr,xIn
+                //eg. 在TabProtect统一显示电流单位：A,在ProtectSetting统一显示单位：xIr,xIn
                 String xUnit = getXUnit(modifyTag.getTagShortName());
                 String unit = TextUtils.isEmpty(xUnit) ? protect.getUnit() : xUnit;
                 String factor = getFactor(unit);
@@ -195,7 +198,7 @@ public class TabProtectFragment extends TabBaseFragment {
         result = result.replace(Protect.IN, Protect.IE);
         String[] tmps = result.split(":");
 
-        //保护开关设置
+        //保护开关设置：Isd(on/off),Tsd(I2t on/I2t off),Ii(on/off),Ig(on/off),Tg(I2t on/I2t off)
         Tag switchTag = TagsFilter.filterDeviceTagList(tagList, NAME_SWITCH).get(0);
         boolean switchOff = tmps[1].contains(Protect.I2T_OFF) || tmps[1].contains(strSwitchOff);
         List<String> switchItems = getProtect(NAME_SWITCH).getItems();
@@ -205,14 +208,16 @@ public class TabProtectFragment extends TabBaseFragment {
 
         //保护值设置
         Tag protectTag = TagsFilter.filterDeviceTagList(tagList, tmps[0]).get(0);
+        //Isd,Ii,Ig为“off",不再设置相应值
         if (!tmps[1].contains(strSwitchOff)) {
             Protect protect = getProtect(tmps[0]);
             String factor = getFactor(protect.getUnit());
-            //(I2t on)0.4s→0.4
+            //eg. 源：(I2t on)0.4s → ()0.4s → ()0.4 →0.4
             String strValue = tmps[1].replaceAll(Protect.I2T_OFF, "").replaceAll(Protect
                     .I2T_ON, "").replaceAll(protect.getUnit(), "").replaceAll("\\(\\)", "");
+            //eg. ACB:6xIr设置为6x1000=6000; MCCB:6xIr设置为6（factor=null)
             if (factor != null) {
-                //处理:630A*0.95=598.5A
+                //eg. 630A*0.95=598.5A
                 strValue = Generator.calFloatValue(strValue, factor, Generator.Operator.MULTIPLY);
                 strValue = String.valueOf(Math.round(Float.valueOf(strValue)));
             }
@@ -228,17 +233,6 @@ public class TabProtectFragment extends TabBaseFragment {
             }
         }
 
-        WAServiceHelper.sendSetValueRequest(targets, new Callback() {
-            @Override
-            public void onFailure(Request request, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Response response) throws IOException {
-                Snackbar.make(layoutContainer, R.string.device_modify_success, Snackbar
-                        .LENGTH_LONG).show();
-            }
-        });
+        onModifyTags(targets,layoutContainer);
     }
 }

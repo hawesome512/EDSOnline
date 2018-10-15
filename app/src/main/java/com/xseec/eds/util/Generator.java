@@ -176,6 +176,11 @@ public class Generator {
         return values;
     }
 
+    /*
+     *在数值数组中找到最接近的值
+     * eg:<items>0.8,0.9,0.95,1</items>
+     * 630*0.95=598.5，取整599，反馈599/630=0.951，取近值0.95
+     */
     public static int getNearestIndex(String item,List<String> items){
         if(items.contains(item)){
             return items.indexOf(item);
@@ -195,6 +200,10 @@ public class Generator {
         }
     }
 
+    /*
+     *两个float/double操作，很可能出错，缘由见于网络
+     *特别注意：value1/value2类型应该为String,若未float/double还是会计算失真
+     */
     public enum Operator{ADD,SUBTRACT,MULTIPLY,DIVIDE}
     public static String calFloatValue(String value1,String value2,Operator operator){
         BigDecimal d1=new BigDecimal(value1);
@@ -207,6 +216,7 @@ public class Generator {
             case MULTIPLY:
                 return d1.multiply(d2).toString();
             case DIVIDE:
+                //BigBecimal必须加后两个参数，否则会出错
                 return d1.divide(d2,3,BigDecimal.ROUND_HALF_UP).toString();
             default:
                 return null;

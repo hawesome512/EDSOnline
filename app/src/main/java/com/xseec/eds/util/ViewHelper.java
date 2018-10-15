@@ -4,9 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.view.ViewPropertyAnimator;
 
 import com.xseec.eds.R;
 
@@ -51,4 +54,20 @@ public class ViewHelper {
             return null;
         }
     }
+
+    public static void startViewAnimator(View view) {
+        ViewPropertyAnimator animator = view.animate();
+        float scaleValue = view.getHeight() * 1.0f / view.getWidth();
+        animator.scaleX(scaleValue);
+        animator.alpha(0f);
+        animator.setDuration(500);
+        animator.setInterpolator(new FastOutSlowInInterpolator());
+        animator.start();
+    }
+
+    public static void resetViewAnimator(View view) {
+        view.setScaleX(1f);
+        view.setAlpha(1f);
+    }
+
 }
