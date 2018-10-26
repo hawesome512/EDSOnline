@@ -13,6 +13,7 @@ import com.xseec.eds.R;
 import com.xseec.eds.model.servlet.Action;
 import com.xseec.eds.model.servlet.Alarm;
 import com.xseec.eds.model.DataLogFactor;
+import com.xseec.eds.model.servlet.UploadListener;
 import com.xseec.eds.model.servlet.Workorder;
 import com.xseec.eds.model.tags.StoredTag;
 import com.xseec.eds.model.tags.Tag;
@@ -162,7 +163,7 @@ public class WAServiceHelper {
         sendRequest(url,null,null,callback);
     }
 
-    public static String uploadImage(String imageUrl){
-        return UploadHelper.formUpload(WAServicer.getUploadImageUrl(),imageUrl);
+    public static void uploadImage(List<String> imageUrls,UploadListener listener){
+        UploadHelper.formUpload(WAServicer.getUploadImageUrl(),imageUrls,listener);
     }
 }

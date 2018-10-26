@@ -15,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
@@ -149,7 +150,10 @@ public abstract class ComFragment extends Fragment implements ComListener {
         List<Tag> ctrlTags = TagsFilter.filterDeviceTagList(tagList, CTRL_MODE, CTRL_CODE);
         if (ctrlTags.size() == 2) {
             String mode = ctrlTags.get(0).getTagValue();
-            if (mode.equals(CTRL_LOCAL)) {
+            if(mode==null){
+                Toast.makeText(getContext(), R.string.device_modify_null, Toast.LENGTH_SHORT).show();
+                return;
+            }else if (mode.equals(CTRL_LOCAL)) {
                 final AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
                         .setTitle(R.string.device_modify_refuse)
                         .setMessage(R.string.device_modify_local)

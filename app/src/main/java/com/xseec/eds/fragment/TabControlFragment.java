@@ -143,9 +143,12 @@ public class TabControlFragment extends ComFragment {
             case REQUEST_CODE:
                 //输入正确设备密码
                 if (resultCode == Activity.RESULT_OK) {
-                    List<ValidTag> targets=new ArrayList<>();
-                    targets.add(new ValidTag("FarCtrl",String.valueOf(farCtrlCode)));
-                    onModifyTags(targets,layoutContainer);
+                    List<ValidTag> targets = new ArrayList<>();
+                    List<Tag> tags = TagsFilter.filterDeviceTagList(tagList, "FarCtrl");
+                    if (tags != null) {
+                        targets.add(new ValidTag(tags.get(0).getTagName(), String.valueOf(farCtrlCode)));
+                        onModifyTags(targets, layoutContainer);
+                    }
                 }
                 break;
             default:

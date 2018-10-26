@@ -8,6 +8,9 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * Created by Administrator on 2018/10/12.
  */
@@ -34,6 +37,23 @@ public class ContentHelper {
                 .Phone.NUMBER)).replaceAll("\\s+","");
         cursor.close();
         return name+"-"+phone;
+    }
+
+    public static void shareMessage(Context context,String message){
+        Intent intent=new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT,message);
+        context.startActivity(intent);
+    }
+
+    public static void callPhone(Context context,String message){
+        Pattern pattern = Pattern.compile("\\d+");
+        Matcher matcher = pattern.matcher(message);
+        if (matcher.find()) {
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+            intent.setData(Uri.parse("tel:" + matcher.group(0)));
+            context.startActivity(intent);
+        }
     }
 
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.github.mikephil.charting.data.Entry;
 import com.xseec.eds.R;
+import com.xseec.eds.model.deviceconfig.Protect;
 import com.xseec.eds.model.tags.OverviewTag;
 import com.xseec.eds.model.tags.Tag;
 
@@ -121,21 +122,29 @@ public class Generator {
     public static boolean checkProtectStateZero(String switchValue, List<String> items, String item) {
         int value = (int) floatTryParse(switchValue);
         int index = items.indexOf(item);
-        if(index<0){
+        int indexNegate=items.indexOf(item+ Protect.NEGATE);
+        if(index>=0){
+            return (value & (int) Math.pow(2, index)) == 0;
+        }else if(indexNegate>=0){
+            return  (value & (int) Math.pow(2, indexNegate)) != 0;
+        }else {
             return false;
         }
-        return (value & (int) Math.pow(2, index)) == 0;
     }
 
     public static int setProtectState(String switchValue, List<String> items, String item,
             boolean switchOn) {
         int value = (int) floatTryParse(switchValue);
         int index = items.indexOf(item);
-        if (index == -1) {
-            return value;
-        } else {
+        int indexNegate=items.indexOf(item+ Protect.NEGATE);
+        if(index>=0){
             return switchOn ? (value | (int) (Math.pow(2, index))) : (value & (int) (Math.pow(2,
                     16) - 1 - Math.pow(2, index)));
+        }else if(indexNegate>=0){
+            return (!switchOn) ? (value | (int) (Math.pow(2, indexNegate))) : (value & (int) (Math.pow(2,
+                    16) - 1 - Math.pow(2, indexNegate)));
+        }else {
+            return value;
         }
     }
 

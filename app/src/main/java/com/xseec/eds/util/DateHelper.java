@@ -11,10 +11,11 @@ import java.util.Locale;
 
 public class DateHelper {
 
-    public static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private static SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMddHHmmss");
-    private static SimpleDateFormat sdfYMD=new SimpleDateFormat("yyyy-MM-dd");
-    private static SimpleDateFormat sdfMD=new SimpleDateFormat("MM-dd");
+    public final static String dateRegex="\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}";
+    public final static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private final static SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMddHHmmss");
+    private final static SimpleDateFormat sdfYMD=new SimpleDateFormat("yyyy-MM-dd");
+    private final static SimpleDateFormat sdfMD=new SimpleDateFormat("MM-dd");
 
     public static String getString(Date date) {
         return simpleDateFormat.format(date);
@@ -81,5 +82,11 @@ public class DateHelper {
         tmp.clear(Calendar.MINUTE);
         tmp.clear(Calendar.SECOND);
         return tmp;
+    }
+
+    public static Calendar getCalendarWithDate(Date date){
+        Calendar calendar=Calendar.getInstance();
+        calendar.setTime(date);
+        return calendar;
     }
 }

@@ -7,13 +7,10 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 
 import com.xseec.eds.R;
-import com.xseec.eds.adapter.MyFragmentPagerApdater;
-import com.xseec.eds.fragment.ComFragment;
+import com.xseec.eds.adapter.MyFragmentPagerAdapter;
 import com.xseec.eds.fragment.TabControlFragment;
 import com.xseec.eds.fragment.TabMonitorFragment;
 import com.xseec.eds.fragment.TabOerviewFragment;
@@ -21,10 +18,8 @@ import com.xseec.eds.fragment.TabProtectFragment;
 import com.xseec.eds.model.Device;
 import com.xseec.eds.model.deviceconfig.DeviceConfig;
 import com.xseec.eds.model.WAServicer;
-import com.xseec.eds.model.deviceconfig.Protect;
 import com.xseec.eds.util.ViewHelper;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -75,7 +70,7 @@ public class DeviceActivity extends BaseActivity implements ViewPager.OnPageChan
         fragmentList[3] = (TabControlFragment.newInstance(device.getDeviceName(),
                 deviceConfig.getFarControl()));
         viewPager.addOnPageChangeListener(this);
-        viewPager.setAdapter(new MyFragmentPagerApdater(getSupportFragmentManager(), fragmentList));
+        viewPager.setAdapter(new MyFragmentPagerAdapter(getSupportFragmentManager(), fragmentList));
         ViewHelper.initToolbar(this, toolbar, ViewHelper.DEFAULT_HOME_RES);
         tab.setupWithViewPager(viewPager);
         int[] res = {R.drawable.tab_overview, R.drawable.tab_monitor, R.drawable.tab_param, R

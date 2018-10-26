@@ -22,6 +22,7 @@ public class Protect implements Parcelable {
     public static final String SWITCH_OFF="off";
     public static final String I2T_ON="(I2t on)";
     public static final String I2T_OFF="(I2t off)";
+    public static final String NEGATE="_negate";
     public static final String IN="In";
     public static final String IE="Ie";
     private static final String STEP="*";

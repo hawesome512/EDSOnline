@@ -122,6 +122,8 @@ public class TabOerviewFragment extends ComFragment {
             dataSet = (BarDataSet) barData.getDataSetByIndex(0);
             dataSet.setValues(entries);
             barData.notifyDataChanged();
+            //value值过小时，标注会遮盖横坐标的Ia/Ib/Ic,暂处理：<30不显示值
+            barData.setValueTextColor(dataSet.getYMin()<30?android.R.color.transparent:getColor(R.color.colorWhite));
             barChart.notifyDataSetChanged();
         } else {
             dataSet = new BarDataSet(entries, "");
@@ -129,7 +131,7 @@ public class TabOerviewFragment extends ComFragment {
             dataSet.setValueTextSize(20);
             dataSet.setColors(currentColors);
             barData = new BarData(dataSet);
-            barData.setValueTextColor(getColor(R.color.colorWhite));
+            barData.setValueTextColor(android.R.color.transparent);
             barData.setValueFormatter(new PercentageValueFormatter());
             barChart.setData(barData);
         }

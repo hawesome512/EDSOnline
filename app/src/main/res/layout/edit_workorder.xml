@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/layout_execute"
+    android:visibility="gone"
+    android:focusableInTouchMode="true">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/view_padding_normal"
+        android:paddingVertical="@dimen/view_padding_small"
+        android:text="@string/workorder_log"
+        android:textColor="@color/colorPrimaryText"
+        android:textSize="@dimen/font_big" />
+    <EditText
+        android:id="@+id/edit_log"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/view_margin_normal"
+        android:layout_marginVertical="@dimen/view_margin_small"
+        android:hint="@string/workorder_log_tips"
+        android:ellipsize="end"
+        android:focusable="false"
+        android:background="@null"
+        android:textSize="@dimen/font_normal"
+        android:textColor="@color/colorSecondaryText"
+        android:lineSpacingMultiplier="2"
+        />
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="@dimen/view_padding_normal"
+        android:paddingVertical="@dimen/view_padding_small"></android.support.v7.widget.RecyclerView>
+    <View
+        style="@style/DividerLine"/>
+</LinearLayout>

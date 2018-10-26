@@ -31,6 +31,11 @@ public class User implements Parcelable{
         return deviceName;
     }
 
+    //1/ADAM3600→1_ADAM3600
+    public String getStorableDirName(){
+        return deviceName.replaceAll("\\W","_");
+    }
+
     public String getUsername(){
         return CodeHelper.decode(authority).split(":")[0];
     }

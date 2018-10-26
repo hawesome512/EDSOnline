@@ -7,28 +7,19 @@
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/view_header_hei"
-        android:fitsSystemWindows="true">
+        style="@style/AppBarLayout">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/collapsing_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            style="@style/CollapsingToolbarLayout">
 
             <ImageView
                 android:id="@+id/image_device"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                style="@style/ImageForCollapsing"
+                android:scaleType="centerInside"
                 android:background="@drawable/primary_gradient"
-                android:fitsSystemWindows="true"
                 android:src="@drawable/device_a65"
-                android:transitionName="@string/trans_image_device"
-                app:layout_collapseMode="parallax" />
+                android:transitionName="@string/trans_image_device" />
 
             <include layout="@layout/toolbar_for_collapsing" />
 

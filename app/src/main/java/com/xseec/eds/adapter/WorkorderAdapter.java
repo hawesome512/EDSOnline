@@ -1,5 +1,6 @@
 package com.xseec.eds.adapter;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.xseec.eds.R;
+import com.xseec.eds.activity.WorkorderActivity;
 import com.xseec.eds.model.servlet.Workorder;
 import com.xseec.eds.util.DateHelper;
 import com.xseec.eds.util.EDSApplication;
@@ -22,15 +24,17 @@ import java.util.List;
 public class WorkorderAdapter extends RecyclerView.Adapter<WorkorderAdapter.ViewHolder> {
 
     private List<Workorder> workorderList;
+    private Context context;
 
-    public WorkorderAdapter(List<Workorder> workorderList) {
+    public WorkorderAdapter(Context context,List<Workorder> workorderList) {
+        this.context=context;
         this.workorderList = workorderList;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.item_workorder,parent,false);
+        View view= LayoutInflater.from(context).inflate(R.layout.item_workorder,parent,false);
         return new ViewHolder(view);
     }
 
@@ -38,23 +42,10 @@ public class WorkorderAdapter extends RecyclerView.Adapter<WorkorderAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Workorder workorder=workorderList.get(position);
         holder.textTitle.setText(workorder.getTitle());
-        String time= EDSApplication.getContext().getString(R.string.workorder_time,DateHelper.getMDString(workorder.getStart()),DateHelper.getMDString(workorder.getEnd()));
-        holder.textTime.setText(time);
+        holder.textTime.setText(workorder.getDateRange());
         holder.textTask.setText(workorder.getTask());
-        switch (workorder.getWorkorderState()){
-            case DONE:
-                holder.imageExecute.setImageResource(R.drawable.ic_done_blue_24dp);
-                holder.textExecute.setText(R.string.workorder_done);
-                break;
-            case OVERDUE:
-                holder.imageExecute.setImageResource(R.drawable.ic_warning_yellow_24dp);
-                holder.textExecute.setText(R.string.workorder_overdue);
-                break;
-            default:
-                holder.imageExecute.setImageResource(R.drawable.ic_access_time_grey_600_24dp);
-                holder.textExecute.setText(R.string.workorder_due);
-                break;
-        }
+        holder.imageExecute.setImageResource(workorder.getStateImgRes());
+        holder.textExecute.setText(workorder.getStateTextRes());
     }
 
     @Override
@@ -81,6 +72,12 @@ public class WorkorderAdapter extends RecyclerView.Adapter<WorkorderAdapter.View
                 @Override
                 public void onClick(View v) {
 
+                }
+            });
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    WorkorderActivity.start(context,workorderList.get(getAdapterPosition()));
                 }
             });
         }

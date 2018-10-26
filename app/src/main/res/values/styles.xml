@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -133,6 +133,60 @@
         <item name="android:textColor">@color/colorWhite</item>
         <item name="android:textSize">@dimen/font_big</item>
         <item name="android:background">@drawable/button_radius_conner</item>
+    </style>
+
+    <!--App：xxx类的属性不需加前缀-->
+    <style name="CollapsingToolbarLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:fitsSystemWindows">true</item>
+        <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="contentScrim">?attr/colorPrimary</item>
+        <item name="layout_scrollFlags">scroll|exitUntilCollapsed</item>
+    </style>
+
+    <style name="AppBarLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/view_header_hei</item>
+        <item name="android:fitsSystemWindows">true</item>
+    </style>
+
+    <style name="ImageForCollapsing">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:fitsSystemWindows">true</item>
+        <item name="android:scaleType">centerCrop</item>
+        <item name="layout_collapseMode">parallax</item>
+    </style>
+    
+    <style name="LinearHorBigSpace">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:paddingLeft">@dimen/view_padding_normal</item>
+        <item name="android:paddingRight">@dimen/view_padding_normal</item>
+        <item name="android:paddingTop">@dimen/view_padding_small</item>
+        <item name="android:paddingBottom">@dimen/view_padding_small</item>
+    </style>
+    
+    <style name="TextHorItemName">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_gravity">center</item>
+    </style>
+
+    <style name="TextHorItemValue">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">3</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textColor">@color/colorPrimaryText</item>
+    </style>
+
+    <style name="photo_picker_dialog_anim">
+        <item name="android:windowEnterAnimation">@anim/anim_photo_dialog_in</item>
+        <item name="android:windowExitAnimation">@anim/anim_photo_dialog_out</item>
     </style>
 
 </resources>

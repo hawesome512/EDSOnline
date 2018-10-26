@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="com.xseec.eds.activity.WorkorderActivity">
+
+    <include layout="@layout/appbar_layout" />
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/layout_state"
+                style="@style/LinearHorBigSpace"
+                android:background="@color/colorDivider">
+
+                <ImageView
+                    android:id="@+id/image_state"
+                    android:layout_width="@dimen/image_size_normal"
+                    android:layout_height="@dimen/image_size_normal" />
+
+                <TextView
+                    android:id="@+id/text_state"
+                    style="@style/TextHorItemValue"
+                    android:layout_marginLeft="@dimen/view_margin_normal"
+                    android:textSize="@dimen/font_big" />
+
+            </LinearLayout>
+
+            <include layout="@layout/edit_workorder" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/view_padding_normal"
+                android:paddingVertical="@dimen/view_padding_small"
+                android:text="@string/workorder_task"
+                android:textColor="@color/colorPrimaryText"
+                android:textSize="@dimen/font_big" />
+
+            <TextView
+                android:id="@+id/text_task"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="@dimen/view_margin_normal"
+                android:paddingHorizontal="@dimen/view_padding_normal"
+                android:paddingVertical="@dimen/view_padding_small" />
+
+            <View style="@style/DividerLine" />
+
+            <LinearLayout style="@style/LinearHorBigSpace">
+
+                <TextView
+                    style="@style/TextHorItemName"
+                    android:text="@string/workorder_range" />
+
+                <TextView
+                    android:id="@+id/text_range"
+                    style="@style/TextHorItemValue" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/LinearHorBigSpace">
+
+                <TextView
+                    style="@style/TextHorItemName"
+                    android:text="@string/workorder_location" />
+
+                <TextView
+                    android:id="@+id/text_location"
+                    style="@style/TextHorItemValue" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/LinearHorBigSpace">
+
+                <TextView
+                    style="@style/TextHorItemName"
+                    android:text="@string/workorder_worker" />
+
+                <TextView
+                    android:id="@+id/text_worker"
+                    style="@style/TextHorItemValue"
+                    android:layout_weight="2.5"/>
+
+                <ImageView
+                    android:id="@+id/image_call"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:scaleType="fitEnd"
+                    android:src="@drawable/ic_call_blue_500_24dp"/>
+            </LinearLayout>
+
+            <View style="@style/DividerLine" />
+
+            <LinearLayout style="@style/LinearHorBigSpace">
+
+                <TextView
+                    style="@style/TextHorItemName"
+                    android:text="@string/workorder_type" />
+
+                <TextView
+                    android:id="@+id/text_type"
+                    style="@style/TextHorItemValue" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/LinearHorBigSpace">
+
+                <TextView
+                    style="@style/TextHorItemName"
+                    android:text="@string/workorder_creator" />
+
+                <TextView
+                    android:id="@+id/text_creator"
+                    style="@style/TextHorItemValue" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/LinearHorBigSpace">
+
+                <TextView
+                    style="@style/TextHorItemName"
+                    android:text="@string/workorder_id" />
+
+                <TextView
+                    android:id="@+id/text_id"
+                    style="@style/TextHorItemValue" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_anchor="@id/layout_state"
+        app:layout_anchorGravity="bottom|end">
+
+        <com.github.jorgecastilloprz.FABProgressCircle
+            android:id="@+id/fabProgressCircle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:arcColor="@color/colorPrimary"
+            app:finalIcon="@drawable/ic_cloud_done_white_24dp"
+            app:reusable="true">
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab_execute"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_edit_white_24dp"
+                app:useCompatPadding="true" />
+        </com.github.jorgecastilloprz.FABProgressCircle>
+    </RelativeLayout>
+
+</android.support.design.widget.CoordinatorLayout>

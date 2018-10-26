@@ -102,7 +102,7 @@ public class WorkorderCreatorActivity extends BaseActivity {
             workorder.genId(WAServicer.getUser().getDeviceName());
             workorder.setType(type);
             workorder.setTitle(title);
-            workorder.setTask(task.replace("\n", ";"));
+            workorder.setTask(Workorder.getServletString(task));
             workorder.setLocation(location);
             workorder.setWorker(worker);
             creator=TextUtils.isEmpty(creator)?WAServicer.getUser().getUsername():creator;

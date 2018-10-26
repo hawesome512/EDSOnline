@@ -35,6 +35,7 @@ import com.xseec.eds.model.State;
 import com.xseec.eds.model.WAServicer;
 import com.xseec.eds.model.tags.OverviewTag;
 import com.xseec.eds.model.tags.Tag;
+import com.xseec.eds.util.ContentHelper;
 import com.xseec.eds.util.EDSApplication;
 import com.xseec.eds.util.Generator;
 import com.xseec.eds.util.OpenMapHelper;
@@ -290,13 +291,7 @@ public class OverviewFragment extends BaseFragment {
 
     @OnClick(R.id.layout_engineer)
     public void onLayoutEngineerClicked() {
-        Pattern pattern = Pattern.compile("\\d+");
-        Matcher matcher = pattern.matcher(basicInfo.getPricipal());
-        if (matcher.find()) {
-            Intent intent = new Intent(Intent.ACTION_DIAL);
-            intent.setData(Uri.parse("tel:" + matcher.group(0)));
-            startActivity(intent);
-        }
+        ContentHelper.call(getContext(),basicInfo.getPricipal());
     }
 
     @OnClick(R.id.layout_location)

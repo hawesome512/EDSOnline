@@ -198,8 +198,9 @@
                     android:layout_weight="3"
                     android:background="@drawable/view_border"
                     android:hint="@string/workorder_task_tips"
+                    android:lineSpacingExtra="@dimen/view_margin_normal"
                     android:gravity="top"
-                    android:lines="5"
+                    android:lines="3"
                     android:padding="@dimen/view_padding_small"
                     android:imeOptions="actionDone"/>
 

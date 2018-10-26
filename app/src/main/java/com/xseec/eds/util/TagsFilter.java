@@ -131,7 +131,7 @@ public class TagsFilter {
     public static State getStateByTagList(List<Tag> source) {
         List<Tag> filter = filterTagList(source, FILTER_STATE);
         List<State> stateList = new ArrayList<>();
-        for (Tag tag : source) {
+        for (Tag tag : filter) {
             stateList.add(State.getState(tag.getTagValue()));
         }
         if (stateList.contains(State.ALARM)) {

@@ -45,6 +45,7 @@ public class WorkorderListFragment extends Fragment {
 
     private static final int REQUEST_CREATE = 1;
 
+
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
     @InjectView(R.id.recycler)
@@ -97,7 +98,7 @@ public class WorkorderListFragment extends Fragment {
             public void onResponse(final Response response) throws IOException {
                 workorderList=WAJsonHelper.getWorkorderList(response);
                 Collections.sort(workorderList,Collections.<Workorder>reverseOrder());
-                workorderAdapter = new WorkorderAdapter(workorderList);
+                workorderAdapter = new WorkorderAdapter(getContext(),workorderList);
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -145,8 +146,6 @@ public class WorkorderListFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_CREATE && resultCode == Activity.RESULT_OK) {
-            queryWorkorders();
-        }
+        queryWorkorders();
     }
 }

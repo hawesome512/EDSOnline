@@ -41,4 +41,9 @@ dependencies {
     implementation 'org.litepal.android:core:2.0.0'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
     implementation 'com.youth.banner:banner:1.4.9'
-}
+    implementation 'com.github.hotchemi:permissionsdispatcher:3.1.0'
+    annotationProcessor 'com.github.hotchemi:permissionsdispatcher-processor:3.1.0'
+    implementation 'com.github.jorgecastilloprz:fabprogresscircle:1.01@aar'
+    implementation 'top.zibin:Luban:1.1.8'
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.3'
+    }

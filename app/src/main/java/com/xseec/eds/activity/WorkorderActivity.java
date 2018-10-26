@@ -1,0 +1,398 @@
+package com.xseec.eds.activity;
+
+import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import com.github.jorgecastilloprz.FABProgressCircle;
+import com.github.jorgecastilloprz.listeners.FABProgressListener;
+import com.luck.picture.lib.PictureSelector;
+import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.entity.LocalMedia;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+import com.xseec.eds.R;
+import com.xseec.eds.adapter.PhotoAdapter;
+import com.xseec.eds.model.servlet.UploadListener;
+import com.xseec.eds.model.servlet.Workorder;
+import com.xseec.eds.util.ContentHelper;
+import com.xseec.eds.util.DateHelper;
+import com.xseec.eds.util.PhotoPicker.PhotoPicker;
+import com.xseec.eds.util.ViewHelper;
+import com.xseec.eds.util.WAServiceHelper;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.RuntimePermissions;
+
+@RuntimePermissions
+public class WorkorderActivity extends AppCompatActivity implements UploadListener,
+        FABProgressListener {
+
+
+    @InjectView(R.id.image_area)
+    ImageView imageArea;
+    @InjectView(R.id.toolbar)
+    Toolbar toolbar;
+    @InjectView(R.id.collapsing_layout)
+    CollapsingToolbarLayout collapsingLayout;
+    @InjectView(R.id.appbar_layout)
+    AppBarLayout appbarLayout;
+    @InjectView(R.id.image_state)
+    ImageView imageState;
+    @InjectView(R.id.text_state)
+    TextView textState;
+    @InjectView(R.id.layout_state)
+    LinearLayout layoutState;
+    @InjectView(R.id.edit_log)
+    EditText editLog;
+    @InjectView(R.id.recycler_image)
+    RecyclerView recyclerImage;
+    @InjectView(R.id.layout_execute)
+    LinearLayout layoutExecute;
+    @InjectView(R.id.text_task)
+    TextView textTask;
+    @InjectView(R.id.text_range)
+    TextView textRange;
+    @InjectView(R.id.text_location)
+    TextView textLocation;
+    @InjectView(R.id.text_worker)
+    TextView textWorker;
+    @InjectView(R.id.text_type)
+    TextView textType;
+    @InjectView(R.id.text_creator)
+    TextView textCreator;
+    @InjectView(R.id.text_id)
+    TextView textId;
+    @InjectView(R.id.fab_execute)
+    FloatingActionButton fabExecute;
+    @InjectView(R.id.fabProgressCircle)
+    FABProgressCircle fabProgressCircle;
+    @InjectView(R.id.image_call)
+    ImageView imageCall;
+
+    private Workorder workorder;
+    private PhotoAdapter adapter;
+    private boolean editing = false;
+    private List<LocalMedia> sourceImageList;
+    private List<String> compressImageList;
+
+    private static final String EXT_WORKORDER = "workorder";
+    private static final int REQUEST_WORKORDER = 1;
+
+    public static void start(Context context, Workorder workorder) {
+        Intent intent = new Intent(context, WorkorderActivity.class);
+        intent.putExtra(EXT_WORKORDER, workorder);
+        //context.startActivity(intent);
+        //返回后触发工单列表刷新
+        ((Activity) context).startActivityForResult(intent, REQUEST_WORKORDER);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_workorder);
+        ButterKnife.inject(this);
+        ViewHelper.initToolbar(this, toolbar, R.drawable.ic_arrow_back_white_24dp);
+        initRecycler();
+        workorder = getIntent().getParcelableExtra(EXT_WORKORDER);
+        initViews();
+
+//        WAServiceHelper.sendWorkorderQueryRequest(new Workorder("3600"), null, null, new Callback
+//                () {
+//            @Override
+//            public void onFailure(Request request, IOException e) {
+//
+//            }
+//
+//            @Override
+//            public void onResponse(Response response) throws IOException {
+//                List<Workorder> workorders = WAJsonHelper.getWorkorderList(response);
+//                if (workorders != null) {
+//                    workorder = workorders.get(0);
+//                    runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            initViews();
+//                        }
+//                    });
+//                }
+//            }
+//        });
+
+    }
+
+    private void initViews() {
+        setTitle(workorder.getTitle());
+        imageState.setImageResource(workorder.getStateImgRes());
+        textState.setText(workorder.getStateTextRes());
+        textTask.setText(Workorder.getShowString(workorder.getTask()));
+        textRange.setText(workorder.getDateRange());
+        textLocation.setText(workorder.getLocation());
+        textWorker.setText(workorder.getWorker());
+        textType.setText(workorder.getTypeString());
+        textCreator.setText(workorder.getCreator());
+        textId.setText(workorder.getId());
+        sourceImageList = workorder.getImageMediaList();
+        if (workorder.getWorkorderState() == Workorder.WorkorderState.DONE) {
+            layoutExecute.setVisibility(View.VISIBLE);
+            editLog.setText(Workorder.getShowString(workorder.getLog()));
+            adapter.addMediaList(sourceImageList);
+        }
+
+        fabProgressCircle.attachListener(this);
+    }
+
+    private void initRecycler() {
+        GridLayoutManager layoutManager = new GridLayoutManager(this, ViewHelper.isPort() ? 3 : 6);
+        recyclerImage.setLayoutManager(layoutManager);
+        adapter = new PhotoAdapter(this, new ArrayList<LocalMedia>());
+        recyclerImage.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case PictureConfig.CHOOSE_REQUEST:
+                    // 图片选择结果回调
+                    List<LocalMedia> medias = PictureSelector.obtainMultipleResult(data);
+                    adapter.addMediaList(medias);
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+            @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        WorkorderActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode,
+                grantResults);
+    }
+
+
+    @OnClick(R.id.fab_execute)
+    public void onViewClicked() {
+        if (!editing) {
+            WorkorderActivityPermissionsDispatcher.prepareEditWithPermissionCheck
+                    (WorkorderActivity.this);
+        } else {
+            editing = false;
+            disenableEdit();
+            fabProgressCircle.show();
+            uploadWorkorder();
+        }
+    }
+
+    @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE})
+    void prepareEdit() {
+        editing = true;
+        if (layoutExecute.getVisibility() != View.VISIBLE) {
+            layoutExecute.setVisibility(View.VISIBLE);
+        }
+        editLog.setText(editLog.getText().toString().replaceAll(DateHelper.dateRegex, ""));
+        editLog.setFocusableInTouchMode(true);
+        editLog.requestFocus();
+        editLog.setSelection(editLog.getText().length());
+        fabExecute.setImageResource(R.drawable.ic_cloud_upload_white_24dp);
+        adapter.setAddable(true);
+    }
+
+/*
+    执行工单后上传：图片压缩上传，其他文本上传，上传动画
+ */
+
+    private void uploadWorkorder() {
+        compressImageList = new ArrayList<>();
+        for (LocalMedia media : adapter.getLocalMediaList()) {
+            if (!sourceImageList.contains(media)) {
+                compressImageList.add(media.getCompressPath());
+            }
+        }
+        if (compressImageList.size() > 0) {
+            WAServiceHelper.uploadImage(compressImageList, this);
+        } else {
+            onImageUploaded(null);
+        }
+    }
+
+    @Override
+    public void onImageUploaded(String response) {
+        List<String> imageNames = PhotoPicker.getLocalMedisListName(adapter.getLocalMediaList(),
+                sourceImageList);
+        String image = TextUtils.join(Workorder.SPIT, imageNames);
+        workorder.setImage(image);
+        String log = editLog.getText().toString() + "\n" + DateHelper.getString(new Date());
+        workorder.setLog(Workorder.getServletString(log));
+        workorder.setStateDone();
+        WAServiceHelper.sendWorkorderUpdateRequest(workorder, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                onWorkorderUploaded();
+            }
+        });
+    }
+
+    private void onWorkorderUploaded() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                fabProgressCircle.beginFinalAnimation();
+            }
+        });
+    }
+
+    @Override
+    public void onFABProgressAnimationEnd() {
+        fabExecute.setImageResource(R.drawable.ic_edit_white_24dp);
+        imageState.setImageResource(workorder.getStateImgRes());
+        textState.setText(workorder.getStateTextRes());
+        editLog.setText(Workorder.getShowString(workorder.getLog()));
+    }
+
+    @Override
+    public void onImageUploadError(String response) {
+
+    }
+
+/*
+    取消编辑前确认：编辑状态下返回键
+ */
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.workorder_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                if (editing) {
+                    checkCancelEditing(true);
+                    return false;
+                }
+                finish();
+                break;
+            case R.id.menu_share:
+                ContentHelper.shareMessage(this, workorder.toShare());
+                break;
+            case R.id.menu_delete:
+                checkDeleteWorkorder();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (editing) {
+            checkCancelEditing(false);
+            return;
+        }
+        super.onBackPressed();
+    }
+
+    private void checkCancelEditing(final boolean homeClicked) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setMessage(R.string.cancel_edit)
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (homeClicked) {
+                            finish();
+                        } else {
+                            editing = false;
+                            disenableEdit();
+                            fabExecute.setImageResource(R.drawable.ic_edit_white_24dp);
+                            adapter.setLocalMediaList(sourceImageList);
+                        }
+                    }
+                })
+                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        builder.show();
+    }
+
+    private void checkDeleteWorkorder() {
+        new AlertDialog.Builder(this)
+                .setMessage(R.string.workorder_delete_confirm)
+                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        workorder.setTitle(null);
+                        WAServiceHelper.sendWorkorderUpdateRequest(workorder, new Callback() {
+                            @Override
+                            public void onFailure(Request request, IOException e) {
+
+                            }
+
+                            @Override
+                            public void onResponse(Response response) throws IOException {
+                                finish();
+                            }
+                        });
+                    }
+                })
+                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).show();
+    }
+
+    private void disenableEdit() {
+        adapter.setAddable(false);
+        editLog.setFocusable(false);
+        editLog.setText(Workorder.getShowString(workorder.getLog()));
+    }
+
+    @OnClick(R.id.image_call)
+    public void onImageViewClicked() {
+        ContentHelper.call(this,workorder.getWorker());
+    }
+}

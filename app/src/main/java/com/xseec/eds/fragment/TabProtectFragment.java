@@ -7,6 +7,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
@@ -232,7 +233,6 @@ public class TabProtectFragment extends TabBaseFragment {
                 targets.add(new ValidTag(IsdTag.getTagName(), strValue));
             }
         }
-
         onModifyTags(targets,layoutContainer);
     }
 }
