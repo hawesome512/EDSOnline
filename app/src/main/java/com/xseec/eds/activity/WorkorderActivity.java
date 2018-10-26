@@ -393,6 +393,6 @@ public class WorkorderActivity extends AppCompatActivity implements UploadListen
 
     @OnClick(R.id.image_call)
     public void onImageViewClicked() {
-        ContentHelper.call(this,workorder.getWorker());
+        ContentHelper.callPhone(this,workorder.getWorker());
     }
 }

@@ -291,7 +291,7 @@ public class OverviewFragment extends BaseFragment {
 
     @OnClick(R.id.layout_engineer)
     public void onLayoutEngineerClicked() {
-        ContentHelper.call(getContext(),basicInfo.getPricipal());
+        ContentHelper.callPhone(getContext(),basicInfo.getPricipal());
     }
 
     @OnClick(R.id.layout_location)
