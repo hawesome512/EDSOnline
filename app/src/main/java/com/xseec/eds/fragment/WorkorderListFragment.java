@@ -41,7 +41,7 @@ import butterknife.OnClick;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class WorkorderListFragment extends Fragment {
+public class WorkorderListFragment extends BaseFragment {
 
     private static final int REQUEST_CREATE = 1;
 
@@ -99,13 +99,7 @@ public class WorkorderListFragment extends Fragment {
                 workorderList=WAJsonHelper.getWorkorderList(response);
                 Collections.sort(workorderList,Collections.<Workorder>reverseOrder());
                 workorderAdapter = new WorkorderAdapter(getContext(),workorderList);
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        progress.setVisibility(View.GONE);
-                        recycler.setAdapter(workorderAdapter);
-                    }
-                });
+                refreshViewsInThread(response);
             }
         });
     }
@@ -147,5 +141,11 @@ public class WorkorderListFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         queryWorkorders();
+    }
+
+    @Override
+    protected void onRefreshViews(Response response) {
+        progress.setVisibility(View.GONE);
+        recycler.setAdapter(workorderAdapter);
     }
 }

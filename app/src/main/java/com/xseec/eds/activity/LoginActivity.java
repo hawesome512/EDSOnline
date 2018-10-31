@@ -14,12 +14,13 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.xseec.eds.R;
-import com.xseec.eds.model.BasicInfo;
 import com.xseec.eds.model.User;
 import com.xseec.eds.model.WAServicer;
+import com.xseec.eds.model.servlet.Basic;
 import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.util.CodeHelper;
 import com.xseec.eds.util.TagsFilter;
+import com.xseec.eds.util.Update.UpdateHelper;
 import com.xseec.eds.util.ViewHelper;
 import com.xseec.eds.util.WAJsonHelper;
 import com.xseec.eds.util.WAServiceHelper;
@@ -57,13 +58,13 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.inject(this);
         getLoginInfo();
+        UpdateHelper.checkUpdate(this);
     }
 
     @OnClick(R.id.btn_login)
     public void onBtnLoginClicked() {
 
         //==============程序模块调试区域=====================
-
         //=================================================
 
         ViewHelper.startViewAnimator(btnLogin);
@@ -82,14 +83,14 @@ public class LoginActivity extends AppCompatActivity {
                     setLoginInfo();
                     final User user = new User(authority, deviceName);
                     WAServicer.setUser(user);
-                    final BasicInfo basicInfo = WAJsonHelper.getBasicInfo(WAServiceHelper.getBasicInfoRequest(deviceName));
+                    final Basic basic=WAJsonHelper.getBasicList(WAServiceHelper.getBaiscQueryRequest(deviceName));
                     final ArrayList<Tag> tagList = (ArrayList<Tag>) WAJsonHelper.getTagList
                             (WAServiceHelper.getTagListRequest(deviceName));
                     TagsFilter.setAllTagList(tagList);
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            MainActivity.start(LoginActivity.this, basicInfo, tagList);
+                            MainActivity.start(LoginActivity.this, basic, tagList);
                             finish();
                         }
                     });

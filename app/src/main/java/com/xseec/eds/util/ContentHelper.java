@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.text.TextUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -47,6 +48,9 @@ public class ContentHelper {
     }
 
     public static void callPhone(Context context,String message){
+        if(TextUtils.isEmpty(message)){
+            return;
+        }
         Pattern pattern = Pattern.compile("\\d+");
         Matcher matcher = pattern.matcher(message);
         if (matcher.find()) {

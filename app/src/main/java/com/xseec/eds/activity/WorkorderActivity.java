@@ -11,7 +11,6 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -38,7 +37,7 @@ import com.xseec.eds.model.servlet.UploadListener;
 import com.xseec.eds.model.servlet.Workorder;
 import com.xseec.eds.util.ContentHelper;
 import com.xseec.eds.util.DateHelper;
-import com.xseec.eds.util.PhotoPicker.PhotoPicker;
+import com.xseec.eds.util.PhotoPicker;
 import com.xseec.eds.util.ViewHelper;
 import com.xseec.eds.util.WAServiceHelper;
 
@@ -53,8 +52,14 @@ import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.RuntimePermissions;
 
+
+/*
+    工单页面：查看、执行、分享、删除工单
+    技术要点：FABProgress,PictureSelector
+ */
+
 @RuntimePermissions
-public class WorkorderActivity extends AppCompatActivity implements UploadListener,
+public class WorkorderActivity extends BaseActivity implements UploadListener,
         FABProgressListener {
 
 
@@ -125,29 +130,13 @@ public class WorkorderActivity extends AppCompatActivity implements UploadListen
         initRecycler();
         workorder = getIntent().getParcelableExtra(EXT_WORKORDER);
         initViews();
+    }
 
-//        WAServiceHelper.sendWorkorderQueryRequest(new Workorder("3600"), null, null, new Callback
-//                () {
-//            @Override
-//            public void onFailure(Request request, IOException e) {
-//
-//            }
-//
-//            @Override
-//            public void onResponse(Response response) throws IOException {
-//                List<Workorder> workorders = WAJsonHelper.getWorkorderList(response);
-//                if (workorders != null) {
-//                    workorder = workorders.get(0);
-//                    runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            initViews();
-//                        }
-//                    });
-//                }
-//            }
-//        });
-
+    private void initRecycler() {
+        GridLayoutManager layoutManager = new GridLayoutManager(this, ViewHelper.isPort() ? 3 : 6);
+        recyclerImage.setLayoutManager(layoutManager);
+        adapter = new PhotoAdapter(this, new ArrayList<LocalMedia>());
+        recyclerImage.setAdapter(adapter);
     }
 
     private void initViews() {
@@ -167,15 +156,8 @@ public class WorkorderActivity extends AppCompatActivity implements UploadListen
             editLog.setText(Workorder.getShowString(workorder.getLog()));
             adapter.addMediaList(sourceImageList);
         }
-
+        //FABProgressListener
         fabProgressCircle.attachListener(this);
-    }
-
-    private void initRecycler() {
-        GridLayoutManager layoutManager = new GridLayoutManager(this, ViewHelper.isPort() ? 3 : 6);
-        recyclerImage.setLayoutManager(layoutManager);
-        adapter = new PhotoAdapter(this, new ArrayList<LocalMedia>());
-        recyclerImage.setAdapter(adapter);
     }
 
     @Override
@@ -212,6 +194,7 @@ public class WorkorderActivity extends AppCompatActivity implements UploadListen
             fabProgressCircle.show();
             uploadWorkorder();
         }
+        setEditMode(editing);
     }
 
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -221,6 +204,7 @@ public class WorkorderActivity extends AppCompatActivity implements UploadListen
         if (layoutExecute.getVisibility() != View.VISIBLE) {
             layoutExecute.setVisibility(View.VISIBLE);
         }
+        //将工单日志中时间删除
         editLog.setText(editLog.getText().toString().replaceAll(DateHelper.dateRegex, ""));
         editLog.setFocusableInTouchMode(true);
         editLog.requestFocus();
@@ -234,6 +218,7 @@ public class WorkorderActivity extends AppCompatActivity implements UploadListen
  */
 
     private void uploadWorkorder() {
+        //跟sourceImage对比，只上传新增图片
         compressImageList = new ArrayList<>();
         for (LocalMedia media : adapter.getLocalMediaList()) {
             if (!sourceImageList.contains(media)) {
@@ -251,7 +236,8 @@ public class WorkorderActivity extends AppCompatActivity implements UploadListen
     public void onImageUploaded(String response) {
         List<String> imageNames = PhotoPicker.getLocalMedisListName(adapter.getLocalMediaList(),
                 sourceImageList);
-        String image = TextUtils.join(Workorder.SPIT, imageNames);
+        //判断数组长度为0时，image="",在Servlet中收到空值，不更新数据库imagelie,故变为：image="null"
+        String image =imageNames.size()==0?null: TextUtils.join(Workorder.SPIT, imageNames);
         workorder.setImage(image);
         String log = editLog.getText().toString() + "\n" + DateHelper.getString(new Date());
         workorder.setLog(Workorder.getServletString(log));
@@ -291,10 +277,6 @@ public class WorkorderActivity extends AppCompatActivity implements UploadListen
 
     }
 
-/*
-    取消编辑前确认：编辑状态下返回键
- */
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.workorder_menu, menu);
@@ -304,13 +286,6 @@ public class WorkorderActivity extends AppCompatActivity implements UploadListen
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case android.R.id.home:
-                if (editing) {
-                    checkCancelEditing(true);
-                    return false;
-                }
-                finish();
-                break;
             case R.id.menu_share:
                 ContentHelper.shareMessage(this, workorder.toShare());
                 break;
@@ -321,40 +296,6 @@ public class WorkorderActivity extends AppCompatActivity implements UploadListen
                 break;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (editing) {
-            checkCancelEditing(false);
-            return;
-        }
-        super.onBackPressed();
-    }
-
-    private void checkCancelEditing(final boolean homeClicked) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                .setMessage(R.string.cancel_edit)
-                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (homeClicked) {
-                            finish();
-                        } else {
-                            editing = false;
-                            disenableEdit();
-                            fabExecute.setImageResource(R.drawable.ic_edit_white_24dp);
-                            adapter.setLocalMediaList(sourceImageList);
-                        }
-                    }
-                })
-                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-        builder.show();
     }
 
     private void checkDeleteWorkorder() {
@@ -388,11 +329,10 @@ public class WorkorderActivity extends AppCompatActivity implements UploadListen
     private void disenableEdit() {
         adapter.setAddable(false);
         editLog.setFocusable(false);
-        editLog.setText(Workorder.getShowString(workorder.getLog()));
     }
 
     @OnClick(R.id.image_call)
     public void onImageViewClicked() {
-        ContentHelper.callPhone(this,workorder.getWorker());
+        ContentHelper.callPhone(this, workorder.getWorker());
     }
 }

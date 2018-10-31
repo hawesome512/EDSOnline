@@ -3,18 +3,22 @@ package com.xseec.eds.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
@@ -71,9 +75,9 @@ public class WorkorderCreatorActivity extends BaseActivity {
     @InjectView(R.id.progress)
     ProgressBar progress;
 
-    public static void start(Activity context,int requestCode) {
+    public static void start(Activity context, int requestCode) {
         Intent intent = new Intent(context, WorkorderCreatorActivity.class);
-        context.startActivityForResult(intent,requestCode);
+        context.startActivityForResult(intent, requestCode);
     }
 
 
@@ -82,6 +86,7 @@ public class WorkorderCreatorActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workorder_creator);
         ButterKnife.inject(this);
+        setEditMode(true);
         setTitle(R.string.nav_schedule);
         ViewHelper.initToolbar(this, toolbar, R.drawable.ic_arrow_back_white_24dp);
         workorder = new Workorder();
@@ -97,7 +102,9 @@ public class WorkorderCreatorActivity extends BaseActivity {
         int type = spinnerType.getSelectedItemPosition();
         if (TextUtils.isEmpty(title) || workorder.getStart() == null || workorder.getEnd() ==
                 null) {
-            Snackbar.make(btnSave, R.string.workorder_nonull, Snackbar.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.workorder_nonull, Toast.LENGTH_SHORT).show();
+        } else if (workorder.getStart().after(workorder.getEnd())) {
+            Toast.makeText(this, R.string.workorder_range_error, Toast.LENGTH_SHORT).show();
         } else {
             workorder.genId(WAServicer.getUser().getDeviceName());
             workorder.setType(type);
@@ -105,7 +112,7 @@ public class WorkorderCreatorActivity extends BaseActivity {
             workorder.setTask(Workorder.getServletString(task));
             workorder.setLocation(location);
             workorder.setWorker(worker);
-            creator=TextUtils.isEmpty(creator)?WAServicer.getUser().getUsername():creator;
+            creator = TextUtils.isEmpty(creator) ? WAServicer.getUser().getUsername() : creator;
             workorder.setCreator(creator);
             ViewHelper.startViewAnimator(btnSave);
             saveWorkorder();
@@ -121,11 +128,11 @@ public class WorkorderCreatorActivity extends BaseActivity {
 
             @Override
             public void onResponse(Response response) throws IOException {
-                ResponseResult result= WAJsonHelper.getServletResult(response);
-                if(result.isSuccess()){
+                ResponseResult result = WAJsonHelper.getServletResult(response);
+                if (result.isSuccess()) {
                     setResult(RESULT_OK);
                     finish();
-                }else {
+                } else {
                     onSaveFailed();
                 }
             }
@@ -154,7 +161,8 @@ public class WorkorderCreatorActivity extends BaseActivity {
 
     private void pickDate(final boolean isStart) {
         Calendar calendar = Calendar.getInstance();
-        new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+        DatePickerDialog dialog = new DatePickerDialog(this, new DatePickerDialog
+                .OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 String show = (month + 1) + "-" + dayOfMonth;
@@ -169,7 +177,9 @@ public class WorkorderCreatorActivity extends BaseActivity {
                 }
             }
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar
-                .DAY_OF_MONTH)).show();
+                .DAY_OF_MONTH));
+        dialog.getDatePicker().setMinDate(calendar.getTime().getTime());
+        dialog.show();
     }
 
     private void pickContack(final int requestCode) {
@@ -206,11 +216,10 @@ public class WorkorderCreatorActivity extends BaseActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                //未知bug,不能重新显示
+                //未知bug,不能重新显示Button图标
                 ViewHelper.resetViewAnimator(btnSave);
-                Snackbar.make(btnSave,R.string.workorder_fail,Snackbar.LENGTH_LONG).show();
+                Snackbar.make(btnSave, R.string.workorder_fail, Snackbar.LENGTH_LONG).show();
             }
         });
     }
-
 }

@@ -1,7 +1,6 @@
 package com.xseec.eds.adapter;
 
 import android.app.Activity;
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,7 +11,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.luck.picture.lib.entity.LocalMedia;
 import com.xseec.eds.R;
-import com.xseec.eds.util.PhotoPicker.PhotoPicker;
+import com.xseec.eds.util.PhotoPicker;
 
 import java.util.ArrayList;
 import java.util.List;

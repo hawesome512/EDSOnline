@@ -65,10 +65,12 @@
             android:label="@string/title_activity_verification_code"
             android:theme="@style/DialogActivity"
             android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".activity.WorkorderCreatorActivity"></activity>
+        <activity android:name=".activity.WorkorderCreatorActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"></activity>
         <activity android:name=".activity.WorkorderActivity"
             android:windowSoftInputMode="adjustPan"
-            android:theme="@style/TransStatusBarTheme">
+            android:theme="@style/TransStatusBarTheme"
+            android:configChanges="keyboardHidden|orientation|screenSize">
         </activity>
     </application>
 

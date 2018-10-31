@@ -156,6 +156,7 @@
     <string name="workorder_save">创建工单</string>
     <string name="workorder_required">必填</string>
     <string name="workorder_nonull">必填项不能为空</string>
+    <string name="workorder_range_error">起始时间不能晚于截止时间</string>
     <string name="workorder_fail">创建工单失败</string>
     <string name="workorder_picker_error">图片尺寸不符合规范</string>
     <string name="workorder_delete_confirm">是否删除工单？</string>
@@ -222,6 +223,9 @@
     <string name="svl_download">http://%1$s:8080/EDSServlet/upload/</string>
     <string name="svl_alarm">http://%1$s:8080/EDSServlet/UpdateAlarmServlet?</string>
     <string name="svl_action">http://%1$s:8080/EDSServlet/UpdateActionServlet?</string>
+    <string name="svl_basic_query">http://%1$s:8080/EDSServlet/QueryBasicServlet?</string>
+    <string name="svl_basic_update">http://%1$s:8080/EDSServlet/UpdateBasicServlet</string>
+    <string name="svl_basic_request">{\"id\":\"%1$s\",\"user\":\"%2$s\",\"banner\":\"%3$s\",\"pricipal\":\"%4$s\",\"location\":\"%5$s\",\"image\":\"%6$s\"}</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

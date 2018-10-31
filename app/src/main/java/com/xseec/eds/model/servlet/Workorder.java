@@ -26,7 +26,7 @@ import java.util.List;
  * Created by Administrator on 2018/10/8.
  */
 
-public class Workorder implements Comparable,Parcelable {
+public class Workorder extends BaseModel implements Comparable,Parcelable {
 
     protected Workorder(Parcel in) {
         id = in.readString();
@@ -84,10 +84,6 @@ public class Workorder implements Comparable,Parcelable {
         DONE, DUE, OVERDUE
     }
 
-    //使用英文“;”作为分隔符
-    public static final String SPIT = ";";
-
-    private String id;
     private int state;
     private int type;
     private String title;
@@ -97,21 +93,12 @@ public class Workorder implements Comparable,Parcelable {
     private String location;
     private String worker;
     private String log;
-    private String image;
     private String creator;
 
     public Workorder() {
     }
 
     public Workorder(String id) {
-        this.id = id;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
         this.id = id;
     }
 
@@ -191,14 +178,6 @@ public class Workorder implements Comparable,Parcelable {
         this.log = log;
     }
 
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
     public String getCreator() {
         return creator;
     }
@@ -241,33 +220,6 @@ public class Workorder implements Comparable,Parcelable {
                 [getType()];
     }
 
-    public List<String> getImageList() {
-        if (!TextUtils.isEmpty(image)) {
-            List<String> target=new ArrayList<>();
-            String[] source=image.split(SPIT);
-            for(String s:source){
-                target.add(WAServicer.getDownloadImageUrl()+s);
-            }
-            return target;
-        } else {
-            return null;
-        }
-    }
-
-    public List<LocalMedia> getImageMediaList(){
-        List<LocalMedia> target=new ArrayList<>();
-        if (!TextUtils.isEmpty(image)) {
-            String[] source=image.split(SPIT);
-            for(String s:source){
-                String path=WAServicer.getDownloadImageUrl()+s;
-                String imageType= PictureMimeType.createImageType(path);
-                int mimeType=PictureMimeType.isPictureType(imageType);
-                target.add(new LocalMedia(path,0,mimeType,imageType));
-            }
-        }
-        return target;
-    }
-
     public String getDateRange() {
         return EDSApplication.getContext().getString(R.string.workorder_time, DateHelper
                 .getMDString(start), DateHelper.getMDString(end));
@@ -282,17 +234,6 @@ public class Workorder implements Comparable,Parcelable {
             default:
                 return R.string.workorder_overdue;
         }
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder();
-        if (TextUtils.isEmpty(id)) {
-            return null;
-        } else {
-            stringBuilder.append("id=" + id);
-        }
-        return stringBuilder.toString();
     }
 
     public String toShare(){
@@ -311,6 +252,7 @@ public class Workorder implements Comparable,Parcelable {
         return stringBuilder.toString();
     }
 
+    @Override
     public String toJson() {
         Context context = EDSApplication.getContext();
         return context.getString(R.string.svl_workorder_request, id, state, type, title, task,

@@ -12,6 +12,7 @@ import com.xseec.eds.R;
 import com.xseec.eds.model.deviceconfig.DeviceConfig;
 import com.xseec.eds.model.servlet.Action;
 import com.xseec.eds.model.servlet.Alarm;
+import com.xseec.eds.model.servlet.Basic;
 import com.xseec.eds.model.servlet.Workorder;
 import com.xseec.eds.util.EDSApplication;
 import com.xseec.eds.util.IOHelper;
@@ -160,5 +161,13 @@ public class WAServicer {
             builder.append("&end="+end);
         }
         return builder.toString();
+    }
+
+    public static String getBasicQueryUrl(@NonNull String deviceName){
+        return context.getString(R.string.svl_basic_query,hostUrl)+"id="+deviceName;
+    }
+
+    public static String getBasicUpdateUrl(@NonNull Basic basic){
+        return context.getString(R.string.svl_basic_update,hostUrl);
     }
 }

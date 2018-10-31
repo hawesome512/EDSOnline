@@ -13,6 +13,7 @@ import com.xseec.eds.R;
 import com.xseec.eds.model.servlet.Action;
 import com.xseec.eds.model.servlet.Alarm;
 import com.xseec.eds.model.DataLogFactor;
+import com.xseec.eds.model.servlet.Basic;
 import com.xseec.eds.model.servlet.UploadListener;
 import com.xseec.eds.model.servlet.Workorder;
 import com.xseec.eds.model.tags.StoredTag;
@@ -165,5 +166,16 @@ public class WAServiceHelper {
 
     public static void uploadImage(List<String> imageUrls,UploadListener listener){
         UploadHelper.formUpload(WAServicer.getUploadImageUrl(),imageUrls,listener);
+    }
+
+    public static Response getBaiscQueryRequest(String deviceName){
+        String url=WAServicer.getBasicQueryUrl(deviceName);
+        return executeRequest(url,null,null);
+    }
+
+    public static void sendBasicUpdateRequest(Basic basic,Callback callback){
+        String url=WAServicer.getBasicUpdateUrl(basic);
+        String content=basic.toJson();
+        sendRequest(url,null,content,callback);
     }
 }

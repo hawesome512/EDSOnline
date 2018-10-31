@@ -4,9 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Response;
+import com.xseec.eds.model.BasicInfo;
 import com.xseec.eds.model.servlet.Action;
 import com.xseec.eds.model.servlet.Alarm;
-import com.xseec.eds.model.BasicInfo;
+import com.xseec.eds.model.servlet.Basic;
 import com.xseec.eds.model.servlet.ResponseResult;
 import com.xseec.eds.model.servlet.Workorder;
 import com.xseec.eds.model.tags.Tag;
@@ -14,7 +15,6 @@ import com.xseec.eds.model.tags.Tag;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -118,7 +118,22 @@ public class WAJsonHelper {
         try {
             String json=response.body().string();
             return getServletDateFormatGson().fromJson(filterServletJson(json),new TypeToken<List<Action>>(){}.getType());
-        } catch (IOException e) {
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static Basic getBasicList(Response response){
+        try {
+            String json=response.body().string();
+            List<Basic> basics= getServletDateFormatGson().fromJson(filterServletJson(json),new TypeToken<List<Basic>>(){}.getType());
+            if(basics!=null&&basics.size()>0){
+                return basics.get(0);
+            }else {
+                return new Basic();
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -138,7 +153,7 @@ public class WAJsonHelper {
         Gson gson=new Gson();
         try {
             return gson.fromJson(response.body().string(),new TypeToken<ResponseResult>(){}.getType());
-        } catch (IOException e) {
+        } catch (Exception e) {
             return null;
         }
     }
