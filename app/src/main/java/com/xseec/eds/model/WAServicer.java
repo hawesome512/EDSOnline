@@ -170,4 +170,8 @@ public class WAServicer {
     public static String getBasicUpdateUrl(@NonNull Basic basic){
         return context.getString(R.string.svl_basic_update,hostUrl);
     }
+
+    public static String getAppUpdateUrl(){
+        return context.getString(R.string.update_url,hostUrl);
+    }
 }
