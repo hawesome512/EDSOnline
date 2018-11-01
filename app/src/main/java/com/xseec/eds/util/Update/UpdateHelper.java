@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import com.vector.update_app.UpdateAppBean;
 import com.vector.update_app.UpdateAppManager;
 import com.vector.update_app.UpdateCallback;
+import com.xseec.eds.model.WAServicer;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,7 +19,6 @@ import org.json.JSONObject;
 
 public class UpdateHelper {
 
-    private static final String UPDATE_URL = "http://www.eds.ink/software/eds/update.txt";
 
     private static int getVersionCode(Context context) {
         int code = 0;
@@ -37,7 +37,7 @@ public class UpdateHelper {
         new UpdateAppManager
                 .Builder()
                 .setActivity(activity)
-                .setUpdateUrl(UPDATE_URL)
+                .setUpdateUrl(WAServicer.getAppUpdateUrl())
                 .setHttpManager(new UpdateHttpManager())
                 .build()
                 .checkNewApp(new UpdateCallback() {

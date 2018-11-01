@@ -204,6 +204,7 @@
     <string name="trans_image_device">image_device</string>
 
     <!--WAService URL-->
+    <string name="update_url">http://%1$s/software/eds/update.txt</string>
     <string name="was_login">http://%1$s/WaWebService/Json/GetUserInfo/%2$s</string>
     <string name="was_tag_list">http://%1$s/WaWebService/Json/TagList/%2$s/%3$s/%4$s</string>
     <string name="was_get_value">http://%1$s/WaWebService/Json/GetTagValue/%2$s</string>
