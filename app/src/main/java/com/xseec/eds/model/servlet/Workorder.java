@@ -92,6 +92,8 @@ public class Workorder extends BaseModel implements Comparable,Parcelable {
     private Date end;
     private String location;
     private String worker;
+    private String image;
+
     private String log;
     private String creator;
 
@@ -186,9 +188,12 @@ public class Workorder extends BaseModel implements Comparable,Parcelable {
         this.creator = creator;
     }
 
+    public String getImage() {
+        return image;
+    }
 
-    public void genId(String zoneId) {
-        this.id = zoneId + "-" + DateHelper.getNowForId();
+    public void setImage(String image) {
+        this.image = image;
     }
 
     public WorkorderState getWorkorderState() {

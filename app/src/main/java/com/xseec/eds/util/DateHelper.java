@@ -18,6 +18,9 @@ public class DateHelper {
     private final static SimpleDateFormat sdfMD=new SimpleDateFormat("MM-dd");
 
     public static String getString(Date date) {
+        if(date==null){
+            date=new Date();
+        }
         return simpleDateFormat.format(date);
     }
 

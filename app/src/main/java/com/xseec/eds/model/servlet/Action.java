@@ -1,9 +1,12 @@
 package com.xseec.eds.model.servlet;
 
+import android.content.Context;
 import android.text.TextUtils;
 
 import com.google.gson.annotations.SerializedName;
+import com.xseec.eds.R;
 import com.xseec.eds.util.DateHelper;
+import com.xseec.eds.util.EDSApplication;
 
 import java.util.Date;
 
@@ -11,9 +14,8 @@ import java.util.Date;
  * Created by Administrator on 2018/10/8.
  */
 
-public class Action {
+public class Action extends BaseModel {
 
-    private String id;
     private String user;
     @SerializedName("action")
     private String info;
@@ -23,14 +25,6 @@ public class Action {
 
     public Action(String id){
         this.id=id;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getUser() {
@@ -62,19 +56,8 @@ public class Action {
     }
 
     @Override
-    public String toString() {
-        StringBuilder stringBuilder=new StringBuilder();
-        if(TextUtils.isEmpty(id)){
-            return null;
-        }else {
-            stringBuilder.append("id="+id);
-        }
-        if(!TextUtils.isEmpty(user)){
-            stringBuilder.append("&user="+user);
-        }
-        if(!TextUtils.isEmpty(info)){
-            stringBuilder.append("&action="+info);
-        }
-        return stringBuilder.toString();
+    public String toJson() {
+        Context context = EDSApplication.getContext();
+        return context.getString(R.string.svl_action_request, id, user, info, DateHelper.getString(time));
     }
 }

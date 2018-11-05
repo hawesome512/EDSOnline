@@ -20,6 +20,7 @@ public class Basic extends BaseModel implements Parcelable {
     private String banner;
     private String pricipal;
     private String location;
+    private String image;
 
     public Basic(){
         Context context=EDSApplication.getContext();
@@ -86,6 +87,14 @@ public class Basic extends BaseModel implements Parcelable {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 
     @Override

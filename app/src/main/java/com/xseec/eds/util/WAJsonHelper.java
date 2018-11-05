@@ -146,7 +146,7 @@ public class WAJsonHelper {
 
     private static Gson getServletDateFormatGson(){
         //使用此语句：Gson有能力将“2018-09-10”格式字符串转换为Date类型变量
-        return new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+        return new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
     }
 
     public static ResponseResult getServletResult(Response response){

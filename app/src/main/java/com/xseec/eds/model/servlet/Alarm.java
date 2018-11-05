@@ -1,9 +1,12 @@
 package com.xseec.eds.model.servlet;
 
+import android.content.Context;
 import android.text.TextUtils;
 
 import com.google.gson.annotations.SerializedName;
+import com.xseec.eds.R;
 import com.xseec.eds.util.DateHelper;
+import com.xseec.eds.util.EDSApplication;
 
 import java.util.Date;
 
@@ -11,9 +14,8 @@ import java.util.Date;
  * Created by Administrator on 2018/10/8.
  */
 
-public class Alarm {
+public class Alarm extends BaseModel {
 
-    private String id;
     private String device;
     @SerializedName("alarm")
     private String info;
@@ -23,14 +25,6 @@ public class Alarm {
 
     public Alarm(String id){
         this.id=id;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getDevice() {
@@ -62,19 +56,8 @@ public class Alarm {
     }
 
     @Override
-    public String toString() {
-        StringBuilder stringBuilder=new StringBuilder();
-        if(TextUtils.isEmpty(id)){
-            return null;
-        }else {
-            stringBuilder.append("id="+id);
-        }
-        if(!TextUtils.isEmpty(device)){
-            stringBuilder.append("&device="+device);
-        }
-        if(!TextUtils.isEmpty(info)){
-            stringBuilder.append("&alarm="+info);
-        }
-        return stringBuilder.toString();
+    public String toJson() {
+        Context context = EDSApplication.getContext();
+        return context.getString(R.string.svl_alarm_request, id, device, info, DateHelper.getString(time));
     }
 }

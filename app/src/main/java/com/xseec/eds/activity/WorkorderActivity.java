@@ -10,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -150,7 +149,7 @@ public class WorkorderActivity extends BaseActivity implements UploadListener,
         textType.setText(workorder.getTypeString());
         textCreator.setText(workorder.getCreator());
         textId.setText(workorder.getId());
-        sourceImageList = workorder.getImageMediaList();
+        sourceImageList = PhotoPicker.getImageMediaList(workorder.getImage());
         if (workorder.getWorkorderState() == Workorder.WorkorderState.DONE) {
             layoutExecute.setVisibility(View.VISIBLE);
             editLog.setText(Workorder.getShowString(workorder.getLog()));
@@ -194,7 +193,7 @@ public class WorkorderActivity extends BaseActivity implements UploadListener,
             fabProgressCircle.show();
             uploadWorkorder();
         }
-        setEditMode(editing);
+        setCheckExit(editing,getString(R.string.workorder_exit_confirm));
     }
 
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -299,31 +298,23 @@ public class WorkorderActivity extends BaseActivity implements UploadListener,
     }
 
     private void checkDeleteWorkorder() {
-        new AlertDialog.Builder(this)
-                .setMessage(R.string.workorder_delete_confirm)
-                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+        ViewHelper.checkExit(this, getString(R.string.delete_confirm), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                workorder.setTitle(null);
+                WAServiceHelper.sendWorkorderUpdateRequest(workorder, new Callback() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        workorder.setTitle(null);
-                        WAServiceHelper.sendWorkorderUpdateRequest(workorder, new Callback() {
-                            @Override
-                            public void onFailure(Request request, IOException e) {
-
-                            }
-
-                            @Override
-                            public void onResponse(Response response) throws IOException {
-                                finish();
-                            }
-                        });
-                    }
-                })
-                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                    public void onFailure(Request request, IOException e) {
 
                     }
-                }).show();
+
+                    @Override
+                    public void onResponse(Response response) throws IOException {
+                        finish();
+                    }
+                });
+            }
+        });
     }
 
     private void disenableEdit() {

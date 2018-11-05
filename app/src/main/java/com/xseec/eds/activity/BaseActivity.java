@@ -1,14 +1,12 @@
 package com.xseec.eds.activity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.xseec.eds.R;
-import com.xseec.eds.model.servlet.Workorder;
+import com.xseec.eds.util.ViewHelper;
 
 /**
  * Created by Administrator on 2018/8/17.
@@ -16,17 +14,20 @@ import com.xseec.eds.model.servlet.Workorder;
 
 public class BaseActivity extends AppCompatActivity {
 
-    private boolean editMode = false;
+    private boolean checkExit = false;
+    private String info;
 
-    public void setEditMode(boolean editMode) {
-        this.editMode = editMode;
+    //增加info,告诉用户具体退出哪个环节：编辑状态、APP
+    public void setCheckExit(boolean checkExit,String info) {
+        this.checkExit = checkExit;
+        this.info=info;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                checkCancelEditing();
+                confirmExit();
                 return false;
             default:
                 break;
@@ -36,7 +37,7 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        checkCancelEditing();
+        confirmExit();
     }
 
     //在Activity中重写onActivityResult方法触发Fragment
@@ -47,25 +48,11 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
-    private void checkCancelEditing() {
-        if(!editMode){
+    protected void confirmExit() {
+        if(!checkExit){
             finish();
             return;
         }
-        AlertDialog.Builder builder = new AlertDialog.Builder(this)
-                .setMessage(R.string.cancel_edit)
-                .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                    }
-                })
-                .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-        builder.show();
+        ViewHelper.checkExit(this,getString(R.string.exit_confirm,info),null);
     }
 }

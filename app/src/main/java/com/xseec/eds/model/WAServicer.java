@@ -131,23 +131,23 @@ public class WAServicer {
         return context.getString(R.string.svl_workorder_update,hostUrl);
     }
 
-    public static String getUploadImageUrl(){
-        return context.getString(R.string.svl_upload,hostUrl);
+    public static String getActionUpdateUrl(){
+        return context.getString(R.string.svl_action_update,hostUrl);
     }
 
-    public static String getDownloadImageUrl(){
-        return context.getString(R.string.svl_download,hostUrl);
-    }
-
-    public static String getAlarmUpdateUrl(@NonNull Alarm alarm,String start,String end){
-        String url=context.getString(R.string.svl_alarm,hostUrl);
-        url+=alarm;
+    public static String getActionQueryUrl(@NonNull Action action,String start,String end){
+        String url=context.getString(R.string.svl_action_query,hostUrl);
+        url+=action;
         return getServletQuery(url,start,end);
     }
 
-    public static String getActionUpdateUrl(@NonNull Action action,String start,String end){
-        String url=context.getString(R.string.svl_action,hostUrl);
-        url+=action;
+    public static String getAlarmUpdateUrl(){
+        return context.getString(R.string.svl_alarm_update,hostUrl);
+    }
+
+    public static String getAlarmQueryUrl(@NonNull Alarm alarm,String start,String end){
+        String url=context.getString(R.string.svl_alarm_query,hostUrl);
+        url+=alarm;
         return getServletQuery(url,start,end);
     }
 
@@ -169,6 +169,14 @@ public class WAServicer {
 
     public static String getBasicUpdateUrl(@NonNull Basic basic){
         return context.getString(R.string.svl_basic_update,hostUrl);
+    }
+
+    public static String getUploadImageUrl(){
+        return context.getString(R.string.svl_upload,hostUrl);
+    }
+
+    public static String getDownloadImageUrl(){
+        return context.getString(R.string.svl_download,hostUrl);
     }
 
     public static String getAppUpdateUrl(){

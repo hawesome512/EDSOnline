@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.squareup.okhttp.Callback;
@@ -231,6 +232,8 @@ public class OverviewFragment extends BaseFragment {
         if (abnormalDevices.size() != 0) {
             ListActivity.start(getContext(), getString(R.string.detail_title_error),
                     abnormalDevices);
+        }else {
+            Toast.makeText(getContext(), R.string.overview_devices_normal, Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -242,7 +245,7 @@ public class OverviewFragment extends BaseFragment {
 
     @OnClick(R.id.layout_grid)
     public void onLayoutGridClicked() {
-        PhotoPicker.previewSelectedPhotos(getActivity(),basic.getImageMediaList(),0);
+        PhotoPicker.previewSelectedPhotos(getActivity(),PhotoPicker.getImageMediaList(basic.getImage()),0);
     }
 
     @OnClick(R.id.layout_engineer)

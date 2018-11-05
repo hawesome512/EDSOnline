@@ -64,8 +64,8 @@ public class LoginActivity extends AppCompatActivity {
     @OnClick(R.id.btn_login)
     public void onBtnLoginClicked() {
 
-        //==============程序模块调试区域=====================
-        //这是一个验证版本分支的语句，无意义
+        //==============程序模块调试区域====================
+
         //=================================================
 
         ViewHelper.startViewAnimator(btnLogin);

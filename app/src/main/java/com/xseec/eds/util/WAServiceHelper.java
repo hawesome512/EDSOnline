@@ -10,15 +10,15 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
 import com.xseec.eds.R;
+import com.xseec.eds.model.DataLogFactor;
+import com.xseec.eds.model.WAServicer;
 import com.xseec.eds.model.servlet.Action;
 import com.xseec.eds.model.servlet.Alarm;
-import com.xseec.eds.model.DataLogFactor;
 import com.xseec.eds.model.servlet.Basic;
 import com.xseec.eds.model.servlet.UploadListener;
 import com.xseec.eds.model.servlet.Workorder;
 import com.xseec.eds.model.tags.StoredTag;
 import com.xseec.eds.model.tags.Tag;
-import com.xseec.eds.model.WAServicer;
 import com.xseec.eds.model.tags.ValidTag;
 
 import java.io.IOException;
@@ -104,7 +104,7 @@ public class WAServiceHelper {
         OkHttpClient okHttpClient = new OkHttpClient();
         try {
             return okHttpClient.newCall(request).execute();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
@@ -154,18 +154,26 @@ public class WAServiceHelper {
         sendRequest(url,null,content,callback);
     }
 
-    public static void sendAlarmUpdateRequest(Alarm alarm,String startTime,String endTime,Callback callback){
-        String url=WAServicer.getAlarmUpdateUrl(alarm,startTime,endTime);
+    public static void sendActionQueryRequest(Action action,String startTime,String endTime,Callback callback){
+        String url=WAServicer.getActionQueryUrl(action,startTime,endTime);
         sendRequest(url,null,null,callback);
     }
 
-    public static void sendActionUpdateRequest(Action action,String startTime,String endTime,Callback callback){
-        String url=WAServicer.getActionUpdateUrl(action,startTime,endTime);
+    public static void sendActionUpdateRequest(Action action,Callback callback){
+        String url=WAServicer.getActionUpdateUrl();
+        String content=action.toJson();
+        sendRequest(url,null,content,callback);
+    }
+
+    public static void sendAlarmQueryRequest(Alarm alarm,String startTime,String endTime,Callback callback){
+        String url=WAServicer.getAlarmQueryUrl(alarm,startTime,endTime);
         sendRequest(url,null,null,callback);
     }
 
-    public static void uploadImage(List<String> imageUrls,UploadListener listener){
-        UploadHelper.formUpload(WAServicer.getUploadImageUrl(),imageUrls,listener);
+    public static void sendAlarmUpdateRequest(Alarm alarm,Callback callback){
+        String url=WAServicer.getAlarmUpdateUrl();
+        String content=alarm.toJson();
+        sendRequest(url,null,content,callback);
     }
 
     public static Response getBaiscQueryRequest(String deviceName){
@@ -177,5 +185,9 @@ public class WAServiceHelper {
         String url=WAServicer.getBasicUpdateUrl(basic);
         String content=basic.toJson();
         sendRequest(url,null,content,callback);
+    }
+
+    public static void uploadImage(List<String> imageUrls,UploadListener listener){
+        UploadHelper.formUpload(WAServicer.getUploadImageUrl(),imageUrls,listener);
     }
 }

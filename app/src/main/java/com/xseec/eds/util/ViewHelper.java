@@ -2,10 +2,13 @@ package com.xseec.eds.util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -34,6 +37,25 @@ public class ViewHelper {
         Context context = EDSApplication.getContext();
         return context.getResources().getConfiguration().orientation == Configuration
                 .ORIENTATION_PORTRAIT;
+    }
+
+    public static void checkExit(final Activity activity,String info,DialogInterface.OnClickListener listener){
+        AlertDialog.Builder builder=new AlertDialog.Builder(activity);
+        String[] infos=info.split("/");
+        builder.setMessage(infos[0]);
+        if(listener==null){
+            listener=new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    activity.finish();
+                }
+            };
+        }
+        builder.setPositiveButton(infos[1], listener);
+        builder.setNegativeButton(infos[2],null);
+        AlertDialog dialog=builder.show();
+        int gray=ContextCompat.getColor(activity,R.color.colorGrayNormal);
+        dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(gray);
     }
 
     public static void lockOrientation(Activity activity){

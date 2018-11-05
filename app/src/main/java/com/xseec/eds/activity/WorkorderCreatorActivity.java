@@ -86,7 +86,7 @@ public class WorkorderCreatorActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workorder_creator);
         ButterKnife.inject(this);
-        setEditMode(true);
+        setCheckExit(true,getString(R.string.workorder_save));
         setTitle(R.string.nav_schedule);
         ViewHelper.initToolbar(this, toolbar, R.drawable.ic_arrow_back_white_24dp);
         workorder = new Workorder();

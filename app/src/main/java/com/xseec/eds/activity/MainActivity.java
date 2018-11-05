@@ -79,6 +79,7 @@ public class MainActivity extends BaseActivity implements NavigationView
                 }
             }).show();
         }
+        setCheckExit(true,getString(R.string.app_name));
     }
 
     @Override
@@ -96,17 +97,20 @@ public class MainActivity extends BaseActivity implements NavigationView
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         Fragment fragment;
-        int statusColor= ContextCompat.getColor(this,R.color.colorPrimaryDark);
+        int statusColor = ContextCompat.getColor(this, R.color.colorPrimaryDark);
         switch (item.getItemId()) {
             case R.id.nav_schedule:
                 fragment = WorkorderListFragment.newInstance();
                 break;
+            case R.id.nav_exit:
+                confirmExit();
+                return false;
             default:
                 fragment = OverviewFragment.newInstance(basic, tagList);
-                statusColor=Color.TRANSPARENT;
+                statusColor = Color.TRANSPARENT;
                 break;
         }
-        if(ApiLevelHelper.isAtLeast(21)){
+        if (ApiLevelHelper.isAtLeast(21)) {
             getWindow().setStatusBarColor(statusColor);
         }
         replaceFragment(fragment);

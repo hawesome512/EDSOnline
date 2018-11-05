@@ -2,14 +2,7 @@ package com.xseec.eds.util;
 
 import android.app.Activity;
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.view.Gravity;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.PopupWindow;
-import android.widget.TextView;
+import android.text.TextUtils;
 
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
@@ -18,7 +11,7 @@ import com.luck.picture.lib.entity.LocalMedia;
 import com.luck.picture.lib.tools.PictureFileUtils;
 import com.xseec.eds.R;
 import com.xseec.eds.model.WAServicer;
-import com.xseec.eds.util.EDSApplication;
+import com.xseec.eds.model.servlet.BaseModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -143,6 +136,33 @@ public class PhotoPicker {
         List<String> target = new ArrayList<>();
         for (LocalMedia media : finalList) {
             target.add(getImageName(media,firstList.contains(media)));
+        }
+        return target;
+    }
+
+    public static List<String> getImageList(String image) {
+        if (!TextUtils.isEmpty(image)) {
+            List<String> target=new ArrayList<>();
+            String[] source=image.split(BaseModel.SPIT);
+            for(String s:source){
+                target.add(WAServicer.getDownloadImageUrl()+s);
+            }
+            return target;
+        } else {
+            return null;
+        }
+    }
+
+    public static List<LocalMedia> getImageMediaList(String image){
+        List<LocalMedia> target=new ArrayList<>();
+        if (!TextUtils.isEmpty(image)) {
+            String[] source=image.split(BaseModel.SPIT);
+            for(String s:source){
+                String path=WAServicer.getDownloadImageUrl()+s;
+                String imageType= PictureMimeType.createImageType(path);
+                int mimeType=PictureMimeType.isPictureType(imageType);
+                target.add(new LocalMedia(path,0,mimeType,imageType));
+            }
         }
         return target;
     }

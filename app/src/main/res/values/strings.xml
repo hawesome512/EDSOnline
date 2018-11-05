@@ -4,9 +4,8 @@
     <string name="share">分享</string>
     <string name="permission_checked">权限已获取，可继续操作</string>
     <string name="permission_unchecked">获取权限失败，拒绝此项操作</string>
-    <string name="cancel_edit">是否取消此次编辑？</string>
-    <string name="yes">是</string>
-    <string name="no">否</string>
+    <string name="exit_confirm">确认要退出%1$s？/退出/取消</string>
+    <string name="delete_confirm">删除此条记录？/删除/取消</string>
 
     <!--Login-->
     <string name="login_title">EDS</string>
@@ -70,6 +69,7 @@
         <item>离线</item>
     </string-array>
     <string name="overview_map_error">未找到地图APP</string>
+    <string name="overview_devices_normal">无异常设备</string>
 
     <!--Detail-->
     <string name="detail_trend">运行趋势</string>
@@ -159,7 +159,7 @@
     <string name="workorder_range_error">起始时间不能晚于截止时间</string>
     <string name="workorder_fail">创建工单失败</string>
     <string name="workorder_picker_error">图片尺寸不符合规范</string>
-    <string name="workorder_delete_confirm">是否删除工单？</string>
+    <string name="workorder_exit_confirm">正在执行的工单</string>
     <string-array name="workorder_types">
         <item>计划任务</item>
         <item>异常维护</item>
@@ -220,13 +220,17 @@
     <string name="svl_workorder_query">http://%1$s:8080/EDSServlet/QueryWorkorderServlet?</string>
     <string name="svl_workorder_update">http://%1$s:8080/EDSServlet/UpdateWorkorderServlet</string>
     <string name="svl_workorder_request">{\"id\":\"%1$s\",\"state\":%2$d,\"type\":%3$d,\"title\":\"%4$s\",\"task\":\"%5$s\",\"start\":\"%6$s\",\"end\":\"%7$s\",\"location\":\"%8$s\",\"worker\":\"%9$s\",\"log\":\"%10$s\",\"image\":\"%11$s\",\"creator\":\"%12$s\"}</string>
-    <string name="svl_upload">http://%1$s:8080/EDSServlet/UploadServlet</string>
-    <string name="svl_download">http://%1$s:8080/EDSServlet/upload/</string>
-    <string name="svl_alarm">http://%1$s:8080/EDSServlet/UpdateAlarmServlet?</string>
-    <string name="svl_action">http://%1$s:8080/EDSServlet/UpdateActionServlet?</string>
     <string name="svl_basic_query">http://%1$s:8080/EDSServlet/QueryBasicServlet?</string>
     <string name="svl_basic_update">http://%1$s:8080/EDSServlet/UpdateBasicServlet</string>
     <string name="svl_basic_request">{\"id\":\"%1$s\",\"user\":\"%2$s\",\"banner\":\"%3$s\",\"pricipal\":\"%4$s\",\"location\":\"%5$s\",\"image\":\"%6$s\"}</string>
+    <string name="svl_action_query">http://%1$s:8080/EDSServlet/QueryActionServlet?</string>
+    <string name="svl_action_update">http://%1$s:8080/EDSServlet/UpdateActionServlet</string>
+    <string name="svl_action_request">{\"id\":\"%1$s\",\"user\":\"%2$s\",\"action\":\"%3$s\",\"time\":\"%4$s\"}</string>
+    <string name="svl_alarm_query">http://%1$s:8080/EDSServlet/QueryAlarmServlet?</string>
+    <string name="svl_alarm_update">http://%1$s:8080/EDSServlet/UpdateAlarmServlet</string>
+    <string name="svl_alarm_request">{\"id\":\"%1$s\",\"device\":\"%2$s\",\"alarm\":\"%3$s\",\"time\":\"%4$s\"}</string>
+    <string name="svl_upload">http://%1$s:8080/EDSServlet/UploadServlet</string>
+    <string name="svl_download">http://%1$s:8080/EDSServlet/upload/</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
