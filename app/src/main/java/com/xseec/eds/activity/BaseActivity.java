@@ -15,12 +15,12 @@ import com.xseec.eds.util.ViewHelper;
 public class BaseActivity extends AppCompatActivity {
 
     private boolean checkExit = false;
-    private String info;
+    private String checkInfo;
 
     //增加info,告诉用户具体退出哪个环节：编辑状态、APP
     public void setCheckExit(boolean checkExit,String info) {
         this.checkExit = checkExit;
-        this.info=info;
+        this.checkInfo =info;
     }
 
     @Override
@@ -53,6 +53,6 @@ public class BaseActivity extends AppCompatActivity {
             finish();
             return;
         }
-        ViewHelper.checkExit(this,getString(R.string.exit_confirm,info),null);
+        ViewHelper.checkExit(this,getString(R.string.exit_confirm, checkInfo),null);
     }
 }

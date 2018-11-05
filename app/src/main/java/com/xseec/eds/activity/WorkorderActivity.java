@@ -193,7 +193,7 @@ public class WorkorderActivity extends BaseActivity implements UploadListener,
             fabProgressCircle.show();
             uploadWorkorder();
         }
-        setCheckExit(editing,getString(R.string.workorder_exit_confirm));
+        setCheckExit(editing, getString(R.string.workorder_exit_confirm));
     }
 
     @NeedsPermission({Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -236,7 +236,7 @@ public class WorkorderActivity extends BaseActivity implements UploadListener,
         List<String> imageNames = PhotoPicker.getLocalMedisListName(adapter.getLocalMediaList(),
                 sourceImageList);
         //判断数组长度为0时，image="",在Servlet中收到空值，不更新数据库imagelie,故变为：image="null"
-        String image =imageNames.size()==0?null: TextUtils.join(Workorder.SPIT, imageNames);
+        String image = imageNames.size() == 0 ? null : TextUtils.join(Workorder.SPIT, imageNames);
         workorder.setImage(image);
         String log = editLog.getText().toString() + "\n" + DateHelper.getString(new Date());
         workorder.setLog(Workorder.getServletString(log));
@@ -298,7 +298,8 @@ public class WorkorderActivity extends BaseActivity implements UploadListener,
     }
 
     private void checkDeleteWorkorder() {
-        ViewHelper.checkExit(this, getString(R.string.delete_confirm), new DialogInterface.OnClickListener() {
+        ViewHelper.checkExit(this, getString(R.string.delete_confirm), new DialogInterface
+                .OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 workorder.setTitle(null);

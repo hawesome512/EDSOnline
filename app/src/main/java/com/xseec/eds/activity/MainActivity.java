@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.xseec.eds.R;
 import com.xseec.eds.fragment.OverviewFragment;
+import com.xseec.eds.fragment.SettingFragment;
 import com.xseec.eds.fragment.WorkorderListFragment;
 import com.xseec.eds.model.WAServicer;
 import com.xseec.eds.model.servlet.Basic;
@@ -101,6 +102,9 @@ public class MainActivity extends BaseActivity implements NavigationView
         switch (item.getItemId()) {
             case R.id.nav_schedule:
                 fragment = WorkorderListFragment.newInstance();
+                break;
+            case R.id.nav_setting:
+                fragment= SettingFragment.newInstance(basic);
                 break;
             case R.id.nav_exit:
                 confirmExit();

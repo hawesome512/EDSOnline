@@ -1,5 +1,7 @@
 package com.xseec.eds.activity;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -51,6 +53,11 @@ public class LoginActivity extends AppCompatActivity {
     ProgressBar progressLogin;
     @InjectView(R.id.text_failure)
     TextView textFailure;
+
+    public static void start(Context context){
+        Intent intent=new Intent(context,LoginActivity.class);
+        context.startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

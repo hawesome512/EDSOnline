@@ -27,7 +27,10 @@
     </string-array>
     <string name="setting_apply">申请试用</string>
     <string name="setting_email">hawesome.xu@xseec.cn</string>
-    <string name="setting_set">设置</string>
+    <string name="setting_set">保存</string>
+    <string name="setting_area">工程站点</string>
+    <string name="setting_header">系统头图</string>
+
 
     <!--MainActivity-->
     <string name="main_failure">未加载到工程信息</string>
@@ -48,7 +51,7 @@
     <string name="overview_update">更新: %1$s</string>
     <string name="overview_status">运行状态</string>
     <string name="overview_device">管理设备</string>
-    <string name="overview_grid">配电图</string>
+    <string name="overview_grid">系统图库</string>
     <string name="overview_engineer">维护人员</string>
     <string name="overview_location">位置</string>
     <string name="overview_device_value">%1$d 台</string>

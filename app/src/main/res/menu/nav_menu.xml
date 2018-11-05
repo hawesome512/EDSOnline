@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group android:checkableBehavior="single">
+    <group android:id="@+id/group_function" android:checkableBehavior="single">
         <item android:id="@+id/nav_overview"
             android:title="@string/nav_overview"
             android:icon="@drawable/nav_overview"/>
@@ -16,6 +16,8 @@
         <item android:id="@+id/nav_action"
             android:title="@string/nav_action"
             android:icon="@drawable/nav_action"/>
+    </group>
+    <group android:id="@+id/group_others">
         <item android:id="@+id/nav_setting"
             android:title="@string/nav_setting"
             android:icon="@drawable/nav_setting"/>
