@@ -1,22 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-<<<<<<< Updated upstream
     android:layout_height="match_parent">
-=======
-    android:layout_height="match_parent"
-    >
->>>>>>> Stashed changes
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-<<<<<<< Updated upstream
         android:orientation="vertical">
-=======
-        android:orientation="vertical"
-        >
->>>>>>> Stashed changes
 
         <include layout="@layout/toolbar"/>
         <include layout="@layout/item_progress"/>
@@ -24,13 +14,6 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_action"
             android:layout_width="match_parent"
-<<<<<<< Updated upstream
             android:layout_height="wrap_content"/>
-=======
-            android:layout_height="wrap_content">
-
-        </android.support.v7.widget.RecyclerView>
-
->>>>>>> Stashed changes
     </LinearLayout>
 </FrameLayout>
