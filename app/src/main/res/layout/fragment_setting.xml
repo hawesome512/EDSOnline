@@ -1,0 +1,83 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.xseec.eds.fragment.SettingFragment">
+
+    <include layout="@layout/toolbar" />
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout style="@style/LinearHorBigSpace">
+
+                <TextView
+                    style="@style/TextHorItemName"
+                    android:text="@string/setting_area" />
+
+                <EditText
+                    android:id="@+id/edit_area"
+                    style="@style/TextHorItemValue" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/LinearHorBigSpace">
+
+                <TextView
+                    style="@style/TextHorItemName"
+                    android:text="@string/overview_engineer" />
+
+                <EditText
+                    android:id="@+id/edit_engineer"
+                    style="@style/TextHorItemValue" />
+            </LinearLayout>
+
+            <LinearLayout style="@style/LinearHorBigSpace">
+
+                <TextView
+                    style="@style/TextHorItemName"
+                    android:text="@string/overview_location" />
+
+                <EditText
+                    android:id="@+id/edit_location"
+                    style="@style/TextHorItemValue" />
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/view_margin_normal"
+                android:layout_marginVertical="@dimen/view_margin_small"
+                android:text="@string/overview_grid" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/view_margin_normal"
+                android:layout_marginVertical="@dimen/view_margin_small" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/view_margin_normal">
+                <Button
+                    android:id="@+id/btn_save"
+                    style="@style/RadiusButton"
+                    android:text="@string/setting_set"/>
+                <ProgressBar
+                    android:id="@+id/progress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"/>
+            </FrameLayout>
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+</LinearLayout>
