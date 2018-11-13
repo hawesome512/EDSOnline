@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<<<<<<< Updated upstream
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/item_action"
     android:layout_width="match_parent"
@@ -55,3 +56,71 @@
         android:background="@color/colorDivider"
         />
 </RelativeLayout>
+=======
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:layout_marginHorizontal="@dimen/view_margin_normal"
+        >
+        <ImageView
+            android:id="@+id/image_action_level"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_action_yellow_a700_24dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/view_margin_normal"
+            >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/view_margin_tiny">
+
+                <TextView
+                    android:id="@+id/text_action_user"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/colorPrimaryText"
+                    android:textSize="@dimen/font_big"
+                    android:text="用户:guest"
+                    />
+
+                <TextView
+                    android:id="@+id/text_action_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2018-11-31 9:53:49"
+                    />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/text_action"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="修改设备ACB#AC3参数（Ir:4000--5000)" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <view
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginHorizontal="@dimen/view_margin_normal"
+        android:background="@color/colorDivider"
+        />
+</LinearLayout>
+>>>>>>> Stashed changes

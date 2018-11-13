@@ -77,7 +77,6 @@ public class LoginActivity extends AppCompatActivity {
         //==============程序模块调试区域=====================
 
         //=================================================
-
         String username = editUsername.getText().toString();
         String password = editPassword.getText().toString();
         final String authority = CodeHelper.encode(username + ":" + password);

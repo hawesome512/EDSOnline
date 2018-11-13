@@ -14,8 +14,8 @@ import java.util.Date;
  * Created by Administrator on 2018/10/8.
  */
 
-public class Action extends BaseModel implements Comparable{
 
+public class Action extends BaseModel implements Comparable{
     private String user;
     @SerializedName("action")
     private String info;
@@ -94,11 +94,13 @@ public class Action extends BaseModel implements Comparable{
     }
 
     //nj--筛选Info信息 2018/11/6
-    public String getActionInfo(){
-        String[] temps=info.split( "_" );
-        if(temps.length==3){
+    public String getActionInfo() {
+        String[] temps = info.split( "_" );
+        if (temps.length == 3) {
             return temps[2];
-        }else {return info;}
+        } else {
+            return info;
+        }
     }
 
     public String getId() {
