@@ -253,4 +253,22 @@
     <string name="title_activity_device">DeviceActivity</string>
     <string name="title_activity_protect_setting">ProtectSettingActivity</string>
     <string name="title_activity_verification_code">VerificationCodeActivity</string>
+
+    <!--Network Change--> <!--nj:监听网络变化情况 2018/11/7-->
+    <string name="Network_none">网络出现问题，无法连接到系统</string>
+    <string name="Network_normal">网络连接正常</string>
+    <string name="Network_not_available">网络已连接但无网络可用</string>
+    <string name="Network_location">网络连接失败，请检查网络设置</string>
+    <string name="NetWORK_AlertDialog">好</string>
+
+    <!--Action-->  <!--nj:操作记录信息 2018/11/1-->
+    <string name="action_login">Login_1_用户:%1$s登入系统</string>
+    <string name="action_workorder_create">WorkOrder_1_创建工单:%1$s</string>
+    <string name="action_workorder_execute">WorkOrder_2_执行工单：%1$s</string>
+    <string name="action_workorder_delet">WorkOrder_3_删除工单:%1$s</string>
+    <string name="action_workorder_updata">WorkOrder_ 4_对%1$s进行日志更新</string>
+    <string name="action_device_paramenter">Device_1_修改设备%1$s参数 (%2$s:%3$s→%4$s)</string>
+    <string name="action_devic_close">Device_2_%1$s设备远程合闸</string>
+    <string name="action_devic">Device_3_%1$s设备远程分闸</string>
+
 </resources>

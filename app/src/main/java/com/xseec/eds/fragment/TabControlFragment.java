@@ -14,9 +14,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.xseec.eds.R;
+import com.xseec.eds.model.Device;
 import com.xseec.eds.model.State;
 import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.model.tags.ValidTag;
+import com.xseec.eds.util.RecordHelper;
 import com.xseec.eds.util.TagsFilter;
 
 import java.util.ArrayList;
@@ -148,6 +150,21 @@ public class TabControlFragment extends ComFragment {
                     if (tags != null) {
                         targets.add(new ValidTag(tags.get(0).getTagName(), String.valueOf(farCtrlCode)));
                         onModifyTags(targets, layoutContainer);
+
+                        //nj--添加远程合分闸操作记录 18/11/05
+                        String DeviceName=tags.get( 0 ).getTagName();
+                        Device device=Device.initWithTagName( DeviceName );
+                        String actionDevice=device.getDeviceAlias();
+                        String actionInfo;
+                        switch (farCtrlCode){
+                            case VALUE_ON:
+                                actionInfo=getString( R.string.action_devic_close,actionDevice);
+                                break;
+                            default:
+                                actionInfo=getString( R.string.action_devic,actionDevice );
+                                break;
+                        }
+                        RecordHelper.actionLog(actionInfo);
                     }
                 }
                 break;

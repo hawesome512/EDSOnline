@@ -36,6 +36,7 @@ import com.xseec.eds.model.servlet.UploadListener;
 import com.xseec.eds.model.servlet.Workorder;
 import com.xseec.eds.util.ContentHelper;
 import com.xseec.eds.util.DateHelper;
+import com.xseec.eds.util.RecordHelper;
 import com.xseec.eds.util.PhotoPicker;
 import com.xseec.eds.util.ViewHelper;
 import com.xseec.eds.util.WAServiceHelper;
@@ -249,6 +250,11 @@ public class WorkorderActivity extends BaseActivity implements UploadListener,
 
             @Override
             public void onResponse(Response response) throws IOException {
+
+                //nj--工单执行操作记录 18/11/5
+                String actionInfo=getString( R.string.action_workorder_execute,workorder.getTitle());
+                RecordHelper.actionLog( actionInfo );
+
                 onWorkorderUploaded();
             }
         });
@@ -301,6 +307,9 @@ public class WorkorderActivity extends BaseActivity implements UploadListener,
         ViewHelper.checkExit(this, getString(R.string.delete_confirm), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                //nj--添加删除工单记录的名称
+                final String actionInfo=getString( R.string.action_workorder_delet,workorder.getTitle());
+
                 workorder.setTitle(null);
                 WAServiceHelper.sendWorkorderUpdateRequest(workorder, new Callback() {
                     @Override
@@ -310,6 +319,9 @@ public class WorkorderActivity extends BaseActivity implements UploadListener,
 
                     @Override
                     public void onResponse(Response response) throws IOException {
+
+                        //nj--执行工单删除记录操作 18/11/5
+                        RecordHelper.actionLog( actionInfo );
                         finish();
                     }
                 });

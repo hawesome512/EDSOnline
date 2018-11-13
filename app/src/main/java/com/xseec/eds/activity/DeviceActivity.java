@@ -119,6 +119,4 @@ public class DeviceActivity extends BaseActivity implements ViewPager.OnPageChan
     public void onPageScrollStateChanged(int state) {
 
     }
-
-
 }

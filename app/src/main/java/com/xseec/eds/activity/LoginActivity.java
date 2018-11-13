@@ -19,6 +19,7 @@ import com.xseec.eds.model.WAServicer;
 import com.xseec.eds.model.servlet.Basic;
 import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.util.CodeHelper;
+import com.xseec.eds.util.RecordHelper;
 import com.xseec.eds.util.TagsFilter;
 import com.xseec.eds.util.Update.UpdateHelper;
 import com.xseec.eds.util.ViewHelper;
@@ -66,12 +67,14 @@ public class LoginActivity extends AppCompatActivity {
 
         //==============程序模块调试区域====================
 
+        //==============程序模块调试区域=====================
+
         //=================================================
 
-        ViewHelper.startViewAnimator(btnLogin);
         String username = editUsername.getText().toString();
         String password = editPassword.getText().toString();
         final String authority = CodeHelper.encode(username + ":" + password);
+        ViewHelper.startViewAnimator(btnLogin);
         onLoginThread(authority);
     }
 
@@ -88,6 +91,11 @@ public class LoginActivity extends AppCompatActivity {
                     final ArrayList<Tag> tagList = (ArrayList<Tag>) WAJsonHelper.getTagList
                             (WAServiceHelper.getTagListRequest(deviceName));
                     TagsFilter.setAllTagList(tagList);
+
+                    //nj--添加登录操作信息
+                    String actionInfo=getString( R.string.action_login,WAServicer.getUser().getUsername());
+                    RecordHelper.actionLog( actionInfo );
+
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {

@@ -18,6 +18,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.xseec.eds.R;
+import com.xseec.eds.fragment.ActionListFragment;
 import com.xseec.eds.fragment.OverviewFragment;
 import com.xseec.eds.fragment.WorkorderListFragment;
 import com.xseec.eds.model.WAServicer;
@@ -105,6 +106,12 @@ public class MainActivity extends BaseActivity implements NavigationView
             case R.id.nav_exit:
                 confirmExit();
                 return false;
+
+            //nj--主界面跳转到操作记录界面中
+            case R.id.nav_action:
+                fragment= ActionListFragment.newInstance();
+                break;
+
             default:
                 fragment = OverviewFragment.newInstance(basic, tagList);
                 statusColor = Color.TRANSPARENT;

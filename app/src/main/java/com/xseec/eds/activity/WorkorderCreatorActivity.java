@@ -3,15 +3,12 @@ package com.xseec.eds.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.app.DatePickerDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -29,6 +26,7 @@ import com.xseec.eds.model.servlet.ResponseResult;
 import com.xseec.eds.model.servlet.Workorder;
 import com.xseec.eds.util.ContentHelper;
 import com.xseec.eds.util.DateHelper;
+import com.xseec.eds.util.RecordHelper;
 import com.xseec.eds.util.PermissionHelper;
 import com.xseec.eds.util.ViewHelper;
 import com.xseec.eds.util.WAJsonHelper;
@@ -130,6 +128,11 @@ public class WorkorderCreatorActivity extends BaseActivity {
             public void onResponse(Response response) throws IOException {
                 ResponseResult result = WAJsonHelper.getServletResult(response);
                 if (result.isSuccess()) {
+
+                    //nj--添加工单创建成功信息
+                    String actionInfo= getString( R.string.action_workorder_create,workorder.getTitle());
+                    RecordHelper.actionLog( actionInfo );
+
                     setResult(RESULT_OK);
                     finish();
                 } else {

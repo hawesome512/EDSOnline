@@ -3,28 +3,19 @@ package com.xseec.eds.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.View;
 
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 import com.xseec.eds.R;
 import com.xseec.eds.activity.ProtectSettingActivity;
-import com.xseec.eds.model.WAServicer;
+import com.xseec.eds.model.Device;
 import com.xseec.eds.model.deviceconfig.Protect;
 import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.model.tags.ValidTag;
 import com.xseec.eds.util.Generator;
+import com.xseec.eds.util.RecordHelper;
 import com.xseec.eds.util.TagsFilter;
-import com.xseec.eds.util.WAServiceHelper;
 
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -52,6 +43,12 @@ public class TabProtectFragment extends TabBaseFragment {
     private List<Protect> protectList;
     private String strSwitchOff;
     private Tag modifyTag;
+
+    //nj--创建设备参数操作记录数值 18\11\05
+    private String actionDevic;
+    private String actionName;
+    private String oldActionValue;
+    private String newActionValue;
 
     public static Fragment newInstance(String deviceName, List<Protect> protectList) {
         Fragment fragment = new TabProtectFragment();
@@ -142,6 +139,13 @@ public class TabProtectFragment extends TabBaseFragment {
     @Override
     public void onTagClick(Tag tag) {
         modifyTag = tag;
+
+        //nj--记录设备名称、参数名称与参数旧值
+        String DeviceName=tag.getTagName();
+        Device device=Device.initWithTagName( DeviceName );
+        actionDevic=device.getDeviceAlias();
+        oldActionValue=tag.getTagValue();
+
         checkCtrlAuthority();
         if (hasCode) {
             selectItems();
@@ -155,6 +159,11 @@ public class TabProtectFragment extends TabBaseFragment {
                 //返回修改值
                 if (resultCode == Activity.RESULT_OK) {
                     modifyTags(data);
+
+                    //nj--记录参数修改操作的新值、添加参数操作记录
+                    String actionInfo=getString( R.string.action_device_paramenter,actionDevic,
+                            actionName,oldActionValue,newActionValue );
+                    RecordHelper.actionLog( actionInfo );
                 }
                 break;
             case REQUEST_CODE:
@@ -207,6 +216,9 @@ public class TabProtectFragment extends TabBaseFragment {
                 tmps[0], !switchOff);
         targets.add(new ValidTag(switchTag.getTagName(), String.valueOf(switchValue)));
 
+        //nj--记录修改参数的名称 2018/11/6
+        actionName=tmps[0];
+
         //保护值设置
         Tag protectTag = TagsFilter.filterDeviceTagList(tagList, tmps[0]).get(0);
         //Isd,Ii,Ig为“off",不再设置相应值
@@ -221,8 +233,15 @@ public class TabProtectFragment extends TabBaseFragment {
                 //eg. 630A*0.95=598.5A
                 strValue = Generator.calFloatValue(strValue, factor, Generator.Operator.MULTIPLY);
                 strValue = String.valueOf(Math.round(Float.valueOf(strValue)));
+
+                //nj--记录参数修改后的数值 2018/11/6
+                newActionValue=strValue;
+            }else{
+                newActionValue=tmps[1];
             }
             targets.add(new ValidTag(protectTag.getTagName(), strValue));
+
+
 
             //Isd为Ir的倍数，当Ir改变时，Isd应跟着改变，以保持不变的倍数,而以xIr为单位的不处理
             if (tmps[0].equals(NAME_IR) && TextUtils.isEmpty(getXUnit(NAME_IR))) {
