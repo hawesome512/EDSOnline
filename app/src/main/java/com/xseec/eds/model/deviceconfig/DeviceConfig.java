@@ -22,6 +22,16 @@ public class DeviceConfig {
     private List<Protect> protectZone;
     @SerializedName("Control")
     private List<String> farControl;
+    @SerializedName("Alarm")
+    private List<String> alarmParams;
+
+    public List<String> getAlarmParams() {
+        return alarmParams;
+    }
+
+    public void setAlarmParams(List<String> alarmParams) {
+        this.alarmParams = alarmParams;
+    }
 
     public List<String> getOverviewZone() {
         return overviewZone;

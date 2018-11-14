@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.xseec.eds.R;
 import com.xseec.eds.adapter.MyFragmentPagerAdapter;
@@ -42,6 +43,11 @@ public class DeviceActivity extends BaseActivity implements ViewPager.OnPageChan
     private static final String KEY_DEVICE_NAME = "device";
 
     public static void start(Context context, String deviceName) {
+        //在Device>Overview>Alarms中有触发调整设备页Item,禁止重新打开当前页面
+        if(context instanceof DeviceActivity){
+            Toast.makeText(context, R.string.device_local, Toast.LENGTH_SHORT).show();
+            return;
+        }
         Intent intent = new Intent(context, DeviceActivity.class);
         intent.putExtra(KEY_DEVICE_NAME, deviceName);
         context.startActivity(intent);
@@ -57,7 +63,7 @@ public class DeviceActivity extends BaseActivity implements ViewPager.OnPageChan
         ViewHelper.lockOrientation(this);
         String tagName = getIntent().getStringExtra(KEY_DEVICE_NAME);
         Device device = Device.initWithTagName(tagName);
-        DeviceConfig deviceConfig = getDeviceConfig(device);
+        DeviceConfig deviceConfig = device.getDeviceConfig();
         setTitle(device.getDeviceAlias());
         imageDevice.setImageResource(device.getDeviceResId());
         fragmentList = new Fragment[4];
@@ -80,16 +86,6 @@ public class DeviceActivity extends BaseActivity implements ViewPager.OnPageChan
             image.setImageResource(res[i]);
             tab.getTabAt(i).setCustomView(image);
         }
-    }
-
-    private DeviceConfig getDeviceConfig(Device device) {
-        List<DeviceConfig> configs = WAServicer.getDeviceConfigs();
-        for (int i = 0; i < configs.size(); i++) {
-            if (configs.get(i).getDeviceType().equals(device.name())) {
-                return configs.get(i);
-            }
-        }
-        return null;
     }
 
     @Override

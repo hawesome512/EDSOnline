@@ -25,6 +25,7 @@ import com.squareup.okhttp.Response;
 import com.xseec.eds.R;
 import com.xseec.eds.activity.ListActivity;
 import com.xseec.eds.adapter.OverviewAdapter;
+import com.xseec.eds.model.Device;
 import com.xseec.eds.model.State;
 import com.xseec.eds.model.servlet.Basic;
 import com.xseec.eds.model.tags.OverviewTag;
@@ -94,6 +95,7 @@ public class OverviewFragment extends BaseFragment {
     List<Tag> tagList;
     List<Tag> basicTagList;
     List<OverviewTag> overviewTagList;
+
     OverviewAdapter overviewAdapter;
     @InjectView(R.id.text_schedule_title)
     TextView textScheduleTitle;

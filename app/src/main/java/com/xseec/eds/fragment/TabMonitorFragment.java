@@ -6,17 +6,13 @@ import android.view.View;
 
 import com.xseec.eds.R;
 import com.xseec.eds.activity.ChartActivity;
-import com.xseec.eds.model.WAServicer;
+import com.xseec.eds.model.DataLogFactor;
 import com.xseec.eds.model.deviceconfig.RealZone;
-import com.xseec.eds.model.tags.StoredTag;
 import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.util.Generator;
 import com.xseec.eds.util.TagsFilter;
-import com.xseec.eds.util.ViewHelper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -89,7 +85,7 @@ public class TabMonitorFragment extends TabBaseFragment {
                     value=String.valueOf(Generator.getMaxDeltaTagsValue(voltages));
                     break;
                 case "Phase":
-                    value= ViewHelper.getStringByName("tag_Phase_"+tag.getTagValue());
+                    value= Generator.getResourceString("tag_Phase_"+tag.getTagValue());
                     break;
                 default:
                     value=Generator.floatTryParse(tag.getTagValue())<0?"---":tag.getTagValue();
@@ -103,6 +99,6 @@ public class TabMonitorFragment extends TabBaseFragment {
     public void onTagClick(Tag tag) {
         ArrayList<String> tags = new ArrayList<>();
         tags.add(tag.getTagName());
-        ChartActivity.start(getContext(), tags, StoredTag.IntervalType.S);
+        ChartActivity.start(getContext(), tags, new DataLogFactor());
     }
 }

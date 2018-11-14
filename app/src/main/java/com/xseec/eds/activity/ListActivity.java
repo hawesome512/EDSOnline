@@ -13,9 +13,7 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import com.xseec.eds.R;
 import com.xseec.eds.adapter.DeviceAdapter;
-import com.xseec.eds.model.WAServicer;
 import com.xseec.eds.model.tags.Tag;
-import com.xseec.eds.util.TagsFilter;
 import com.xseec.eds.util.ViewHelper;
 import com.xseec.eds.util.WAJsonHelper;
 import com.xseec.eds.util.WAServiceHelper;
@@ -51,7 +49,7 @@ public class ListActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list);
+        setContentView(R.layout.layout_list);
         ButterKnife.inject(this);
         ViewHelper.initToolbar(this, toolbar, R.drawable.ic_arrow_back_white_24dp);
         setTitle(getIntent().getStringExtra(EXT_TITLE));

@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.xseec.eds.R;
 import com.xseec.eds.fragment.ActionListFragment;
+import com.xseec.eds.fragment.AlarmListFragment;
 import com.xseec.eds.fragment.OverviewFragment;
 import com.xseec.eds.fragment.SettingFragment;
 import com.xseec.eds.fragment.WorkorderListFragment;
@@ -104,13 +105,15 @@ public class MainActivity extends BaseActivity implements NavigationView
             case R.id.nav_schedule:
                 fragment = WorkorderListFragment.newInstance();
                 break;
+            case R.id.nav_alarm:
+                fragment= AlarmListFragment.newInstance();
+                break;
             case R.id.nav_setting:
                 fragment= SettingFragment.newInstance(basic);
                 break;
             case R.id.nav_exit:
                 confirmExit();
                 return false;
-
             //nj--主界面跳转到操作记录界面中
             case R.id.nav_action:
                 fragment= ActionListFragment.newInstance();

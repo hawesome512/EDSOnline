@@ -67,16 +67,6 @@ public class ViewHelper {
         }
     }
 
-    public static String getStringByName(String name){
-        Context context=EDSApplication.getContext();
-        int resId=context.getResources().getIdentifier(name,"string",context.getPackageName());
-        if(resId!=0){
-            return context.getString(resId);
-        }else {
-            return null;
-        }
-    }
-
     public static void startViewAnimator(View view) {
         ViewPropertyAnimator animator = view.animate();
         float scaleValue = view.getHeight() * 1.0f / view.getWidth();

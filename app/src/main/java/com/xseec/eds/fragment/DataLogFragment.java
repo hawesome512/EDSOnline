@@ -33,7 +33,6 @@ import com.xseec.eds.activity.DataLogSettingActivity;
 import com.xseec.eds.model.DataLogFactor;
 import com.xseec.eds.model.tags.StoredTag;
 import com.xseec.eds.util.ApiLevelHelper;
-import com.xseec.eds.util.DateHelper;
 import com.xseec.eds.util.Generator;
 import com.xseec.eds.util.ViewHelper;
 import com.xseec.eds.util.WAJsonHelper;
@@ -43,7 +42,6 @@ import com.xseec.eds.widget.TimeXAxisValueFormatter;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -75,20 +73,18 @@ public class DataLogFragment extends BaseFragment {
     @InjectView(R.id.text_item_last)
     TextView textItemLast;
 
-    private StoredTag.IntervalType defaultIntervalType;
     private List<StoredTag> storedTagList;
     private DataLogFactor defaultFactor;
 
-    private static final String ARG_TAG = "tags";
-    private static final String ARG_INTERVAL_TYPE = "type";
+    private static final String EXT_TAG = "tags";
+    private static final String EXT_FACTOR="default_factor";
     public static final String KEY_FACOTR = "factor";
     private static final int REQUEST_CODE_TIME = 1;
 
-    public static DataLogFragment newInstance(List<String> tagNames, StoredTag.IntervalType
-            intervalType) {
+    public static DataLogFragment newInstance(List<String> tagNames, DataLogFactor factor) {
         Bundle bundle = new Bundle();
-        bundle.putStringArrayList(ARG_TAG, (ArrayList<String>) tagNames);
-        bundle.putInt(ARG_INTERVAL_TYPE, intervalType.ordinal());
+        bundle.putStringArrayList(EXT_TAG, (ArrayList<String>) tagNames);
+        bundle.putParcelable(EXT_FACTOR, factor);
         DataLogFragment fragment = new DataLogFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -116,49 +112,48 @@ public class DataLogFragment extends BaseFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        List<String> tagNames = getArguments().getStringArrayList(ARG_TAG);
+        List<String> tagNames = getArguments().getStringArrayList(EXT_TAG);
         storedTagList = new ArrayList<>();
         for (String tagName : tagNames) {
             storedTagList.add(new StoredTag(tagName, StoredTag.DataType.MAX));
         }
-        int typeOrdinal = getArguments().getInt(ARG_INTERVAL_TYPE);
-        defaultIntervalType = StoredTag.IntervalType.values()[typeOrdinal];
-        initFactor();
+        defaultFactor=getArguments().getParcelable(EXT_FACTOR);
+//        initFactor();
         initChart();
     }
 
-    private void initFactor() {
-        Calendar calendar = Calendar.getInstance();
-        switch (defaultIntervalType) {
-            case S:
-                //过去5分钟，60点
-                calendar.add(Calendar.MINUTE, -5);
-                defaultFactor = new DataLogFactor(calendar, StoredTag.IntervalType.S, 5, 60);
-                break;
-            case M:
-                //过去1小时，60点
-                calendar.add(Calendar.HOUR_OF_DAY, -1);
-                defaultFactor = new DataLogFactor(calendar, StoredTag.IntervalType.M, 1, 60);
-                break;
-            case H:
-                //昨日+今日，48点
-                calendar.add(Calendar.DATE, -1);
-                Calendar yesterday = DateHelper.getDayStartTime(calendar);
-                defaultFactor = new DataLogFactor(yesterday, StoredTag.IntervalType.H, 1, 48);
-                break;
-            case D:
-                //本月数据
-                calendar.add(Calendar.DATE, 1 - calendar.get(Calendar.DAY_OF_MONTH));
-                calendar = DateHelper.getDayStartTime(calendar);
-                int maxMonthDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-                defaultFactor = new DataLogFactor(calendar, StoredTag.IntervalType.D, 1,
-                        maxMonthDay);
-                break;
-            default:
-                defaultFactor = null;
-                break;
-        }
-    }
+//    private void initFactor() {
+//        Calendar calendar = Calendar.getInstance();
+//        switch (defaultFactor.getIntervalType()) {
+//            case S:
+//                //过去5分钟，60点
+//                calendar.add(Calendar.MINUTE, -5);
+//                defaultFactor = new DataLogFactor(calendar, StoredTag.IntervalType.S, 5, 60);
+//                break;
+//            case M:
+//                //过去1小时，60点
+//                calendar.add(Calendar.HOUR_OF_DAY, -1);
+//                defaultFactor = new DataLogFactor(calendar, StoredTag.IntervalType.M, 1, 60);
+//                break;
+//            case H:
+//                //昨日+今日，48点
+//                calendar.add(Calendar.DATE, -1);
+//                Calendar yesterday = DateHelper.getDayStartTime(calendar);
+//                defaultFactor = new DataLogFactor(yesterday, StoredTag.IntervalType.H, 1, 48);
+//                break;
+//            case D:
+//                //本月数据
+//                calendar.add(Calendar.DATE, 1 - calendar.get(Calendar.DAY_OF_MONTH));
+//                calendar = DateHelper.getDayStartTime(calendar);
+//                int maxMonthDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+//                defaultFactor = new DataLogFactor(calendar, StoredTag.IntervalType.D, 1,
+//                        maxMonthDay);
+//                break;
+//            default:
+//                defaultFactor = null;
+//                break;
+//        }
+//    }
 
     private void initChart() {
         //lineChart.animateX(2000);
@@ -259,17 +254,17 @@ public class DataLogFragment extends BaseFragment {
     @Override
     protected void onRefreshViews(Response response) {
         List<String>[] values = WAJsonHelper.getTagLog(response);
-        if (values.length == 0) {
+        if (values==null||values.length == 0) {
             return;
         }
-        List<String> value = values[0];
         progressDataLog.setVisibility(View.GONE);
         LineData lineData = new LineData();
-        String legenName = storedTagList.get(0).getTagAlias();
+        String legenName = null;
 
         //暂时方案,模拟值
         LineDataSet lineDataSet1 = null;
         if (isEnergyAnalysis()) {
+            List<String> value = values[0];
             value = Generator.genYesTodayEntryList(defaultFactor.getStartTime());
             List<String> today = value.subList(24, value.size());
             legenName = getString(R.string.detail_yesterday);
@@ -302,17 +297,33 @@ public class DataLogFragment extends BaseFragment {
                         .drawable.ic_arrow_upward_red_a200_24dp;
                 textLast.setCompoundDrawablesRelativeWithIntrinsicBounds(resId, 0, 0, 0);
             }
+            values[0]=value;
         }
 
-        List<Entry> entryList = Generator.convertEntryList(value);
-        LineDataSet lineDataSet = new LineDataSet(entryList, legenName);
-        lineDataSet.setColor(ContextCompat.getColor(getContext(), R.color.colorPhaseB));
-        lineDataSet.setCircleColor(ContextCompat.getColor(getContext(), R.color.colorPhaseB));
-        lineDataSet.setDrawFilled(true);
-        Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable.chart_fade_blue);
-        lineDataSet.setFillDrawable(drawable);
+        int[] colors=new int[]{R.color.colorPhaseA,R.color.colorPhaseB,R.color.colorPhaseC,R.color.colorGrayNormal};
+        List<Entry> entryLists=new ArrayList<>();
+        for (int i = 0; i < values.length; i++) {
+            List<String> value = values[i];
+            List<Entry> entryList = Generator.convertEntryList(value);
+            entryLists.addAll(entryList);
+            legenName=(i==0&&legenName!=null)?legenName:storedTagList.get(i).getTagAlias();
+            LineDataSet lineDataSet = new LineDataSet(entryList,legenName);
+            int colorIndex;
+            if (values.length == 1) {
+                colorIndex=1;
+                lineDataSet.setDrawFilled(true);
+                Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable
+                        .chart_fade_blue);
+                lineDataSet.setFillDrawable(drawable);
+            }else {
+                colorIndex=i%colors.length;
+                lineDataSet.setLineWidth(2f);
+            }
+            lineDataSet.setColor(ContextCompat.getColor(getContext(), colors[colorIndex]));
+            lineDataSet.setCircleColor(ContextCompat.getColor(getContext(), colors[colorIndex]));
+            lineData.addDataSet(lineDataSet);
+        }
 
-        lineData.addDataSet(lineDataSet);
         //保证今日值曲线置于顶层
         if (lineDataSet1 != null) {
             lineData.addDataSet(lineDataSet1);
@@ -326,7 +337,7 @@ public class DataLogFragment extends BaseFragment {
         if (!isEnergyAnalysis()) {
             textFrist.setText(String.valueOf(lineData.getYMax()));
             textSecend.setText(String.valueOf(lineData.getYMin()));
-            textLast.setText(String.valueOf(Generator.getAvgFromEntryList(entryList)));
+            textLast.setText(String.valueOf(Generator.getAvgFromEntryList(entryLists)));
         }
     }
 }

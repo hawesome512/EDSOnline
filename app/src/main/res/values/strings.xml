@@ -6,6 +6,7 @@
     <string name="permission_unchecked">获取权限失败，拒绝此项操作</string>
     <string name="exit_confirm">确认要退出%1$s？/退出/取消</string>
     <string name="delete_confirm">删除此条记录？/删除/取消</string>
+    <string name="record_null">记录不存在</string>
 
     <!--Login-->
     <string name="login_title">EDS</string>
@@ -113,8 +114,6 @@
     <!--Device Activity-->
     <string name="device_state">状态</string>
     <string name="device_record">运行记录</string>
-    <string name="device_peak">电流峰值</string>
-    <string name="device_trip">脱扣故障</string>
     <string name="device_demand">需量%%Ir(Ir=%1$sA)</string>
     <string name="device_trip_time">%1$s-%2$s-%3$s %4$s:%5$s:%6$s</string>
     <string name="device_current">电流(A)</string>
@@ -137,6 +136,12 @@
     <string name="device_modify_null">请稍后，数据尚未加载完成</string>
     <string name="device_modify_code">设备密码</string>
     <string name="device_modify_code_error">密码错误</string>
+    <string name="device_local">已位于设备页中，无需跳转</string>
+    <!--设备异常信息：*表示忽略此位-->
+    <string name="device_A1_status">过载_短路_瞬动_接地_*_*_*_脱扣_触头磨损_超温_拒动_自诊断_*_欠相_MCR</string>
+    <string name="device_A2_status">过载_短路_瞬动_接地_*_*_*_脱扣_触头磨损_超温_拒动_自诊断_*_欠相_MCR</string>
+    <string name="device_A3_status">过载_短路_瞬动_接地_*_*_*_脱扣_触头磨损_超温_拒动_铁电_自诊断_电流不平衡_电压不平衡</string>
+    <string name="device_M2_status">过载_短路_瞬动_接地_热记忆_预过载_*_脱扣_*_*_拒动_不平衡</string>
 
     <!--Workorder-->
     <string name="workorder_filter">筛选</string>
@@ -165,11 +170,16 @@
     <string name="workorder_exit_confirm">正在执行的工单</string>
     <string-array name="workorder_types">
         <item>计划任务</item>
-        <item>异常维护</item>
+        <item>异常排查</item>
         <item>随工运维</item>
     </string-array>
     <string name="workorder_album">相册</string>
     <string name="workorder_camera">拍照</string>
+
+    <!--Alarm-->
+    <string name="alarm_device">设备：%1$s</string>
+    <string name="alarm_time">时间：%1$s</string>
+    <string name="alarm_type">类型：%1$s</string>
 
     <!--Tag Alias-->
     <string name="tag_In">N相</string>
@@ -231,7 +241,7 @@
     <string name="svl_action_request">{\"id\":\"%1$s\",\"user\":\"%2$s\",\"action\":\"%3$s\",\"time\":\"%4$s\"}</string>
     <string name="svl_alarm_query">http://%1$s:8080/EDSServlet/QueryAlarmServlet?</string>
     <string name="svl_alarm_update">http://%1$s:8080/EDSServlet/UpdateAlarmServlet</string>
-    <string name="svl_alarm_request">{\"id\":\"%1$s\",\"device\":\"%2$s\",\"alarm\":\"%3$s\",\"time\":\"%4$s\"}</string>
+    <string name="svl_alarm_request">{\"id\":\"%1$s\",\"device\":\"%2$s\",\"alarm\":\"%3$s\",\"time\":\"%4$s\",\"confirm\":%5$d,\"report\":\"%6$s\"}</string>
     <string name="svl_upload">http://%1$s:8080/EDSServlet/UploadServlet</string>
     <string name="svl_download">http://%1$s:8080/EDSServlet/upload/</string>
 

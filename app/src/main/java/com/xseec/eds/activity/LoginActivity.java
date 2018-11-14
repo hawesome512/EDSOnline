@@ -99,7 +99,7 @@ public class LoginActivity extends AppCompatActivity {
                     TagsFilter.setAllTagList(tagList);
 
                     //nj--添加登录操作信息
-                    String actionInfo=getString( R.string.action_login,WAServicer.getUser().getUsername());
+                    String actionInfo=getString( R.string.action_login, user.getUsername());
                     RecordHelper.actionLog( actionInfo );
 
                     runOnUiThread(new Runnable() {

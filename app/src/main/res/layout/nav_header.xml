@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/view_header_hei"
+    android:layout_height="@dimen/zone_image_hight"
     android:background="@drawable/header"
     >
     <de.hdodenhof.circleimageview.CircleImageView

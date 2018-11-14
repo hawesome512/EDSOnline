@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
     <gradient android:type="radial"
-        android:startColor="@color/colorPrimaryLight"
-        android:endColor="@color/colorPrimary"
+        android:startColor="#FFECB3"
+        android:endColor="@color/colorAlarm"
         android:centerX="0"
         android:centerY="0"
-        android:gradientRadius="@dimen/view_header_hei"/>
+        android:gradientRadius="@dimen/zone_image_hight"/>
 </shape>

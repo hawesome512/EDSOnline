@@ -1,11 +1,12 @@
 package com.xseec.eds.fragment;
 
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,21 +20,31 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 import com.xseec.eds.R;
+import com.xseec.eds.adapter.AlarmAdapter;
+import com.xseec.eds.model.Device;
 import com.xseec.eds.model.State;
+import com.xseec.eds.model.WAServicer;
+import com.xseec.eds.model.servlet.Alarm;
 import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.util.EDSApplication;
 import com.xseec.eds.util.Generator;
 import com.xseec.eds.util.TagsFilter;
+import com.xseec.eds.util.WAJsonHelper;
+import com.xseec.eds.util.WAServiceHelper;
 import com.xseec.eds.widget.PercentageValueFormatter;
 import com.xseec.eds.widget.PhaseXAxisValueFormatter;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
@@ -49,12 +60,10 @@ public class TabOerviewFragment extends ComFragment {
     CircleImageView imageState;
     @InjectView(R.id.text_state)
     TextView textState;
-    @InjectView(R.id.text_peak)
-    TextView textPeak;
-    @InjectView(R.id.text_trip)
-    TextView textTrip;
     @InjectView(R.id.progress)
     ProgressBar progress;
+    @InjectView(R.id.recyclerView_alarm)
+    RecyclerView recyclerViewAlarm;
 
 
     private int[] colors = {getColor(R.color.colorPrimaryLight), getColor(R.color
@@ -83,8 +92,50 @@ public class TabOerviewFragment extends ComFragment {
         View view = inflater.inflate(R.layout.fragment_tab_overview, container, false);
         ButterKnife.inject(this, view);
 //        tagList=getArguments().getParcelableArrayList(ARG_TAGS);
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        recyclerViewAlarm.setLayoutManager(layoutManager);
+        queryAlarms();
+
         initChart();
         return view;
+    }
+
+    private void queryAlarms(){
+        Alarm alarm=new Alarm(WAServicer.getUser().getDeviceName());
+        WAServiceHelper.sendAlarmQueryRequest(alarm, null, null, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                List<Alarm> alarms= WAJsonHelper.getAlarmList(response);
+                Collections.sort(alarms,Collections.<Alarm>reverseOrder());
+                Device device=Device.initWithTagName(tagList.get(0).getTagName());
+                List<Alarm> deviceAlarms=new ArrayList<>();
+                for(Alarm alarm:alarms){
+                    if(alarm.getDevice().equals(device.getDeviceName())){
+                        deviceAlarms.add(alarm);
+                        //最多展示3条记录
+                        if(deviceAlarms.size()==3){
+                            break;
+                        }
+                    }
+                }
+                if(deviceAlarms.size()==0){
+                    return;
+                }
+                final AlarmAdapter alarmAdapter=new AlarmAdapter(deviceAlarms,getContext());
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        recyclerViewAlarm.setAdapter(alarmAdapter);
+                    }
+                });
+            }
+        });
     }
 
     private void initChart() {
@@ -134,7 +185,8 @@ public class TabOerviewFragment extends ComFragment {
             barChart.setData(barData);
         }
         //value值过小时，标注会遮盖横坐标的Ia/Ib/Ic,暂处理：<30不显示值
-        barData.setValueTextColor(dataSet.getYMin()<30?android.R.color.transparent:getColor(R.color.colorWhite));
+        barData.setValueTextColor(dataSet.getYMin() < 30 ? android.R.color.transparent : getColor
+                (R.color.colorWhite));
         barChart.invalidate();
     }
 
@@ -156,14 +208,6 @@ public class TabOerviewFragment extends ComFragment {
         ButterKnife.reset(this);
     }
 
-    @OnClick(R.id.text_peak)
-    public void onTextPeakClicked() {
-    }
-
-    @OnClick(R.id.text_trip)
-    public void onTextTripClicked() {
-    }
-
     // 首次创建时即绑定服务，更新此页面
     // 不在onResume中使用，因Activity:onPaused→onResume时，viewpager可能停留在其他页面
     @Override
@@ -179,12 +223,16 @@ public class TabOerviewFragment extends ComFragment {
             @Override
             public void run() {
                 progress.setVisibility(View.GONE);
-                List<Tag> tags = TagsFilter.filterDeviceTagList(validTagList, "State");
-                if (tags != null) {
+                List<Tag> tags = TagsFilter.filterDeviceTagList(validTagList, "State", "Status");
+                if (tags != null && tags.size() >= 2) {
                     State state = State.getState(tags.get(0).getTagValue());
                     imageState.setImageResource(state.getStateColorRes());
                     state.setUnusualAnimator(imageState);
-                    textState.setText(state.getStateText());
+                    if (state == State.ALARM) {
+                        textState.setText(Generator.getAlarmStateTextWithTag(tags.get(1)));
+                    } else {
+                        textState.setText(state.getStateText());
+                    }
                 }
 
                 //使用模糊匹配，因MCCB中IrReal
@@ -203,24 +251,6 @@ public class TabOerviewFragment extends ComFragment {
                             items[i] = value > 120 ? 120 : value;
                         }
                         setData(items);
-                    }
-                }
-                tags = TagsFilter.filterDeviceTagList(validTagList, "TripYM", "TripDH",
-                        "TripMS");
-                if (tags.size() == 3) {
-                    int value0 = (int) Generator.floatTryParse(tags.get(0).getTagValue());
-                    if (value0 > 0 && value0 < 65535) {
-                        //BCD码
-                        String[] values = new String[6];
-                        for (int i = 0; i < tags.size(); i++) {
-                            int nValue = (int) Generator.floatTryParse(tags.get(i)
-                                    .getTagValue());
-                            values[2 * i] = Integer.toHexString(nValue / 256);
-                            values[2 * i + 1] = Integer.toHexString(nValue % 256);
-                        }
-                        String time = getString(R.string.device_trip_time, values[0],
-                                values[1], values[2], values[3], values[4], values[5]);
-                        textTrip.setText(time);
                     }
                 }
             }

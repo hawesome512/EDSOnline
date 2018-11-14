@@ -21,11 +21,14 @@ import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import com.xseec.eds.R;
+import com.xseec.eds.model.Device;
 import com.xseec.eds.model.WAServicer;
+import com.xseec.eds.model.servlet.Alarm;
 import com.xseec.eds.model.servlet.ResponseResult;
 import com.xseec.eds.model.servlet.Workorder;
 import com.xseec.eds.util.ContentHelper;
 import com.xseec.eds.util.DateHelper;
+import com.xseec.eds.util.Generator;
 import com.xseec.eds.util.PermissionHelper;
 import com.xseec.eds.util.RecordHelper;
 import com.xseec.eds.util.ViewHelper;
@@ -69,12 +72,21 @@ public class WorkorderCreatorActivity extends BaseActivity {
 
     private static final int REQUEST_WORKER = 1;
     private static final int REQUEST_CREATOR = 2;
+    private static final String EXT_ALARM = "alarm";
     Workorder workorder;
+    //在异常事件中创建异常工单
+    Alarm alarm;
     @InjectView(R.id.progress)
     ProgressBar progress;
 
     public static void start(Activity context, int requestCode) {
         Intent intent = new Intent(context, WorkorderCreatorActivity.class);
+        context.startActivityForResult(intent, requestCode);
+    }
+
+    public static void start(Activity context, Alarm alarm,int requestCode) {
+        Intent intent = new Intent(context, WorkorderCreatorActivity.class);
+        intent.putExtra(EXT_ALARM, alarm);
         context.startActivityForResult(intent, requestCode);
     }
 
@@ -84,10 +96,27 @@ public class WorkorderCreatorActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workorder_creator);
         ButterKnife.inject(this);
-        setCheckExit(true,getString(R.string.workorder_save));
+        setCheckExit(true, getString(R.string.workorder_save));
         setTitle(R.string.nav_schedule);
         ViewHelper.initToolbar(this, toolbar, R.drawable.ic_arrow_back_white_24dp);
         workorder = new Workorder();
+        initIfAlarm();
+    }
+
+    private void initIfAlarm() {
+        alarm = getIntent().getParcelableExtra(EXT_ALARM);
+        if (alarm != null) {
+            Device device=Device.initWithTagName(alarm.getDevice());
+            String status= Generator.getAlarmStateText(alarm.getAlarmCode(),device.getStatusItems());
+            //异常工单：后期可优化，不直接用1，用枚举
+            spinnerType.setSelection(1);
+            editTitle.setText(spinnerType.getSelectedItem().toString());
+            StringBuilder builder = new StringBuilder();
+            builder.append(getString(R.string.alarm_device, device.getDeviceAlias()));
+            builder.append("\r\n" + getString(R.string.alarm_time, DateHelper.getString(alarm.getTime())));
+            builder.append("\r\n" + getString(R.string.alarm_type, status));
+            editTask.setText(builder.toString());
+        }
     }
 
     @OnClick(R.id.btn_save)
@@ -135,11 +164,38 @@ public class WorkorderCreatorActivity extends BaseActivity {
 
                     setResult(RESULT_OK);
                     finish();
+                    if (alarm != null) {
+                        alarm.setConfirm(1);
+                        alarm.setReport(workorder.getId());
+                        saveAlarm();
+                    }else {
+                        onFinish();
+                    }
                 } else {
                     onSaveFailed();
                 }
             }
         });
+    }
+
+    private void saveAlarm() {
+        WAServiceHelper.sendAlarmUpdateRequest(alarm, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                String s=response.body().string();
+                onFinish();
+            }
+        });
+    }
+
+    private void onFinish(){
+        setResult(RESULT_OK);
+        finish();
     }
 
     @OnClick(R.id.image_worker)

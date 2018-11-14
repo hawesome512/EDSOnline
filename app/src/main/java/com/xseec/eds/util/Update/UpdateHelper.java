@@ -51,7 +51,8 @@ public class UpdateHelper {
                                     .setNewVersion(jsonObject.getString("version_name"))
                                     .setApkFileUrl(jsonObject.getString("apk_url"))
                                     .setUpdateLog(jsonObject.getString("update_log"))
-                                    .setTargetSize(jsonObject.getString("size"));
+                                    .setTargetSize(jsonObject.getString("size"))
+                                    .setConstraint(jsonObject.getBoolean("constraint"));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

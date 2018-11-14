@@ -63,11 +63,11 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.ViewHolder
 
         public ViewHolder(View itemView) {
             super( itemView );
-            imageAction = (ImageView) itemView.findViewById( R.id.image_type );
-            textUser = (TextView) itemView.findViewById( R.id.text_user );
-            textTime = (TextView) itemView.findViewById( R.id.text_time );
-            textAction = (TextView) itemView.findViewById( R.id.text_action );
-            relativeLayout = (RelativeLayout) itemView.findViewById( R.id.item_action );
+            imageAction = itemView.findViewById( R.id.image_type );
+            textUser =itemView.findViewById( R.id.text_user );
+            textTime = itemView.findViewById( R.id.text_time );
+            textAction = itemView.findViewById( R.id.text_action );
+            relativeLayout = itemView.findViewById( R.id.item_action );
             textAction.setEllipsize( TextUtils.TruncateAt.END );
             textAction.setSingleLine( true );
             itemView.setOnClickListener( new View.OnClickListener() {
@@ -75,8 +75,7 @@ public class ActionAdapter extends RecyclerView.Adapter<ActionAdapter.ViewHolder
                 public void onClick(View v) {
                     if (textAction.getLayout().getEllipsisCount( textAction.getLineCount() - 1 ) > 0) {
                         isSingleLine = false;
-                        relativeLayout.setBackgroundColor( ContextCompat.getColor( getContext(),
-                                R.color.colorDivider ) );
+                        relativeLayout.setBackgroundResource(R.color.colorDivider);
                         textAction.setEllipsize( null );
                         textAction.setSingleLine( false );
                     } else {

@@ -1,8 +1,14 @@
 package com.xseec.eds.model;
 
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
 import com.xseec.eds.R;
+import com.xseec.eds.model.deviceconfig.DeviceConfig;
+import com.xseec.eds.util.Generator;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by Administrator on 2018/8/16.
@@ -44,5 +50,21 @@ public enum Device {
 
     public String getDeviceAlias(){
         return String.format("%s (%s#%s)",deviceType,infos[0],infos[2]);
+    }
+
+    public List<String> getStatusItems(){
+        String itemsName=String.format("device_%s_status",this.toString());
+        String itemsValue= Generator.getResourceString(itemsName);
+        return Arrays.asList(itemsValue.split("_"));
+    }
+
+    public DeviceConfig getDeviceConfig() {
+        List<DeviceConfig> configs = WAServicer.getDeviceConfigs();
+        for (int i = 0; i < configs.size(); i++) {
+            if (configs.get(i).getDeviceType().equals(name())) {
+                return configs.get(i);
+            }
+        }
+        return null;
     }
 }

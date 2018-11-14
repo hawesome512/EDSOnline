@@ -19,6 +19,13 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <ProgressBar
+                android:id="@+id/progress"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/HorProgressBar"/>
+
             <LinearLayout
                 android:id="@+id/layout_state"
                 style="@style/LinearHorBigSpace"

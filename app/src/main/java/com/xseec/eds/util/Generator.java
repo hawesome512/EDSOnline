@@ -1,9 +1,11 @@
 package com.xseec.eds.util;
 
 import android.content.Context;
+import android.content.res.Resources;
 
 import com.github.mikephil.charting.data.Entry;
 import com.xseec.eds.R;
+import com.xseec.eds.model.Device;
 import com.xseec.eds.model.deviceconfig.Protect;
 import com.xseec.eds.model.tags.OverviewTag;
 import com.xseec.eds.model.tags.Tag;
@@ -65,6 +67,16 @@ public class Generator {
         return stringBuilder.toString();
     }
 
+    public static String getResourceString(String name){
+        Context context=EDSApplication.getContext();
+        int resId=context.getResources().getIdentifier(name,"string",context.getPackageName());
+        if(resId!=0){
+            return context.getString(resId);
+        }else {
+            return null;
+        }
+    }
+
     public static String genTime() {
         Calendar calendar = Calendar.getInstance();
         return DateHelper.getString(calendar.getTime());
@@ -75,6 +87,12 @@ public class Generator {
         int index = random.nextInt(8);
         Context context = EDSApplication.getContext();
         return context.getResources().getIdentifier("schedule_" + String.valueOf(index),
+                "drawable", context.getPackageName());
+    }
+
+    public static int getWorkorderImageResWithType(int type){
+        Context context = EDSApplication.getContext();
+        return context.getResources().getIdentifier("schedule_" + String.valueOf(type),
                 "drawable", context.getPackageName());
     }
 
@@ -146,6 +164,24 @@ public class Generator {
         }else {
             return value;
         }
+    }
+
+    public static String getAlarmStateText(String status,List<String> items){
+        int value=(int)floatTryParse(status);
+        StringBuilder stringBuilder=new StringBuilder();
+        for(int i=0;i<items.size();i++){
+            int index=value&(int)Math.pow(2,i);
+            if(index>0&&!items.get(i).equals("*")){
+                stringBuilder.append(items.get(i)+" ");
+            }
+        }
+        String result=stringBuilder.toString();
+        return result.trim();
+    }
+
+    public static String getAlarmStateTextWithTag(Tag tag){
+        Device device=Device.initWithTagName(tag.getTagName());
+        return getAlarmStateText(tag.getTagValue(),device.getStatusItems());
     }
 
     public static float getAvgTagsValue(List<Tag> tagList) {

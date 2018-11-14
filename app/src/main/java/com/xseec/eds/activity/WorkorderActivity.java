@@ -20,7 +20,9 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.jorgecastilloprz.FABProgressCircle;
 import com.github.jorgecastilloprz.listeners.FABProgressListener;
@@ -37,8 +39,10 @@ import com.xseec.eds.model.servlet.Workorder;
 import com.xseec.eds.util.ContentHelper;
 import com.xseec.eds.util.DateHelper;
 import com.xseec.eds.util.RecordHelper;
+import com.xseec.eds.util.Generator;
 import com.xseec.eds.util.PhotoPicker;
 import com.xseec.eds.util.ViewHelper;
+import com.xseec.eds.util.WAJsonHelper;
 import com.xseec.eds.util.WAServiceHelper;
 
 import java.io.IOException;
@@ -103,6 +107,8 @@ public class WorkorderActivity extends BaseActivity implements UploadListener,
     FABProgressCircle fabProgressCircle;
     @InjectView(R.id.image_call)
     ImageView imageCall;
+    @InjectView(R.id.progress)
+    ProgressBar progress;
 
     private Workorder workorder;
     private PhotoAdapter adapter;
@@ -111,6 +117,7 @@ public class WorkorderActivity extends BaseActivity implements UploadListener,
     private List<String> compressImageList;
 
     private static final String EXT_WORKORDER = "workorder";
+    private static final String EXT_WORKORDER_ID = "id";
     private static final int REQUEST_WORKORDER = 1;
 
     public static void start(Context context, Workorder workorder) {
@@ -121,6 +128,13 @@ public class WorkorderActivity extends BaseActivity implements UploadListener,
         ((Activity) context).startActivityForResult(intent, REQUEST_WORKORDER);
     }
 
+    //从故障列表触发过来
+    public static void start(Context context, String workorderId) {
+        Intent intent = new Intent(context, WorkorderActivity.class);
+        intent.putExtra(EXT_WORKORDER_ID, workorderId);
+        context.startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -129,7 +143,43 @@ public class WorkorderActivity extends BaseActivity implements UploadListener,
         ViewHelper.initToolbar(this, toolbar, R.drawable.ic_arrow_back_white_24dp);
         initRecycler();
         workorder = getIntent().getParcelableExtra(EXT_WORKORDER);
-        initViews();
+        if (workorder != null) {
+            initViews();
+        } else {
+            //在runOnUiThread中设置Title失效，可能存在风险：workorder_types变更时此处存在问题，待优化
+            String title=getResources().getStringArray(R.array.workorder_types)[1];
+            setTitle(title);
+            initWorkorderWithId();
+        }
+    }
+
+    private void initWorkorderWithId(){
+        String woId=getIntent().getStringExtra(EXT_WORKORDER_ID);
+        Workorder wo=new Workorder(woId);
+        progress.setVisibility(View.VISIBLE);
+        WAServiceHelper.sendWorkorderQueryRequest(wo, null, null, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                final List<Workorder> workorders= WAJsonHelper.getWorkorderList(response);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        progress.setVisibility(View.GONE);
+                        if(workorders==null){
+                            Toast.makeText(WorkorderActivity.this, R.string.record_null, Toast.LENGTH_SHORT).show();
+                        }else {
+                            workorder=workorders.get(0);
+                            initViews();
+                        }
+                    }
+                });
+            }
+        });
     }
 
     private void initRecycler() {
@@ -141,6 +191,7 @@ public class WorkorderActivity extends BaseActivity implements UploadListener,
 
     private void initViews() {
         setTitle(workorder.getTitle());
+        imageArea.setImageResource(Generator.getWorkorderImageResWithType(workorder.getType()));
         imageState.setImageResource(workorder.getStateImgRes());
         textState.setText(workorder.getStateTextRes());
         textTask.setText(Workorder.getShowString(workorder.getTask()));

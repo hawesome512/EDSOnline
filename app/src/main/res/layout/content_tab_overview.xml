@@ -6,4 +6,9 @@
     <include layout="@layout/item_overview_demand"/>
     <include layout="@layout/item_overview_state"/>
     <include layout="@layout/item_overview_record"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView_alarm"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
 </LinearLayout>

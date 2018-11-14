@@ -20,6 +20,16 @@ public class DataLogFactor implements Parcelable{
     private int records;
     private StoredTag.DataType dataType;
 
+    public DataLogFactor(){
+        Calendar startTime=Calendar.getInstance();
+        startTime.add(Calendar.MINUTE,-5);
+        this.startTime=startTime;
+        this.intervalType= StoredTag.IntervalType.S;
+        this.interval=5;
+        this.records=60;
+        this.dataType= StoredTag.DataType.MAX;
+    }
+
     public DataLogFactor(Calendar startTime, StoredTag.IntervalType intervalType, int interval,
             int records) {
         this.startTime = startTime;

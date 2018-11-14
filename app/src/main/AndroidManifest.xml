@@ -7,7 +7,6 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 
     <application
         android:name=".util.EDSApplication"
@@ -75,12 +74,6 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/TransStatusBarTheme"
             android:windowSoftInputMode="adjustPan"></activity>
-
-        <receiver
-            android:name=".broadcast.NetworkChangeReceiver"
-            android:enabled="true"
-            android:exported="true">
-        </receiver>
     </application>
 
 </manifest>

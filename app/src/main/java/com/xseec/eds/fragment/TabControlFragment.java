@@ -19,6 +19,7 @@ import com.xseec.eds.model.State;
 import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.model.tags.ValidTag;
 import com.xseec.eds.util.RecordHelper;
+import com.xseec.eds.util.Generator;
 import com.xseec.eds.util.TagsFilter;
 
 import java.util.ArrayList;
@@ -83,8 +84,8 @@ public class TabControlFragment extends ComFragment {
             @Override
             public void run() {
                 progress.setVisibility(View.GONE);
-                List<Tag> tags = TagsFilter.filterDeviceTagList(validTagList, "State");
-                if (tags != null) {
+                List<Tag> tags = TagsFilter.filterDeviceTagList(validTagList, "State", "Status");
+                if (tags != null && tags.size() >= 2) {
                     State state = State.getState(tags.get(0).getTagValue());
                     int bgColorRes;
                     boolean openable;
@@ -107,7 +108,11 @@ public class TabControlFragment extends ComFragment {
                             break;
                     }
                     textState.setBackgroundResource(bgColorRes);
-                    textState.setText(state.getStateText());
+                    if (state == State.ALARM) {
+                        textState.setText(Generator.getAlarmStateTextWithTag(tags.get(1)));
+                    } else {
+                        textState.setText(state.getStateText());
+                    }
                     btnOff.setEnabled(openable);
                     btnOff.setBackgroundResource(openable ? R.color.colorOff : R.color
                             .colorGrayNormal);
@@ -148,7 +153,8 @@ public class TabControlFragment extends ComFragment {
                     List<ValidTag> targets = new ArrayList<>();
                     List<Tag> tags = TagsFilter.filterDeviceTagList(tagList, "FarCtrl");
                     if (tags != null) {
-                        targets.add(new ValidTag(tags.get(0).getTagName(), String.valueOf(farCtrlCode)));
+                        targets.add(new ValidTag(tags.get(0).getTagName(), String.valueOf
+                                (farCtrlCode)));
                         onModifyTags(targets, layoutContainer);
 
                         //nj--添加远程合分闸操作记录 18/11/05
