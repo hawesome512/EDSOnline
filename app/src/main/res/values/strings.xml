@@ -159,7 +159,7 @@
     <string name="workorder_range">建议时间</string>
     <string name="workorder_location">运维位置</string>
     <string name="workorder_worker">作业员</string>
-    <string name="workorder_creator">工单创建人</string>
+    <string name="workorder_creator">创建人</string>
     <string name="workorder_to">至</string>
     <string name="workorder_save">创建工单</string>
     <string name="workorder_required">必填</string>

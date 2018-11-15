@@ -24,6 +24,8 @@
             android:padding="@dimen/view_padding_normal"
             android:textColor="@color/colorWhite"
             android:textSize="@dimen/font_display"
+            android:maxLines="1"
+            android:ellipsize="end"
             tools:text="Alarm" />
 
         <Button

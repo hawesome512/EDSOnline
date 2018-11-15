@@ -17,7 +17,9 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textColor="@color/colorPrimaryText"
-            android:textSize="@dimen/font_big" />
+            android:textSize="@dimen/font_big"
+            android:maxLines="1"
+            android:ellipsize="end"/>
 
         <TextView
             android:id="@+id/text_time"
@@ -51,7 +53,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="right"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:maxLines="1"
+            android:ellipsize="end"/>
     </LinearLayout>
 
     <View
