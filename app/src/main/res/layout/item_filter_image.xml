@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/workorder_list_image"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_add_grey_300_24dp" />
+        android:src="@drawable/ic_cloud_download_grey_300_24dp" />
 
     <ImageView
         android:id="@+id/image_remove"

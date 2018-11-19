@@ -1,10 +1,13 @@
 package com.xseec.eds.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.hardware.input.InputManager;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -42,8 +45,15 @@ public class VerificationCodeActivity extends AppCompatActivity {
         codeInput.setOnCompletedListener(new VerificationCodeInput.Listener() {
             @Override
             public void onCompleted(String content) {
-                textError.setVisibility(content.equals(code) ? View.INVISIBLE : View.VISIBLE);
-                btnSetting.setEnabled(content.equals(code) ? true : false);
+                if(content.equals(code)){
+                    textError.setVisibility(View.INVISIBLE);
+                    btnSetting.setEnabled(true);
+                    InputMethodManager inputManager= (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputManager.toggleSoftInput(0,InputMethodManager.HIDE_NOT_ALWAYS);
+                }else {
+                    textError.setVisibility(View.VISIBLE);
+                    btnSetting.setEnabled(false);
+                }
             }
         });
     }

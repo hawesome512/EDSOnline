@@ -55,7 +55,8 @@ public abstract class ComFragment extends Fragment implements ComListener {
     protected List<Tag> tagList;
     //在unbind service过程中经常出现service not registered
     private boolean binded = false;
-    protected static final int REQUEST_CODE = 1;
+    protected static final int REQUEST_PROTECT_AUTHORITY = 1;
+    protected static final int REQUEST_CONTROL_AUTHORITY = 11;
     protected boolean hasCode = false;
 
     private ComService.ComBinder comBinder;
@@ -146,7 +147,7 @@ public abstract class ComFragment extends Fragment implements ComListener {
         }
     }
 
-    protected void checkCtrlAuthority() {
+    protected void checkCtrlAuthority(int authorityCode) {
         List<Tag> ctrlTags = TagsFilter.filterDeviceTagList(tagList, CTRL_MODE, CTRL_CODE);
         if (ctrlTags.size() == 2) {
             String mode = ctrlTags.get(0).getTagValue();
@@ -168,7 +169,8 @@ public abstract class ComFragment extends Fragment implements ComListener {
             if (!hasCode) {
                 int code = Integer.valueOf(ctrlTags.get(1).getTagValue());
                 String BCDCode=String.format("%04x",code);
-                VerificationCodeActivity.start(getActivity(), REQUEST_CODE, BCDCode);
+                //需分别参数修改和远程操作的请求码，若相同同时出发其onActivityResult
+                VerificationCodeActivity.start(getActivity(), authorityCode, BCDCode);
             }
         }
     }

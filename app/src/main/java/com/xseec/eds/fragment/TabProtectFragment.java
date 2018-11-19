@@ -146,7 +146,7 @@ public class TabProtectFragment extends TabBaseFragment {
         actionDevic=device.getDeviceAlias();
         oldActionValue=tag.getTagValue();
 
-        checkCtrlAuthority();
+        checkCtrlAuthority(REQUEST_PROTECT_AUTHORITY);
         if (hasCode) {
             selectItems();
         }
@@ -166,7 +166,7 @@ public class TabProtectFragment extends TabBaseFragment {
                     RecordHelper.actionLog( actionInfo );
                 }
                 break;
-            case REQUEST_CODE:
+            case REQUEST_PROTECT_AUTHORITY:
                 //输入正确设备密码
                 if (resultCode == Activity.RESULT_OK) {
                     hasCode = true;

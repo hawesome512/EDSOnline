@@ -133,7 +133,7 @@ public class TabControlFragment extends ComFragment {
 
     @OnClick({R.id.btn_on, R.id.btn_off})
     public void onViewClicked(View view) {
-        checkCtrlAuthority();
+        checkCtrlAuthority(REQUEST_CONTROL_AUTHORITY);
         switch (view.getId()) {
             case R.id.btn_on:
                 farCtrlCode = VALUE_ON;
@@ -147,7 +147,7 @@ public class TabControlFragment extends ComFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case REQUEST_CODE:
+            case REQUEST_CONTROL_AUTHORITY:
                 //输入正确设备密码
                 if (resultCode == Activity.RESULT_OK) {
                     List<ValidTag> targets = new ArrayList<>();
@@ -158,8 +158,8 @@ public class TabControlFragment extends ComFragment {
                         onModifyTags(targets, layoutContainer);
 
                         //nj--添加远程合分闸操作记录 18/11/05
-                        String DeviceName=tags.get( 0 ).getTagName();
-                        Device device=Device.initWithTagName( DeviceName );
+                        String deviceName=tags.get( 0 ).getTagName();
+                        Device device=Device.initWithTagName( deviceName );
                         String actionDevice=device.getDeviceAlias();
                         String actionInfo;
                         switch (farCtrlCode){
