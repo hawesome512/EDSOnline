@@ -21,6 +21,9 @@ public class Action extends BaseModel implements Comparable{
     private String info;
     private Date time;
 
+    //nj--存储本机号码 2018/11/14
+    public static String telephony;
+
     public Action(){}
 
     public Action(String id){
@@ -31,7 +34,7 @@ public class Action extends BaseModel implements Comparable{
     nj--设置操作记录种类的枚举变量：NORMAL-登录；IMPORTANT-工单；SENIOR-设备；OTHER-其他测试
     2018/11/03
     * */
-    private enum ActionType{
+    public enum ActionType{
         LOGIN,WORKORDER,DEVICE,OTHER
     }
 
@@ -40,10 +43,10 @@ public class Action extends BaseModel implements Comparable{
     工单操作：S-工单创建；H-工单执行；L：工单删除 M:暂定
     设备操作:S-参数修改；H-远程合闸；L-远程分闸  M:暂定 2018/11/06
      */
-    private enum ActionMethod{S,H,L,M}
+    public enum ActionMethod{S,H,L,M}
 
     //nj--获取操作记录类别别信息 2018/11/9
-    private ActionType getActionType(){
+    public ActionType getActionType(){
         String[] temps=info.split( "_" );
             if (temps[0].equals( "Login" )){
                 return ActionType.LOGIN;
@@ -57,7 +60,7 @@ public class Action extends BaseModel implements Comparable{
     }
 
     //nj--获取操作记录类别方法 2018/11/9
-    private ActionMethod getActionMethod(){
+    public ActionMethod getActionMethod(){
         String[] temps=info.split( "_" );
         if(temps[0]!=null&&temps.length==3){
             if (temps[1].equals( "1" )){
@@ -139,6 +142,9 @@ public class Action extends BaseModel implements Comparable{
         this.id=zoneId+"-"+DateHelper.getNowForId();
     }
 
+    public String getTelephony() {
+        return telephony;
+    }
     //NJ--排序 2018/11/6
     @Override
     public int compareTo( Object o) {

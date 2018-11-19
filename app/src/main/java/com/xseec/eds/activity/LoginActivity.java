@@ -18,9 +18,11 @@ import android.widget.TextView;
 import com.xseec.eds.R;
 import com.xseec.eds.model.User;
 import com.xseec.eds.model.WAServicer;
+import com.xseec.eds.model.servlet.Action;
 import com.xseec.eds.model.servlet.Basic;
 import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.util.CodeHelper;
+import com.xseec.eds.util.ContentHelper;
 import com.xseec.eds.util.RecordHelper;
 import com.xseec.eds.util.TagsFilter;
 import com.xseec.eds.util.Update.UpdateHelper;
@@ -67,6 +69,9 @@ public class LoginActivity extends AppCompatActivity {
         ButterKnife.inject(this);
         getLoginInfo();
         UpdateHelper.checkUpdate(this);
+
+        //nj--获取本机电话号码 2018/11/14
+        Action.telephony=ContentHelper.getTelephony( this );
     }
 
     @OnClick(R.id.btn_login)
@@ -99,7 +104,7 @@ public class LoginActivity extends AppCompatActivity {
                     TagsFilter.setAllTagList(tagList);
 
                     //nj--添加登录操作信息
-                    String actionInfo=getString( R.string.action_login, user.getUsername());
+                    String actionInfo=getString( R.string.action_login);
                     RecordHelper.actionLog( actionInfo );
 
                     runOnUiThread(new Runnable() {

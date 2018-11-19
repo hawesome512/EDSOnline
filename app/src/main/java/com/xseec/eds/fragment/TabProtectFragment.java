@@ -241,8 +241,6 @@ public class TabProtectFragment extends TabBaseFragment {
             }
             targets.add(new ValidTag(protectTag.getTagName(), strValue));
 
-
-
             //Isd为Ir的倍数，当Ir改变时，Isd应跟着改变，以保持不变的倍数,而以xIr为单位的不处理
             if (tmps[0].equals(NAME_IR) && TextUtils.isEmpty(getXUnit(NAME_IR))) {
                 Tag IsdTag = TagsFilter.filterDeviceTagList(tagList, NAME_ISD).get(0);

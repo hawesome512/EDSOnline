@@ -268,7 +268,7 @@
     <string name="title_activity_verification_code">VerificationCodeActivity</string>
 
     <!--Action-->  <!--nj:操作记录信息 2018/11/1-->
-    <string name="action_login">Login_1_用户:%1$s登入系统</string>
+    <string name="action_login">Login_1_登入系统</string>
     <string name="action_workorder_create">WorkOrder_1_创建工单:%1$s</string>
     <string name="action_workorder_execute">WorkOrder_2_执行工单：%1$s</string>
     <string name="action_workorder_delet">WorkOrder_3_删除工单:%1$s</string>

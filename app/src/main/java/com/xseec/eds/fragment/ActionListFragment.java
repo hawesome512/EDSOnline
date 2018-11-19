@@ -26,6 +26,7 @@ import com.xseec.eds.util.WAJsonHelper;
 import com.xseec.eds.util.WAServiceHelper;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -66,6 +67,7 @@ public class ActionListFragment extends BaseFragment {
     private void initRecycleView(){
         LinearLayoutManager layoutManager=new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager( layoutManager );
+        actionList=new ArrayList( );
         queryAction();
     }
 
@@ -78,7 +80,15 @@ public class ActionListFragment extends BaseFragment {
             }
             @Override
             public void onResponse(Response response) throws IOException {
-                actionList = WAJsonHelper.getActionList( response );
+                List<Action> list = WAJsonHelper.getActionList( response );
+
+                //nj--用户信息屏蔽 2018/11/14
+                for (Action action:list){
+                    if (action.getActionType()!= Action.ActionType.LOGIN){
+                        actionList.add( action);
+                    }
+                }
+
                 Collections.sort( actionList,Collections.<Action>reverseOrder());
                 refreshViewsInThread( response );
             }
@@ -95,8 +105,6 @@ public class ActionListFragment extends BaseFragment {
         switch (item.getItemId()){
             case R.id.filter:
                 //nj--操作记录查询筛选
-
-                //nj--操作记录查询筛选条件
                 break;
         }
         return super.onOptionsItemSelected( item );
