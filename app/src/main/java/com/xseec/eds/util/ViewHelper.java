@@ -22,6 +22,8 @@ import com.xseec.eds.R;
 
 public class ViewHelper {
 
+    public static final int CHART_ANIMATE_DURATION=2000;
+
     public static final int DEFAULT_HOME_RES= R.drawable.ic_arrow_back_white_24dp;
 
     public static void initToolbar(AppCompatActivity activity, Toolbar toolbar, int homeRes) {

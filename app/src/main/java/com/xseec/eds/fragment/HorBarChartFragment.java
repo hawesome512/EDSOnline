@@ -131,10 +131,10 @@ public class HorBarChartFragment extends BaseFragment {
     }
 
     @Override
-    protected void onRefreshViews(Response response) {
+    protected void onRefreshViews(String jsonData) {
         progress.setVisibility(View.GONE);
 
-        ArrayList<Tag> tagList = (ArrayList<Tag>) WAJsonHelper.refreshTagValue(response);
+        ArrayList<Tag> tagList = (ArrayList<Tag>) WAJsonHelper.refreshTagValue(jsonData);
         //HorBarChart中，BarEntry.x最大的值显示在顶部，翻转数组使显示数据自上而下为：THD:I,U,thd:u,i
         //注意匹配THDXAxisValueFormatter
         Collections.reverse(tagList);

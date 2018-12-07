@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.xseec.eds.R;
 import com.xseec.eds.fragment.ActionListFragment;
 import com.xseec.eds.fragment.AlarmListFragment;
+import com.xseec.eds.fragment.EnergyFragment;
 import com.xseec.eds.fragment.OverviewFragment;
 import com.xseec.eds.fragment.SettingFragment;
 import com.xseec.eds.fragment.WorkorderListFragment;
@@ -65,13 +66,13 @@ public class MainActivity extends BaseActivity implements NavigationView
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
+        fragmentManager = getSupportFragmentManager();
         navView.setNavigationItemSelectedListener(this);
         basic = getIntent().getParcelableExtra(EXT_BASIC);
         tagList = getIntent().getParcelableArrayListExtra(EXT_TAGS);
         if (basic != null && tagList != null) {
             TextView textUser = navView.getHeaderView(0).findViewById(R.id.text_account);
             textUser.setText(getString(R.string.nav_account, WAServicer.getUser().getUsername()));
-            fragmentManager = getSupportFragmentManager();
             replaceFragment(OverviewFragment.newInstance(basic, tagList));
         } else {
             Snackbar.make(drawerLayout, R.string.main_failure, Snackbar.LENGTH_LONG).setAction(R
@@ -104,6 +105,9 @@ public class MainActivity extends BaseActivity implements NavigationView
         switch (item.getItemId()) {
             case R.id.nav_schedule:
                 fragment = WorkorderListFragment.newInstance();
+                break;
+            case R.id.nav_energy:
+                fragment= EnergyFragment.newInstance();
                 break;
             case R.id.nav_alarm:
                 fragment= AlarmListFragment.newInstance();

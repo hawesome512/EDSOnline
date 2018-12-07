@@ -58,8 +58,7 @@ public class Alarm extends BaseModel implements Comparable,Parcelable {
     };
 
     public String getDevice() {
-        String[] d=device.split(ZONE_SPIT);
-        return device.split(ZONE_SPIT)[1];
+        return device;
     }
 
     public void setDevice(String device) {

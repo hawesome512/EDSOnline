@@ -1,0 +1,56 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.xseec.eds.fragment.EnergyTabItemFragment">
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ProgressBar
+                android:id="@+id/progress"
+                style="@style/HorProgressBar" />
+
+            <TextView
+                android:id="@+id/text_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:drawableLeft="@drawable/ic_today_grey_600_24dp"
+                android:gravity="center"
+                android:padding="@dimen/view_padding_small" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView_tag"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+
+            <include
+                layout="@layout/item_line_chart"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/zone_image_hight" />
+
+            <include layout="@layout/item_chart_analysis" />
+
+            <include layout="@layout/item_bar_chart" />
+
+            <include layout="@layout/item_pie_chart" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorSecondaryText"
+                android:textSize="@dimen/font_small"
+                android:layout_margin="@dimen/view_margin_normal"
+                android:text="@string/energy_click_tip"/>
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+</FrameLayout>

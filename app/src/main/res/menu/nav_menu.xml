@@ -13,6 +13,9 @@
         <item android:id="@+id/nav_alarm"
             android:title="@string/nav_alarm"
             android:icon="@drawable/nav_alarm"/>
+        <item android:id="@+id/nav_energy"
+            android:title="@string/nav_energy"
+            android:icon="@drawable/nav_energy"/>
         <item android:id="@+id/nav_action"
             android:title="@string/nav_action"
             android:icon="@drawable/nav_action"/>

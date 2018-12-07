@@ -1,8 +1,14 @@
 package com.xseec.eds.util;
 
+import android.content.Context;
+
+import com.xseec.eds.R;
+
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -12,10 +18,12 @@ import java.util.Locale;
 public class DateHelper {
 
     public final static String dateRegex="\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}";
+
+    public final static SimpleDateFormat sdfServlet = new SimpleDateFormat("yyyy-MM-dd%20HH:mm:ss");
     public final static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private final static SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMddHHmmss");
     private final static SimpleDateFormat sdfYMD=new SimpleDateFormat("yyyy-MM-dd");
-    private final static SimpleDateFormat sdfMD=new SimpleDateFormat("MM-dd");
+    private final static SimpleDateFormat sdfMD=new SimpleDateFormat("MMM dd");
 
     public static String getString(Date date) {
         if(date==null){
@@ -26,6 +34,10 @@ public class DateHelper {
 
     public static String getYMDString(Date date){
         return sdfYMD.format(date);
+    }
+
+    public static String getServletString(Date date){
+        return sdfServlet.format(date);
     }
 
     public static Date getYMDDate(String strDate){
@@ -91,5 +103,49 @@ public class DateHelper {
         Calendar calendar=Calendar.getInstance();
         calendar.setTime(date);
         return calendar;
+    }
+
+    public static String[] getXvaluesByField(int field){
+        String[] items;
+        switch (field){
+            case Calendar.DATE:
+                items=new String[24];
+                for(int i=0;i<24;i++){
+                    items[i]=String.format("%02d:00",i);
+                }
+                break;
+            case Calendar.MONTH:
+                items=new String[31];
+                for(int i=0;i<31;i++){
+                    items[i]=String.format("%02d",i+1);
+                }
+                break;
+            case Calendar.YEAR:
+                items=new String[12];
+                for(int i=0;i<12;i++){
+                    items[i]=String.format("%02d",i+1);
+                }
+                break;
+            default:
+                items=new String[0];
+                break;
+        }
+        return items;
+    }
+
+    public static String getStringByField(Calendar calendar,int field){
+        SimpleDateFormat sdf;
+        switch (field){
+            case Calendar.YEAR:
+                sdf=new SimpleDateFormat("yyyy");
+                break;
+            case Calendar.MONTH:
+                sdf=new SimpleDateFormat("yyyy MMM");
+                break;
+            default:
+                sdf=new SimpleDateFormat("MMM dd,EEE");
+                break;
+        }
+        return sdf.format(calendar.getTime());
     }
 }

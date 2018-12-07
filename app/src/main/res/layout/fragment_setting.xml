@@ -20,6 +20,7 @@
 
                 <TextView
                     style="@style/TextHorItemName"
+                    android:drawableLeft="@drawable/ic_building_blue_700_24dp"
                     android:text="@string/setting_area" />
 
                 <EditText
@@ -31,6 +32,7 @@
 
                 <TextView
                     style="@style/TextHorItemName"
+                    android:drawableLeft="@drawable/ic_account_circle_blue_700_24dp"
                     android:text="@string/overview_engineer" />
 
                 <EditText
@@ -42,6 +44,7 @@
 
                 <TextView
                     style="@style/TextHorItemName"
+                    android:drawableLeft="@drawable/ic_location_on_blue_700_24dp"
                     android:text="@string/overview_location" />
 
                 <EditText
@@ -54,6 +57,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/view_margin_normal"
                 android:layout_marginVertical="@dimen/view_margin_small"
+                android:drawableLeft="@drawable/ic_image_blue_700_24dp"
                 android:text="@string/overview_grid" />
 
             <android.support.v7.widget.RecyclerView

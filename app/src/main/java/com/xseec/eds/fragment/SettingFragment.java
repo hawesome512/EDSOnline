@@ -174,7 +174,7 @@ public class SettingFragment extends BaseFragment implements UploadListener {
     }
 
     @Override
-    protected void onRefreshViews(Response response) {
+    protected void onRefreshViews(String jsonData) {
         LoginActivity.start(getContext());
         getActivity().finish();
     }

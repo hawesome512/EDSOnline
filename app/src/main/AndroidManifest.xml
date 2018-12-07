@@ -7,7 +7,6 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
     <application
         android:name=".util.EDSApplication"
@@ -26,7 +25,9 @@
         </activity>
         <activity
             android:name=".activity.MainActivity"
-            android:theme="@style/TransStatusBarTheme" />
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:theme="@style/TransStatusBarTheme">
+        </activity>
 
         <service
             android:name=".service.ComService"

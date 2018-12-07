@@ -144,7 +144,7 @@ public class WorkorderListFragment extends BaseFragment {
     }
 
     @Override
-    protected void onRefreshViews(Response response) {
+    protected void onRefreshViews(String jsonData) {
         progress.setVisibility(View.GONE);
         recycler.setAdapter(workorderAdapter);
     }

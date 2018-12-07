@@ -116,7 +116,7 @@ public class ActionListFragment extends BaseFragment {
     }
 
     @Override
-    protected void onRefreshViews(Response response) {
+    protected void onRefreshViews(String jsonData) {
         progress.setVisibility( View.GONE );
         adapter=new ActionAdapter(getContext(), actionList );
         recyclerView.setAdapter( adapter );

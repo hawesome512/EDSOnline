@@ -36,7 +36,7 @@ import com.xseec.eds.util.TagsFilter;
 import com.xseec.eds.util.WAJsonHelper;
 import com.xseec.eds.util.WAServiceHelper;
 import com.xseec.eds.widget.PercentageValueFormatter;
-import com.xseec.eds.widget.PhaseXAxisValueFormatter;
+import com.xseec.eds.widget.ItemXAxisValueFormatter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -143,7 +143,8 @@ public class TabOerviewFragment extends ComFragment {
         barChart.getAxisRight().setEnabled(false);
         XAxis xAxis = barChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setValueFormatter(new PhaseXAxisValueFormatter());
+        String[] xItems={"Ia","Ib","Ic"};
+        xAxis.setValueFormatter(new ItemXAxisValueFormatter(xItems));
         xAxis.setLabelCount(3);
         barChart.getLegend().setEnabled(false);
         barChart.animateY(1500);

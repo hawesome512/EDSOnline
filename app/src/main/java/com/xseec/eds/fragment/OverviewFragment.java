@@ -86,8 +86,6 @@ public class OverviewFragment extends BaseFragment {
     ImageView imageDeviceList;
     @InjectView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
-    @InjectView(R.id.image_schedule)
-    ImageView imageSchedule;
 
     private static final String KEY_BASIC = "basic_info";
     private static final String KEY_TAGS = "tag_list";
@@ -97,16 +95,7 @@ public class OverviewFragment extends BaseFragment {
     List<OverviewTag> overviewTagList;
 
     OverviewAdapter overviewAdapter;
-    @InjectView(R.id.text_schedule_title)
-    TextView textScheduleTitle;
-    @InjectView(R.id.text_schedule_time)
-    TextView textScheduleTime;
-    @InjectView(R.id.btn_schedule_execute)
-    Button btnScheduleExecute;
-    @InjectView(R.id.btn_schedule_notify)
-    Button btnScheduleNotify;
-    @InjectView(R.id.btn_schedule_cancel)
-    Button btnScheduleCancel;
+
     @InjectView(R.id.layout_status)
     LinearLayout layoutStatus;
     @InjectView(R.id.layout_device)
@@ -170,9 +159,6 @@ public class OverviewFragment extends BaseFragment {
         textDevice.setText(getResources().getString(R.string.overview_device_value, deviceCount));
         textEngineer.setText(basic.getPricipal());
         textLocation.setText(basic.getLocation().split(",")[0]);
-        //init Schedule Card
-        //……
-        Glide.with(this).load(Generator.getScheduleImageRes()).into(imageSchedule);
         //init Overview Recycler
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
         recyclerOverview.setLayoutManager(layoutManager);
@@ -216,8 +202,8 @@ public class OverviewFragment extends BaseFragment {
     }
 
     @Override
-    protected void onRefreshViews(Response response) {
-        basicTagList = WAJsonHelper.refreshTagValue(response);
+    protected void onRefreshViews(String jsonData) {
+        basicTagList = WAJsonHelper.refreshTagValue(jsonData);
         TagsFilter.refreshOverviewTagsByTags(basicTagList, overviewTagList);
         final State state = TagsFilter.getStateByTagList(basicTagList);
         overviewAdapter.notifyDataSetChanged();

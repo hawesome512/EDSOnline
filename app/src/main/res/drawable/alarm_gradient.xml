@@ -5,5 +5,5 @@
         android:endColor="@color/colorAlarm"
         android:centerX="0"
         android:centerY="0"
-        android:gradientRadius="@dimen/zone_image_hight"/>
+        android:gradientRadius="@dimen/view_header_hei"/>
 </shape>

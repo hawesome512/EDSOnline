@@ -15,6 +15,7 @@ import com.xseec.eds.model.tags.Tag;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,13 +60,30 @@ public class WAJsonHelper {
         return tagList;
     }
 
+    /*
+     *暂时方案
+     * 在BaseFragment>refreshViewsInThread>onRefreshViews调用jsonData.body().string()触发异常
+     * 主线程调用异常，概率事件（20%），故整合在后台线程中调用jsonData.body().string()
+     */
+    public static List<Tag> refreshTagValue(String jsonData) {
+        List<Tag> tagList=null;
+        try {
+            Gson gson = new Gson();
+            JSONArray jsonArray = new JSONObject(jsonData).getJSONArray("Values");
+            tagList = gson.fromJson(jsonArray.toString(), new TypeToken<List<Tag>>() {
+            }.getType());
+        } catch (Exception exp) {
+        }
+        return tagList;
+    }
+
     //经WAService修改参数，成功与否不能从response结果获知，故不处理
     private static void getSetTagResult(Response jsonData){}
 
-    public static List<String>[] getTagLog(Response jsonData){
+    public static List<String>[] getTagLog(String jsonData){
         List<String>[] tagLogs=null;
         try {
-            JSONObject jsonObject = new JSONObject(jsonData.body().string());
+            JSONObject jsonObject = new JSONObject(jsonData);
             JSONArray jsonArray = jsonObject.getJSONArray("DataLog");
             int total=jsonArray.length();
             tagLogs=(List<String>[]) new List[total];

@@ -8,7 +8,7 @@
     <dimen name="image_size">64dp</dimen>
     <dimen name="image_size_normal">48dp</dimen>
     <dimen name="image_size_small">24dp</dimen>
-    <dimen name="zone_image_hight">240dp</dimen>
+    <dimen name="zone_image_hight">300dp</dimen>
     <dimen name="zone_image_width">120dp</dimen>
     <dimen name="button_radius">24dp</dimen>
     <dimen name="dialog_corners">2dp</dimen>

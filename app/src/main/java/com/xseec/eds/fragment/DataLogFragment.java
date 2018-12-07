@@ -252,8 +252,8 @@ public class DataLogFragment extends BaseFragment {
     }
 
     @Override
-    protected void onRefreshViews(Response response) {
-        List<String>[] values = WAJsonHelper.getTagLog(response);
+    protected void onRefreshViews(String jsonData) {
+        List<String>[] values = WAJsonHelper.getTagLog(jsonData);
         if (values==null||values.length == 0) {
             return;
         }
@@ -270,7 +270,7 @@ public class DataLogFragment extends BaseFragment {
             legenName = getString(R.string.detail_yesterday);
             value = value.subList(0, 24);
             //新增今日值曲线
-            List<Entry> entryList1 = Generator.convertEntryList(today);
+            List<Entry> entryList1 = Generator.convertEntryList(today,0);
             lineDataSet1 = new LineDataSet(entryList1, getString(R.string.detail_today));
             lineDataSet1.setColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
             lineDataSet1.setCircleColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
@@ -281,7 +281,7 @@ public class DataLogFragment extends BaseFragment {
             //赋值
             float totalToday = Generator.getSumFromEntryList(entryList1, entryList1.size());
             //此语句与下面语句重复计算
-            List<Entry> yesterdayEntryList = Generator.convertEntryList(value);
+            List<Entry> yesterdayEntryList = Generator.convertEntryList(value,0);
             float totalYesterday = Generator.getSumFromEntryList(yesterdayEntryList,
                     entryList1.size());
             float linkRadio = Math.round((totalToday - totalYesterday) / totalYesterday * 10000)
@@ -300,12 +300,11 @@ public class DataLogFragment extends BaseFragment {
             values[0]=value;
         }
 
-        int[] colors=new int[]{R.color.colorPhaseA,R.color.colorPhaseB,R.color.colorPhaseC,R.color.colorGrayNormal};
+        int[] colors=new int[]{R.color.colorPhaseA,R.color.colorPhaseB,R.color.colorPhaseC,R.color.colorAlarm};
         List<Entry> entryLists=new ArrayList<>();
         for (int i = 0; i < values.length; i++) {
             List<String> value = values[i];
-            List<Entry> entryList = Generator.convertEntryList(value);
-            entryLists.addAll(entryList);
+            List<Entry> entryList = Generator.convertEntryList(value,0);
             legenName=(i==0&&legenName!=null)?legenName:storedTagList.get(i).getTagAlias();
             LineDataSet lineDataSet = new LineDataSet(entryList,legenName);
             int colorIndex;
@@ -319,8 +318,15 @@ public class DataLogFragment extends BaseFragment {
                 colorIndex=i%colors.length;
                 lineDataSet.setLineWidth(2f);
             }
+
             lineDataSet.setColor(ContextCompat.getColor(getContext(), colors[colorIndex]));
             lineDataSet.setCircleColor(ContextCompat.getColor(getContext(), colors[colorIndex]));
+            //临时方案：Ir,不能计入均值计算列中
+            if(i>=3){
+                lineDataSet.setDrawCircles(false);
+            }else {
+                entryLists.addAll(entryList);
+            }
             lineData.addDataSet(lineDataSet);
         }
 

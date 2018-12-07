@@ -1,6 +1,7 @@
 package com.xseec.eds.util;
 
 import com.xseec.eds.model.State;
+import com.xseec.eds.model.WAServicer;
 import com.xseec.eds.model.tags.OverviewTag;
 import com.xseec.eds.model.tags.Tag;
 
@@ -23,7 +24,7 @@ import java.util.List;
 
 public class TagsFilter {
 
-    private static final String FILTER_AREA = "AREA";
+    private static final String FILTER_AREA = WAServicer.getUser().getGatewayName();
     private static final String FILTER_STATE = "State";
 
     private static List<Tag> allTagList;
