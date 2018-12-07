@@ -1,12 +1,10 @@
 package com.xseec.eds.activity;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
@@ -17,38 +15,25 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 import com.xseec.eds.R;
 import com.xseec.eds.model.User;
 import com.xseec.eds.model.WAServicer;
 import com.xseec.eds.model.servlet.Action;
 import com.xseec.eds.model.servlet.Basic;
-import com.xseec.eds.model.servlet.Workorder;
 import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.util.CodeHelper;
 import com.xseec.eds.util.ContentHelper;
-import com.xseec.eds.util.DateHelper;
-import com.xseec.eds.util.Generator;
 import com.xseec.eds.util.RecordHelper;
 import com.xseec.eds.util.TagsFilter;
-import com.xseec.eds.util.Update.UpdateHelper;
 import com.xseec.eds.util.ViewHelper;
 import com.xseec.eds.util.WAJsonHelper;
 import com.xseec.eds.util.WAServiceHelper;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.RuntimePermissions;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -82,7 +67,10 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.inject(this);
         getLoginInfo();
-        UpdateHelper.checkUpdate(this);
+//        UpdateHelper.checkUpdate(this);
+
+        //nj--获取本机电话号码 2018/11/14
+        Action.telephony=ContentHelper.getTelephony( this );
     }
 
     @OnClick(R.id.btn_login)

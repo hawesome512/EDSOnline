@@ -2,6 +2,8 @@ package com.xseec.eds.model.servlet;
 
 
 import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 import com.xseec.eds.R;
@@ -14,17 +16,51 @@ import java.util.Date;
  * Created by Administrator on 2018/10/8.
  */
 
-
-public class Action extends BaseModel implements Comparable{
+public class Action extends BaseModel implements Comparable,Parcelable {
     private String user;
     @SerializedName("action")
     private String info;
     private Date time;
 
+    //nj--存储本机号码 2018/11/14
+    public static String telephony;
+
     public Action(){}
 
     public Action(String id){
         this.id=id;
+    }
+
+    protected Action(Parcel in) {
+        user = in.readString();
+        info = in.readString();
+        id=in.readString();
+        time=DateHelper.getDate( in.readString() );
+    }
+
+    public static final Creator<Action> CREATOR = new Creator<Action>() {
+        @Override
+        public Action createFromParcel(Parcel in) {
+            return new Action( in );
+        }
+
+        @Override
+        public Action[] newArray(int size) {
+            return new Action[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString( user );
+        dest.writeString( info );
+        dest.writeString( id );
+        dest.writeString( DateHelper.getString( time ) );
     }
 
     /*
@@ -139,6 +175,9 @@ public class Action extends BaseModel implements Comparable{
         this.id=zoneId+"-"+DateHelper.getNowForId();
     }
 
+    public String getTelephony() {
+        return telephony;
+    }
     //NJ--排序 2018/11/6
     @Override
     public int compareTo( Object o) {

@@ -294,4 +294,47 @@
     <string name="action_device_paramenter">Device_1_修改设备%1$s参数 (%2$s:%3$s→%4$s)</string>
     <string name="action_devic_close">Device_2_%1$s设备远程合闸</string>
     <string name="action_devic">Device_3_%1$s设备远程分闸</string>
+
+    <!--report-->  <!--nj:报表分析 2018/11/16-->
+    <string name="filter_time">%1$s至%2$s</string>
+    <string name="report_energy">能耗情况</string>
+    <string name="report_start_time">起始时间</string>
+    <string name="report_end_time">结束时间</string>
+    <string name="report_file_storage">/eds/reportInfo/IMAG/</string>
+    <string name="report_file_format">.PNG</string>
+    <string-array name="report_workorder">
+        <item>运维工单</item>
+        <item>总工单数</item>
+        <item>已完成</item>
+        <item>未完成</item>
+    </string-array>
+    <string-array name="report_action">
+        <item>操作记录</item>
+        <item>设备操作</item>
+        <item>工单操作</item>
+        <item>登录次数</item>
+    </string-array>
+    <string-array name="report_alarm">
+        <item>异常情况</item>
+        <item>总异常数</item>
+        <item>已处理</item>
+        <item>未处理</item>
+    </string-array>
+    <string-array name="report_temperture">
+        <item>环境温度(℃)</item>
+        <item>最大值</item>
+        <item>最小值</item>
+        <item>平均值</item>
+    </string-array>
+    <string-array name="report_humidity">
+        <item>环境湿度(%)</item>
+        <item>最大值</item>
+        <item>最小值</item>
+        <item>平均值</item>
+    </string-array>
+    <string-array name="query_time">
+        <item>上一周</item>
+        <item>上一月</item>
+        <item>自定义</item>
+    </string-array>
 </resources>

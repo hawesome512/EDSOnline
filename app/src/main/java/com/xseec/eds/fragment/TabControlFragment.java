@@ -18,8 +18,8 @@ import com.xseec.eds.model.Device;
 import com.xseec.eds.model.State;
 import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.model.tags.ValidTag;
-import com.xseec.eds.util.RecordHelper;
 import com.xseec.eds.util.Generator;
+import com.xseec.eds.util.RecordHelper;
 import com.xseec.eds.util.TagsFilter;
 
 import java.util.ArrayList;
@@ -170,7 +170,7 @@ public class TabControlFragment extends ComFragment {
                                 actionInfo=getString( R.string.action_devic,actionDevice );
                                 break;
                         }
-                        RecordHelper.actionLog(actionInfo);
+                            RecordHelper.actionLog(actionInfo);
                     }
                 }
                 break;

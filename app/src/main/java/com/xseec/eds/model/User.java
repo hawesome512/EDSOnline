@@ -1,9 +1,7 @@
 package com.xseec.eds.model;
 
-import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Base64;
 
 import com.xseec.eds.util.CodeHelper;
 

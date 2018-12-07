@@ -1,7 +1,5 @@
 package com.xseec.eds.util;
 
-import android.text.TextUtils;
-
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -15,11 +13,17 @@ import java.io.IOException;
 public class RecordHelper {
 
     //nj--操作信息记录
-    public static void actionLog(String actionInfo) {
-        Action action = new Action();
-        User user = WAServicer.getUser();
-        action.genId(user.getDeviceName());
-        action.setUser(user.getUsername());
+    public static void actionLog(String actionInfo){
+        Action action=new Action( );
+        User user=WAServicer.getUser();
+        action.genId( user.getDeviceName() );
+
+        //nj--判断是否能读取到本机号码 2018/11/14
+        if (action.getTelephony().isEmpty()||" ".equals( action.getTelephony() )){
+            action.setUser(user.getUsername());
+        }else {
+            action.setUser(action.getTelephony());
+        }
 
         action.setInfo(actionInfo);
         WAServiceHelper.sendActionUpdateRequest(action, new Callback() {
