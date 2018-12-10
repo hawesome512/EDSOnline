@@ -37,7 +37,7 @@ public class BaseActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        confirmExit();
+            confirmExit();
     }
 
     //在Activity中重写onActivityResult方法触发Fragment

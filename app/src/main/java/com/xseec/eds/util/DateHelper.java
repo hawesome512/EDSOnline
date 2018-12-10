@@ -1,14 +1,8 @@
 package com.xseec.eds.util;
 
-import android.content.Context;
-
-import com.xseec.eds.R;
-
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 /**
@@ -30,6 +24,14 @@ public class DateHelper {
             date=new Date();
         }
         return simpleDateFormat.format(date);
+    }
+
+    public static Date getServletDate(String strDate){
+        try {
+            return sdfServlet.parse( strDate );
+        }catch (Exception exp){
+            return null;
+        }
     }
 
     public static String getYMDString(Date date){
@@ -133,19 +135,64 @@ public class DateHelper {
         return items;
     }
 
-    public static String getStringByField(Calendar calendar,int field){
+    public static String getStringByField(Calendar calendar,int field) {
         SimpleDateFormat sdf;
-        switch (field){
+        switch (field) {
             case Calendar.YEAR:
-                sdf=new SimpleDateFormat("yyyy");
+                sdf = new SimpleDateFormat( "yyyy" );
                 break;
             case Calendar.MONTH:
-                sdf=new SimpleDateFormat("yyyy MMM");
+                sdf = new SimpleDateFormat( "yyyy MMM" );
                 break;
             default:
-                sdf=new SimpleDateFormat("MMM dd,EEE");
+                sdf = new SimpleDateFormat( "MMM dd,EEE" );
                 break;
         }
-        return sdf.format(calendar.getTime());
+        return sdf.format( calendar.getTime() );
+    }
+
+    //nj--获取上周起始时间 2018/11/17
+    public static String getStartTimeOfWeek(){
+        Calendar calendar=Calendar.getInstance();
+        calendar=getDayStartTime( calendar );
+        int i=calendar.get(Calendar.DAY_OF_WEEK);
+        calendar.add( Calendar.DAY_OF_MONTH,-(i+6));
+        return getServletString( calendar.getTime() );
+    }
+
+    //nj--获取上周末时间 2018/11/17
+    public static String getEndTimeOfWeek(){
+        Calendar calendar=Calendar.getInstance();
+        calendar=getDayStartTime( calendar );
+        int i=calendar.get(Calendar.DAY_OF_WEEK);
+        calendar.add( Calendar.DAY_OF_MONTH,-(i-1));
+        return getServletString( calendar.getTime() );
+    }
+
+    //nj--获取上月的起始日期 2018/11/20
+    public static String getStartTimeOfMonth(){
+        Calendar calendar=Calendar.getInstance();
+        calendar=getDayStartTime( calendar );
+        calendar.add( Calendar.MONTH,-1 );
+        calendar.set( Calendar.DAY_OF_MONTH,1 );
+        return getServletString( calendar.getTime());
+    }
+
+    //nj--获取月末日期 2018/11/20
+    public static String getEndTimeOfMonth(){
+        Calendar calendar=Calendar.getInstance();
+        calendar=getDayStartTime( calendar );
+        calendar.add( Calendar.MONTH,-1 );
+        int i=calendar.getActualMaximum( Calendar.DAY_OF_MONTH );
+        calendar.set( Calendar.DAY_OF_MONTH,i );
+        return getServletString( calendar.getTime());
+    }
+
+    //nj--计算两日期的间隔 2018/11/23
+    public static int getBetweenOfDay(String startTime,String endTime){
+        Date start=getServletDate( startTime );
+        Date end=getServletDate( endTime );
+        int days=(int)((end.getTime()-start.getTime())/(1000*3600*24));
+        return days;
     }
 }

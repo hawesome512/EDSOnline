@@ -19,4 +19,7 @@
     <external-cache-path name="mq_external_cache" path="" />
 
     <root-path name="mq_external_cache" path="" />
+
+    //nj--报表截屏后，照片储存地址 2018/11/27
+    <external-path name="report_image" path="/eds/reportInfo"/>
 </paths>

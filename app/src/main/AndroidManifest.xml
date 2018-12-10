@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
@@ -76,6 +77,12 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/TransStatusBarTheme"
             android:windowSoftInputMode="adjustPan"></activity>
+
+        //nj--添加报表自定义时间段 activity 2018/11/20
+        <activity android:name=".activity.ReportTimeSettingActivity"
+            android:theme="@style/DialogActivity"/>
+        <activity android:name=".activity.ReportActivity"/>
+
     </application>
 
 </manifest>

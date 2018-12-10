@@ -82,13 +82,13 @@ public class ActionListFragment extends BaseFragment {
             public void onResponse(Response response) throws IOException {
                 List<Action> list = WAJsonHelper.getActionList( response );
 
+                actionList=new ArrayList<>(  );
                 //nj--用户信息屏蔽 2018/11/14
                 for (Action action:list){
                     if (action.getActionType()!= Action.ActionType.LOGIN){
                         actionList.add( action);
                     }
                 }
-
                 Collections.sort( actionList,Collections.<Action>reverseOrder());
                 refreshViewsInThread( response );
             }

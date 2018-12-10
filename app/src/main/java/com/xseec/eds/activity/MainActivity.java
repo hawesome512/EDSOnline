@@ -22,6 +22,7 @@ import com.xseec.eds.fragment.ActionListFragment;
 import com.xseec.eds.fragment.AlarmListFragment;
 import com.xseec.eds.fragment.EnergyFragment;
 import com.xseec.eds.fragment.OverviewFragment;
+import com.xseec.eds.fragment.ReportFragment;
 import com.xseec.eds.fragment.SettingFragment;
 import com.xseec.eds.fragment.WorkorderListFragment;
 import com.xseec.eds.model.WAServicer;
@@ -122,7 +123,10 @@ public class MainActivity extends BaseActivity implements NavigationView
             case R.id.nav_action:
                 fragment= ActionListFragment.newInstance();
                 break;
-
+            //nj--主界面跳转到报表分析界面中 2018/11/17
+            case R.id.nav_trend:
+                fragment= ReportFragment.newInstance();
+                break;
             default:
                 fragment = OverviewFragment.newInstance(basic, tagList);
                 statusColor = Color.TRANSPARENT;

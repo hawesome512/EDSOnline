@@ -1,7 +1,6 @@
 package com.xseec.eds.fragment;
 
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -83,7 +82,7 @@ public class WorkorderListFragment extends BaseFragment {
     private void initRecyclerView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recycler.setLayoutManager(layoutManager);
-        queryWorkorders();
+            queryWorkorders();
     }
 
     private void queryWorkorders() {

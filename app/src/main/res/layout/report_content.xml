@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--nj   报表内容布局 on2018/11/16-->
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    >
+
+    <LinearLayout
+        android:id="@+id/item_left"
+        style="@style/ReportItem">
+
+        <TextView
+            android:id="@+id/item_left_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/view_margin_small"
+            android:textSize="@dimen/font_big"
+            android:textColor="@color/colorNormal" />
+
+        <TextView
+            android:id="@+id/item_left_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/view_margin_small"
+            android:textSize="@dimen/font_normal"
+            android:textColor="@color/colorNormal" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:layout_marginVertical="@dimen/view_margin_tiny"
+        android:background="@color/colorDivider" />
+
+    <LinearLayout
+        android:id="@+id/item_center"
+        style="@style/ReportItem">
+        <TextView
+            android:id="@+id/item_center_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/view_margin_small"
+            android:textSize="@dimen/font_big"
+            android:textColor="@color/colorOff" />
+
+        <TextView
+            android:id="@+id/item_center_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/view_margin_small"
+            android:textColor="@color/colorOff"
+            android:textSize="@dimen/font_normal"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:layout_marginVertical="@dimen/view_margin_tiny"
+        android:background="@color/colorDivider"
+        />
+
+    <LinearLayout
+        android:id="@+id/item_right"
+        style="@style/ReportItem"
+        >
+        <TextView
+            android:id="@+id/item_right_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/view_margin_small"
+            android:textSize="@dimen/font_big"
+            android:textColor="@color/colorOn"
+            />
+
+        <TextView
+            android:id="@+id/item_right_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/view_margin_small"
+            android:textSize="@dimen/font_normal"
+            android:textColor="@color/colorOn"
+            />
+    </LinearLayout>
+</LinearLayout>

@@ -7,10 +7,14 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.ContactsContract;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static android.Manifest.permission.READ_PHONE_STATE;
+
 /**
  * Created by Administrator on 2018/10/12.
  */
@@ -57,5 +61,15 @@ public class ContentHelper {
             intent.setData( Uri.parse( "tel:" + matcher.group( 0 ) ) );
             context.startActivity( intent );
         }
+    }
+
+    //nj--读取本机电话号码 2018/11/14
+    public static String getTelephony(Activity activity){
+        TelephonyManager telephonyManager=(TelephonyManager) activity.getSystemService( Context.TELEPHONY_SERVICE );
+        if (PermissionHelper.checkPermission( activity,READ_PHONE_STATE,
+                PermissionHelper.CODE_READ_CONTACTS )){
+
+        }
+        return telephonyManager.getLine1Number();
     }
 }
