@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorDivider"
+    android:paddingHorizontal="@dimen/view_padding_normal"
+    android:paddingVertical="@dimen/view_padding_small"
+    android:layout_marginBottom="1dp"
+    >
+    <TextView
+        android:id="@+id/text_device_name"
+        style="@style/TextHorItemValue" />
+    <TextView
+        android:id="@+id/text_device_value"
+        style="@style/TextHorItemName"
+        android:text="3"
+        android:drawableRight="@drawable/ic_keyboard_arrow_down_blue_500_24dp"/>
+</LinearLayout>

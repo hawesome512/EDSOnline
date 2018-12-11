@@ -57,11 +57,28 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/view_margin_normal"
                 android:layout_marginVertical="@dimen/view_margin_small"
+                android:gravity="center_vertical"
                 android:drawableLeft="@drawable/ic_image_blue_700_24dp"
                 android:text="@string/overview_grid" />
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/recyclerView"
+                android:id="@+id/recycler_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/view_margin_normal"
+                android:layout_marginVertical="@dimen/view_margin_small" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="@dimen/view_margin_normal"
+                android:layout_marginVertical="@dimen/view_margin_small"
+                android:drawableLeft="@drawable/ic_devices_other_blue_700_24dp"
+                android:gravity="center_vertical"
+                android:text="@string/setting_device" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_device"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="@dimen/view_margin_normal"

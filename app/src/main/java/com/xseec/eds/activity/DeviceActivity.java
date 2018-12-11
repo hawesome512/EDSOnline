@@ -18,10 +18,7 @@ import com.xseec.eds.fragment.TabOerviewFragment;
 import com.xseec.eds.fragment.TabProtectFragment;
 import com.xseec.eds.model.Device;
 import com.xseec.eds.model.deviceconfig.DeviceConfig;
-import com.xseec.eds.model.WAServicer;
 import com.xseec.eds.util.ViewHelper;
-
-import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -38,7 +35,6 @@ public class DeviceActivity extends BaseActivity implements ViewPager.OnPageChan
     Toolbar toolbar;
 
     Fragment[] fragmentList;
-
 
     private static final String KEY_DEVICE_NAME = "device";
 

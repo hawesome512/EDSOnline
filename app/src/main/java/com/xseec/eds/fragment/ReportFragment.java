@@ -41,6 +41,7 @@ import com.xseec.eds.widget.MySpinner;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
@@ -146,7 +147,7 @@ public class ReportFragment extends BaseFragment {
 
     @Override
     protected void onRefreshViews(String jsonData) {
-        String time = ReportHelper.getTime( startTime, endTime );
+        String time = ReportHelper.getTime(startTime,endTime);
         textTime.setText( time );
         setData();
         adapter=new ReportAdapter( getContext(),reportList,factor );

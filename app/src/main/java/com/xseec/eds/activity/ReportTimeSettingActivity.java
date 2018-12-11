@@ -65,24 +65,13 @@ public class ReportTimeSettingActivity extends BaseActivity {
     }
 
     private void initView(){
-        startTime=Calendar.getInstance();
-        startTime=DateHelper.getDayStartTime( startTime );
-        endTime=Calendar.getInstance();
-        endTime=DateHelper.getDayStartTime( endTime );
+        startTime=DateHelper.getDayStartTime(Calendar.getInstance());
+        endTime= (Calendar) startTime.clone();
         startTime.add( Calendar.DAY_OF_MONTH,-7 );
         end=DateHelper.getYMDString( endTime.getTime() );
         start=DateHelper.getYMDString( startTime.getTime());
         editStart.setText( start );
         editEnd.setText( end );
-    }
-
-    private void setCalendar(Calendar calendar,int year,int month,int dayOfMonth){
-        calendar.set( Calendar.YEAR,year );
-        calendar.set( Calendar.MONTH,month );
-        calendar.set( Calendar.DAY_OF_MONTH,dayOfMonth );
-        calendar.set( Calendar.HOUR_OF_DAY,00 );
-        calendar.clear( Calendar.MINUTE );
-        calendar.clear( Calendar.SECOND );
     }
 
     private void pickDate(final boolean isStart){
@@ -91,7 +80,8 @@ public class ReportTimeSettingActivity extends BaseActivity {
                 .OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                setCalendar( calendar,year,month,dayOfMonth );
+                calendar.set(year,month,dayOfMonth);
+                calendar=DateHelper.getDayStartTime(calendar);
                 if (isStart) {
                     start=DateHelper.getYMDString( calendar.getTime());
                     startTime=calendar;

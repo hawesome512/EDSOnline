@@ -27,6 +27,7 @@ import com.xseec.eds.activity.ListActivity;
 import com.xseec.eds.adapter.OverviewAdapter;
 import com.xseec.eds.model.Device;
 import com.xseec.eds.model.State;
+import com.xseec.eds.model.WAServicer;
 import com.xseec.eds.model.servlet.Basic;
 import com.xseec.eds.model.tags.OverviewTag;
 import com.xseec.eds.model.tags.Tag;
@@ -87,8 +88,8 @@ public class OverviewFragment extends BaseFragment {
     @InjectView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
 
-    private static final String KEY_BASIC = "basic_info";
     private static final String KEY_TAGS = "tag_list";
+    private static final String KEY_BASIC="basic";
     Basic basic;
     List<Tag> tagList;
     List<Tag> basicTagList;
@@ -111,12 +112,12 @@ public class OverviewFragment extends BaseFragment {
         // Required empty public constructor
     }
 
-    public static OverviewFragment newInstance(Basic basic, ArrayList<Tag>
-            tagList) {
+    public static OverviewFragment newInstance(ArrayList<Tag>
+            tagList,Basic basic) {
         OverviewFragment fragment = new OverviewFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable(KEY_BASIC, basic);
         bundle.putParcelableArrayList(KEY_TAGS, tagList);
+        bundle.putParcelable(KEY_BASIC,basic);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -125,8 +126,8 @@ public class OverviewFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
-        basic = bundle.getParcelable(KEY_BASIC);
         tagList = bundle.getParcelableArrayList(KEY_TAGS);
+        basic= bundle.getParcelable(KEY_BASIC);
         overviewTagList = LitePal.findAll(OverviewTag.class);
         if (overviewTagList == null || overviewTagList.size() == 0) {
             Generator.initOverviewTagStore();
@@ -155,7 +156,7 @@ public class OverviewFragment extends BaseFragment {
         getActivity().setTitle(basic.getUser());
         String s=basic.getBannerUrl();
         Glide.with(this).load(basic.getBannerUrl()).into(imageArea);
-        int deviceCount = TagsFilter.getDeviceCount(tagList);
+        int deviceCount = TagsFilter.getDeviceList(tagList).size();
         textDevice.setText(getResources().getString(R.string.overview_device_value, deviceCount));
         textEngineer.setText(basic.getPricipal());
         textLocation.setText(basic.getLocation().split(",")[0]);
@@ -218,8 +219,7 @@ public class OverviewFragment extends BaseFragment {
         ArrayList<Tag> abnormalDevices = (ArrayList<Tag>) TagsFilter.getAbnormalStateList
                 (basicTagList);
         if (abnormalDevices.size() != 0) {
-            ListActivity.start(getContext(), getString(R.string.detail_title_error),
-                    abnormalDevices);
+            ListActivity.start(getContext(), getString(R.string.detail_title_error), abnormalDevices);
         }else {
             Toast.makeText(getContext(), R.string.overview_devices_normal, Toast.LENGTH_SHORT).show();
         }

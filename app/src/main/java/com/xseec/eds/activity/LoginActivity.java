@@ -16,15 +16,15 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.xseec.eds.R;
+import com.xseec.eds.model.Device;
 import com.xseec.eds.model.User;
 import com.xseec.eds.model.WAServicer;
-import com.xseec.eds.model.servlet.Action;
 import com.xseec.eds.model.servlet.Basic;
 import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.util.CodeHelper;
-import com.xseec.eds.util.ContentHelper;
 import com.xseec.eds.util.RecordHelper;
 import com.xseec.eds.util.TagsFilter;
+import com.xseec.eds.util.Update.UpdateHelper;
 import com.xseec.eds.util.ViewHelper;
 import com.xseec.eds.util.WAJsonHelper;
 import com.xseec.eds.util.WAServiceHelper;
@@ -67,10 +67,7 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         ButterKnife.inject(this);
         getLoginInfo();
-//        UpdateHelper.checkUpdate(this);
-
-        //nj--获取本机电话号码 2018/11/14
-        Action.telephony=ContentHelper.getTelephony( this );
+        UpdateHelper.checkUpdate(this);
     }
 
     @OnClick(R.id.btn_login)
@@ -100,7 +97,6 @@ public class LoginActivity extends AppCompatActivity {
                     final ArrayList<Tag> tagList = (ArrayList<Tag>) WAJsonHelper.getTagList
                             (WAServiceHelper.getTagListRequest(deviceName));
                     TagsFilter.setAllTagList(tagList);
-
                     //nj--添加登录操作信息
                     String actionInfo=getString( R.string.action_login);
                     RecordHelper.actionLog( actionInfo );
@@ -108,7 +104,7 @@ public class LoginActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            MainActivity.start(LoginActivity.this, basic, tagList);
+                            MainActivity.start(LoginActivity.this, tagList,basic);
                             finish();
                         }
                     });

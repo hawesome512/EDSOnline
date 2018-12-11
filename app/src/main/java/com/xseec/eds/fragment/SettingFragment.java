@@ -3,10 +3,10 @@ package com.xseec.eds.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -15,10 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.Toast;
+import android.widget.ProgressBar;
 
-import com.bumptech.glide.Glide;
 import com.luck.picture.lib.PictureSelector;
 import com.luck.picture.lib.config.PictureConfig;
 import com.luck.picture.lib.entity.LocalMedia;
@@ -27,11 +25,12 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import com.xseec.eds.R;
 import com.xseec.eds.activity.LoginActivity;
+import com.xseec.eds.adapter.AliasAdapter;
 import com.xseec.eds.adapter.PhotoAdapter;
+import com.xseec.eds.model.WAServicer;
 import com.xseec.eds.model.servlet.BaseModel;
 import com.xseec.eds.model.servlet.Basic;
 import com.xseec.eds.model.servlet.UploadListener;
-import com.xseec.eds.model.servlet.Workorder;
 import com.xseec.eds.util.PhotoPicker;
 import com.xseec.eds.util.ViewHelper;
 import com.xseec.eds.util.WAServiceHelper;
@@ -59,20 +58,26 @@ public class SettingFragment extends BaseFragment implements UploadListener {
     EditText editEngineer;
     @InjectView(R.id.edit_location)
     EditText editLocation;
-    @InjectView(R.id.recyclerView)
-    RecyclerView recyclerView;
+    @InjectView(R.id.recycler_image)
+    RecyclerView recyclerImage;
     @InjectView(R.id.btn_save)
     Button btnSave;
+    @InjectView(R.id.recycler_device)
+    RecyclerView recyclerDevice;
+    @InjectView(R.id.progress)
+    ProgressBar progress;
 
-    private Basic basic;
     private PhotoAdapter photoAdapter;
+    private AliasAdapter aliasAdapter;
     private List<LocalMedia> sourceImageList;
+    private Basic basic;
 
-    private static final String ARG_BASIC="basic";
+    private static final String KEY_BASIC="basic";
+
     public static Fragment newInstance(Basic basic) {
-        Bundle bundle=new Bundle();
-        bundle.putParcelable(ARG_BASIC,basic);
-        Fragment fragment=new SettingFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(KEY_BASIC,basic);
+        Fragment fragment = new SettingFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -88,19 +93,25 @@ public class SettingFragment extends BaseFragment implements UploadListener {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_setting, container, false);
         ButterKnife.inject(this, view);
-        ViewHelper.initToolbar((AppCompatActivity) getActivity(),toolbar,R.drawable.menu);
+        ViewHelper.initToolbar((AppCompatActivity) getActivity(), toolbar, R.drawable.menu);
         toolbar.setTitle(R.string.nav_setting);
-        basic=getArguments().getParcelable(ARG_BASIC);
+        basic=getArguments().getParcelable(KEY_BASIC);
         editArea.setText(basic.getUser());
         editEngineer.setText(basic.getPricipal());
         editLocation.setText(basic.getLocation());
-        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), ViewHelper.isPort() ? 3 : 6);
-        recyclerView.setLayoutManager(layoutManager);
-        sourceImageList=PhotoPicker.getImageMediaList(basic.getImage());
+        GridLayoutManager layoutManager = new GridLayoutManager(getContext(), ViewHelper.isPort()
+                ? 3 : 6);
+        recyclerImage.setLayoutManager(layoutManager);
+        sourceImageList = PhotoPicker.getImageMediaList(basic.getImage());
         photoAdapter = new PhotoAdapter(getActivity(), new ArrayList<LocalMedia>());
         photoAdapter.addMediaList(sourceImageList);
         photoAdapter.setAddable(true);
-        recyclerView.setAdapter(photoAdapter);
+        recyclerImage.setAdapter(photoAdapter);
+
+        aliasAdapter=new AliasAdapter(getContext(),basic.getAliasMap());
+        LinearLayoutManager linearLayoutManager=new LinearLayoutManager(getContext());
+        recyclerDevice.setLayoutManager(linearLayoutManager);
+        recyclerDevice.setAdapter(aliasAdapter);
         return view;
     }
 
@@ -150,11 +161,13 @@ public class SettingFragment extends BaseFragment implements UploadListener {
         basic.setUser(editArea.getText().toString());
         basic.setLocation(editLocation.getText().toString());
         basic.setPricipal(editEngineer.getText().toString());
-        List<String> imageNames = PhotoPicker.getLocalMedisListName(photoAdapter.getLocalMediaList(),
+        List<String> imageNames = PhotoPicker.getLocalMedisListName(photoAdapter
+                        .getLocalMediaList(),
                 sourceImageList);
         //判断数组长度为0时，image="",在Servlet中收到空值，不更新数据库imagelie,故变为：image="null"
         String image = imageNames.size() == 0 ? null : TextUtils.join(BaseModel.SPIT, imageNames);
         basic.setImage(image);
+        basic.setAlias(aliasAdapter.getAliasMap());
         WAServiceHelper.sendBasicUpdateRequest(basic, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {

@@ -97,25 +97,41 @@ public class TagsFilter {
     }
 
     public static List<String> getDeviceList(List<Tag> source) {
+        if(source==null){
+            source=allTagList;
+        }
         List<String> deviceList = new ArrayList<>();
         for (int i = 0; i < source.size(); i++) {
             String tagName = source.get(i).getTagName();
             String deviceName = tagName.split(":")[0];
-            if (!deviceList.contains(deviceName)) {
+            //排除自定义点
+            if (!deviceList.contains(deviceName)&&!deviceName.equals(FILTER_AREA)) {
                 deviceList.add(deviceName);
             }
         }
         return deviceList;
     }
 
-    public static int getDeviceCount(List<Tag> source) {
-        List<String> deviceList = getDeviceList(source);
-        if (deviceList.contains(FILTER_AREA)) {
-            return deviceList.size() - 1;
-        } else {
-            return deviceList.size();
+    public static List<String> getZoneAndDeviceList(List<String> devices) {
+        List<String> list=new ArrayList<>();
+        for(String dv:devices){
+            String zone=dv.split("_")[0];
+            if(!list.contains(zone)){
+                list.add(zone);
+            }
+            list.add(dv);
         }
+        return list;
     }
+
+//    public static int getDeviceCount(List<Tag> source) {
+//        List<String> deviceList = getDeviceList(source);
+//        if (deviceList.contains(FILTER_AREA)) {
+//            return deviceList.size() - 1;
+//        } else {
+//            return deviceList.size();
+//        }
+//    }
 
     public static void refreshOverviewTagsByTags(List<Tag> source, List<OverviewTag> target) {
         for (OverviewTag overviewTag : target) {

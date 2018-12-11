@@ -25,6 +25,7 @@ import com.xseec.eds.fragment.OverviewFragment;
 import com.xseec.eds.fragment.ReportFragment;
 import com.xseec.eds.fragment.SettingFragment;
 import com.xseec.eds.fragment.WorkorderListFragment;
+import com.xseec.eds.model.Device;
 import com.xseec.eds.model.WAServicer;
 import com.xseec.eds.model.servlet.Basic;
 import com.xseec.eds.model.tags.Tag;
@@ -39,11 +40,11 @@ import butterknife.InjectView;
 public class MainActivity extends BaseActivity implements NavigationView
         .OnNavigationItemSelectedListener {
 
-    private static final String EXT_BASIC = "basic_info";
     private static final String EXT_TAGS = "tag_list";
-    private Basic basic;
+    private static final String EXT_BASIC="basic";
     private ArrayList<Tag> tagList;
     private FragmentManager fragmentManager;
+    private Basic basic;
 
     private static final String TAG = "MainActivity";
     @InjectView(R.id.layout_container)
@@ -53,12 +54,12 @@ public class MainActivity extends BaseActivity implements NavigationView
     @InjectView(R.id.drawer_layout)
     DrawerLayout drawerLayout;
 
-    public static void start(Context context, Basic basic, ArrayList<Tag>
-            tagList) {
+    public static void start(Context context, ArrayList<Tag>
+            tagList,Basic basic) {
         Intent intent = new Intent(context, MainActivity.class);
-        intent.putExtra(EXT_BASIC, basic);
         //传递到Intent里时，参数类型必须为ArrayList,而非List
         intent.putParcelableArrayListExtra(EXT_TAGS, tagList);
+        intent.putExtra(EXT_BASIC,basic);
         context.startActivity(intent);
     }
 
@@ -69,12 +70,13 @@ public class MainActivity extends BaseActivity implements NavigationView
         ButterKnife.inject(this);
         fragmentManager = getSupportFragmentManager();
         navView.setNavigationItemSelectedListener(this);
-        basic = getIntent().getParcelableExtra(EXT_BASIC);
         tagList = getIntent().getParcelableArrayListExtra(EXT_TAGS);
-        if (basic != null && tagList != null) {
+        basic=getIntent().getParcelableExtra(EXT_BASIC);
+        if (basic!=null&&tagList != null) {
             TextView textUser = navView.getHeaderView(0).findViewById(R.id.text_account);
             textUser.setText(getString(R.string.nav_account, WAServicer.getUser().getUsername()));
-            replaceFragment(OverviewFragment.newInstance(basic, tagList));
+            replaceFragment(OverviewFragment.newInstance(tagList,basic));
+            Device.setAliasMap(basic.getAliasMap());
         } else {
             Snackbar.make(drawerLayout, R.string.main_failure, Snackbar.LENGTH_LONG).setAction(R
                     .string.main_exit, new View.OnClickListener() {
@@ -128,7 +130,7 @@ public class MainActivity extends BaseActivity implements NavigationView
                 fragment= ReportFragment.newInstance();
                 break;
             default:
-                fragment = OverviewFragment.newInstance(basic, tagList);
+                fragment = OverviewFragment.newInstance(tagList,basic);
                 statusColor = Color.TRANSPARENT;
                 break;
         }

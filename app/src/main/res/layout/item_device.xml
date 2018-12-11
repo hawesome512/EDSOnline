@@ -25,7 +25,7 @@
         tools:text="ACB#415" />
 
     <TextView
-        android:id="@+id/text_device_state"
+        android:id="@+id/text_device_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/text_device_name"
@@ -42,6 +42,7 @@
         tools:src="@color/colorNormal"/>
 
     <View
+        android:id="@+id/view_divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_alignBottom="@id/image_device"

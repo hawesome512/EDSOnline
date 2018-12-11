@@ -3,10 +3,14 @@ package com.xseec.eds.model.servlet;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.ArrayMap;
 
 import com.xseec.eds.R;
 import com.xseec.eds.model.WAServicer;
 import com.xseec.eds.util.EDSApplication;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2018/10/29.
@@ -15,12 +19,14 @@ import com.xseec.eds.util.EDSApplication;
 public class Basic extends BaseModel implements Parcelable {
 
     private static final String SPIT=";";
+    private static final String ALIAS_SPIT="-";
 
     private String user;
     private String banner;
     private String pricipal;
     private String location;
     private String image;
+    private String alias;
 
     public Basic(){
         Context context=EDSApplication.getContext();
@@ -40,6 +46,7 @@ public class Basic extends BaseModel implements Parcelable {
         pricipal = in.readString();
         location = in.readString();
         image = in.readString();
+        alias=in.readString();
     }
     public static final Creator<Basic> CREATOR = new Creator<Basic>() {
         @Override
@@ -97,9 +104,37 @@ public class Basic extends BaseModel implements Parcelable {
         this.image = image;
     }
 
+    public String getAlias() {
+        return alias;
+    }
+
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
     @Override
     public String toJson(){
-        return EDSApplication.getContext().getString(R.string.svl_basic_request,id,user,banner,pricipal,location,image);
+        return EDSApplication.getContext().getString(R.string.svl_basic_request,id,user,banner,pricipal,location,image,alias);
+    }
+
+    public LinkedHashMap<String,String> getAliasMap(){
+        String[] items=alias.split(SPIT);
+        LinkedHashMap map=new LinkedHashMap();
+        for(String item:items){
+            String[] kv=item.split(ALIAS_SPIT);
+            if(kv.length==2){
+                map.put(kv[0],kv[1]);
+            }
+        }
+        return map;
+    }
+
+    public void setAlias(LinkedHashMap<String,String> map){
+        StringBuilder builder=new StringBuilder();
+        for(Map.Entry<String,String> entry:map.entrySet()){
+            builder.append(entry.getKey()+ALIAS_SPIT+entry.getValue()+SPIT);
+        }
+        setAlias(builder.toString());
     }
 
     @Override
@@ -115,5 +150,6 @@ public class Basic extends BaseModel implements Parcelable {
         dest.writeString(pricipal);
         dest.writeString(location);
         dest.writeString(image);
+        dest.writeString(alias);
     }
 }

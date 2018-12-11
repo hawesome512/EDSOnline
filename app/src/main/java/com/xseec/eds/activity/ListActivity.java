@@ -13,6 +13,7 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import com.xseec.eds.R;
 import com.xseec.eds.adapter.DeviceAdapter;
+import com.xseec.eds.model.servlet.Basic;
 import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.util.ViewHelper;
 import com.xseec.eds.util.WAJsonHelper;
@@ -72,7 +73,7 @@ public class ListActivity extends BaseActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                adapter=new DeviceAdapter(tagList);
+                                adapter=new DeviceAdapter(ListActivity.this,tagList);
                                 recycler.setAdapter(adapter);
                                 swipeRefreshLayout.setRefreshing(false);
                             }
@@ -84,9 +85,9 @@ public class ListActivity extends BaseActivity {
     }
 
     private void initDeviceRecycler() {
-        int column = ViewHelper.isPort() ? 1 : 2;
+        int column =1;// ViewHelper.isPort() ? 1 : 2;
         GridLayoutManager manager = new GridLayoutManager(this, column);
-        adapter = new DeviceAdapter(tagList);
+        adapter = new DeviceAdapter(ListActivity.this,tagList);
         recycler.setLayoutManager(manager);
         recycler.setAdapter(adapter);
     }

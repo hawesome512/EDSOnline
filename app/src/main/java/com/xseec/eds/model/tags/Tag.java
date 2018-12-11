@@ -15,6 +15,8 @@ import com.xseec.eds.util.Generator;
  */
 
 public class Tag extends BaseObservable implements Parcelable {
+    public static final String SPIT_ZONE="_";
+    public static final String SPIT_NAME=":";
 
     @SerializedName("Name")
     private String tagName;

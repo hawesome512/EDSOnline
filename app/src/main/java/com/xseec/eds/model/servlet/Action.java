@@ -22,9 +22,6 @@ public class Action extends BaseModel implements Comparable,Parcelable {
     private String info;
     private Date time;
 
-    //nj--存储本机号码 2018/11/14
-    public static String telephony;
-
     public Action(){}
 
     public Action(String id){
@@ -175,9 +172,6 @@ public class Action extends BaseModel implements Comparable,Parcelable {
         this.id=zoneId+"-"+DateHelper.getNowForId();
     }
 
-    public String getTelephony() {
-        return telephony;
-    }
     //NJ--排序 2018/11/6
     @Override
     public int compareTo( Object o) {
