@@ -78,7 +78,7 @@ public class ReportListFragment extends BaseFragment {
     private void initData() {
         switch (type) {
             case WORKORDER:
-                getActivity().setTitle( R.string.nav_schedule );
+                getActivity().setTitle( R.string.nav_workorder);
                 Collections.sort( list, Collections.<Workorder>reverseOrder() );
                 WorkorderAdapter workorderAdapter = new WorkorderAdapter( getActivity(), list );
                 recycler.setAdapter( workorderAdapter );

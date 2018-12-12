@@ -44,6 +44,7 @@ public class WAServicer {
     private static String projectName;
     private static String nodeName;
     private static User user;
+    private static Basic basic;
     private static Context context;
     private static List<DeviceConfig> deviceConfigs;
 
@@ -119,6 +120,14 @@ public class WAServicer {
 
     public static void setUser(User user) {
         WAServicer.user = user;
+    }
+
+    public static Basic getBasic() {
+        return basic;
+    }
+
+    public static void setBasic(Basic basic) {
+        WAServicer.basic = basic;
     }
 
     public static String getWorkorderQueryUrl(@NonNull Workorder workorder,String start,String end){

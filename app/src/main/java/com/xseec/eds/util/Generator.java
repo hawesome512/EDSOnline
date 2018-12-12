@@ -4,7 +4,15 @@ import android.content.Context;
 
 import com.github.mikephil.charting.data.Entry;
 import com.xseec.eds.R;
+import com.xseec.eds.fragment.ActionListFragment;
+import com.xseec.eds.fragment.AlarmListFragment;
+import com.xseec.eds.fragment.EnergyFragment;
+import com.xseec.eds.fragment.ReportFragment;
+import com.xseec.eds.fragment.ReportListFragment;
+import com.xseec.eds.fragment.SettingFragment;
+import com.xseec.eds.fragment.WorkorderListFragment;
 import com.xseec.eds.model.Device;
+import com.xseec.eds.model.Function;
 import com.xseec.eds.model.deviceconfig.Protect;
 import com.xseec.eds.model.tags.EnergyTag;
 import com.xseec.eds.model.tags.OverviewTag;
@@ -59,6 +67,23 @@ public class Generator {
         tag5.save();
     }
 
+    public static List<Function> genFunctions() {
+        List<Function> functions = new ArrayList<>();
+        functions.add(new Function(R.drawable.ic_workorder, R.string.nav_workorder,R.id.nav_schedule,
+                WorkorderListFragment.newInstance()));
+        functions.add(new Function(R.drawable.ic_report, R.string.nav_report,R.id.nav_trend, ReportFragment
+                .newInstance()));
+        functions.add(new Function(R.drawable.ic_alarm, R.string.nav_alarm,R.id.nav_alarm, AlarmListFragment
+                .newInstance()));
+        functions.add(new Function(R.drawable.ic_meter, R.string.nav_energy,R.id.nav_energy, EnergyFragment
+                .newInstance()));
+        functions.add(new Function(R.drawable.ic_action, R.string.nav_action,R.id.nav_action, ActionListFragment
+                .newInstance()));
+        functions.add(new Function(R.drawable.ic_setting, R.string.nav_setting,R.id.nav_setting, SettingFragment
+                .newInstance()));
+        return functions;
+    }
+
     public static String genString(String source, int repeat) {
         StringBuilder stringBuilder = new StringBuilder();
         for (int i = 0; i < repeat; i++) {
@@ -105,10 +130,10 @@ public class Generator {
         return entryList;
     }
 
-    public static List<Entry> convertEntryList(List<String> source,float minValue) {
+    public static List<Entry> convertEntryList(List<String> source, float minValue) {
         List<Entry> entryList = new ArrayList<>();
         for (int i = 0; i < source.size(); i++) {
-            entryList.add(new Entry(i+minValue, floatTryParse(source.get(i))));
+            entryList.add(new Entry(i + minValue, floatTryParse(source.get(i))));
         }
         return entryList;
     }
@@ -123,7 +148,7 @@ public class Generator {
 
     public static float getSumFromEntryList(List<Entry> entryList, int limitSize) {
         float tmp = 0;
-        for (int i = 0; i<entryList.size()&&i < limitSize; i++) {
+        for (int i = 0; i < entryList.size() && i < limitSize; i++) {
             tmp += entryList.get(i).getY();
         }
         return tmp;
@@ -162,7 +187,7 @@ public class Generator {
         } else if (indexNegate >= 0) {
             return (!switchOn) ? (value | (int) (Math.pow(2, indexNegate))) : (value & (int)
                     (Math.pow(2,
-                    16) - 1 - Math.pow(2, indexNegate)));
+                            16) - 1 - Math.pow(2, indexNegate)));
         } else {
             return value;
         }
@@ -233,18 +258,18 @@ public class Generator {
         int baseValue;
         int fieldItem;
         int nValue = Integer.valueOf(value);
-        Calendar time= (Calendar) start.clone();
+        Calendar time = (Calendar) start.clone();
         time.add(field, -1);
         switch (field) {
             case Calendar.YEAR:
                 baseValue = 24 * 30 * nValue;
                 fieldItem = Calendar.MONTH;
-                time.set(Calendar.MONTH,0);
+                time.set(Calendar.MONTH, 0);
                 break;
             case Calendar.MONTH:
                 baseValue = 24 * nValue;
                 fieldItem = Calendar.DATE;
-                time.set(Calendar.DAY_OF_MONTH,1);
+                time.set(Calendar.DAY_OF_MONTH, 1);
                 break;
             default:
                 baseValue = nValue;
@@ -254,8 +279,8 @@ public class Generator {
         time.set(Calendar.HOUR_OF_DAY, 0);
         time.set(Calendar.MINUTE, 0);
         time.set(Calendar.SECOND, 0);
-        Calendar end= (Calendar) time.clone();
-        end.add(field,2);
+        Calendar end = (Calendar) time.clone();
+        end.add(field, 2);
         Calendar now = Calendar.getInstance();
         List<String> values = new ArrayList<>();
         int first = time.get(field);

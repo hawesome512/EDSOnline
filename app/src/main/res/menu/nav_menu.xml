@@ -5,10 +5,10 @@
             android:title="@string/nav_overview"
             android:icon="@drawable/nav_overview"/>
         <item android:id="@+id/nav_schedule"
-            android:title="@string/nav_schedule"
+            android:title="@string/nav_workorder"
             android:icon="@drawable/nav_schedule"/>
         <item android:id="@+id/nav_trend"
-            android:title="@string/nav_trend"
+            android:title="@string/nav_report"
             android:icon="@drawable/nav_trend"/>
         <item android:id="@+id/nav_alarm"
             android:title="@string/nav_alarm"

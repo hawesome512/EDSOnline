@@ -1,12 +1,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.xseec.eds.fragment.EnergyFragment">
 
-    <include layout="@layout/toolbar"/>
+    <include layout="@layout/toolbar" />
 
     <android.support.design.widget.TabLayout
         android:id="@+id/tab"
@@ -17,7 +17,6 @@
         app:tabMaxWidth="0dp"
         app:tabSelectedTextColor="@color/colorWhite"
         app:tabTextColor="@color/colorWhite"></android.support.design.widget.TabLayout>
-
 
     <android.support.v4.view.ViewPager
         android:id="@+id/view_pager"

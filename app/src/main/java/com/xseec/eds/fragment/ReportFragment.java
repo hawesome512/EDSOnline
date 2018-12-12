@@ -41,7 +41,6 @@ import com.xseec.eds.widget.MySpinner;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
@@ -107,7 +106,7 @@ public class ReportFragment extends BaseFragment {
         setHasOptionsMenu( true );
         View view = inflater.inflate( R.layout.fragment_report, container, false );
         ButterKnife.inject( this, view );
-        getActivity().setTitle( R.string.nav_trend );
+        getActivity().setTitle( R.string.nav_report);
         ViewHelper.initToolbar( (AppCompatActivity) getActivity(), toolbar, R.drawable.menu );
         initReportTitle();
         initRecycle();

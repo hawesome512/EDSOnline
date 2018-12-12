@@ -31,7 +31,18 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
 
-                <!--<include layout="@layout/item_schedule"/>-->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/colorDivider"
+                    android:layout_marginHorizontal="@dimen/view_margin_normal"
+                    android:layout_marginTop="@dimen/view_margin_normal" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycler_function"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/view_margin_normal"></android.support.v7.widget.RecyclerView>
 
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>

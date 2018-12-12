@@ -42,10 +42,10 @@
 
     <!--Nav Items-->
     <string name="nav_overview">主页</string>
-    <string name="nav_schedule">运维工单</string>
+    <string name="nav_workorder">运维工单</string>
     <string name="nav_alarm">异常管理</string>
     <string name="nav_action">操作记录</string>
-    <string name="nav_trend">报表分析</string>
+    <string name="nav_report">报表分析</string>
     <string name="nav_energy">能耗查询</string>
     <string name="nav_setting">自定义</string>
     <string name="nav_exit">退出</string>
@@ -297,6 +297,7 @@
     <string name="action_devic">Device_3_%1$s设备远程分闸</string>
 
     <!--report-->  <!--nj:报表分析 2018/11/16-->
+    <string name="report_time">%1$s 至 %2$s</string>
     <string name="report_energy">能耗情况</string>
     <string name="report_start_time">起始时间</string>
     <string name="report_end_time">结束时间</string>

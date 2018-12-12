@@ -72,11 +72,8 @@ public class SettingFragment extends BaseFragment implements UploadListener {
     private List<LocalMedia> sourceImageList;
     private Basic basic;
 
-    private static final String KEY_BASIC="basic";
-
-    public static Fragment newInstance(Basic basic) {
+    public static Fragment newInstance() {
         Bundle bundle = new Bundle();
-        bundle.putParcelable(KEY_BASIC,basic);
         Fragment fragment = new SettingFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -95,7 +92,7 @@ public class SettingFragment extends BaseFragment implements UploadListener {
         ButterKnife.inject(this, view);
         ViewHelper.initToolbar((AppCompatActivity) getActivity(), toolbar, R.drawable.menu);
         toolbar.setTitle(R.string.nav_setting);
-        basic=getArguments().getParcelable(KEY_BASIC);
+        basic=WAServicer.getBasic();
         editArea.setText(basic.getUser());
         editEngineer.setText(basic.getPricipal());
         editLocation.setText(basic.getLocation());

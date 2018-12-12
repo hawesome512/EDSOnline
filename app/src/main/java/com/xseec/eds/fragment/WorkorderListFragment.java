@@ -73,7 +73,7 @@ public class WorkorderListFragment extends BaseFragment {
         setHasOptionsMenu(true);
         View view = inflater.inflate(R.layout.fragment_workorder_list, container, false);
         ButterKnife.inject(this, view);
-        getActivity().setTitle(R.string.nav_schedule);
+        getActivity().setTitle(R.string.nav_workorder);
         ViewHelper.initToolbar((AppCompatActivity) getActivity(), toolbar, R.drawable.menu);
         initRecyclerView();
         return view;

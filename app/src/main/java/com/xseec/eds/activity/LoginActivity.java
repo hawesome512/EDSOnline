@@ -94,6 +94,7 @@ public class LoginActivity extends AppCompatActivity {
                     final User user = new User(authority, deviceName);
                     WAServicer.setUser(user);
                     final Basic basic=WAJsonHelper.getBasicList(WAServiceHelper.getBaiscQueryRequest(deviceName));
+                    WAServicer.setBasic(basic);
                     final ArrayList<Tag> tagList = (ArrayList<Tag>) WAJsonHelper.getTagList
                             (WAServiceHelper.getTagListRequest(deviceName));
                     TagsFilter.setAllTagList(tagList);

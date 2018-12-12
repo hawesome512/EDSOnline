@@ -23,7 +23,6 @@ import android.widget.DatePicker;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -97,6 +96,8 @@ public class EnergyTabItemFragment extends BaseFragment implements OnChartValueS
     RecyclerView recyclerViewTag;
     @InjectView(R.id.scroll_view)
     NestedScrollView scrollView;
+    @InjectView(R.id.text_tip)
+    TextView textTip;
 
     private EnergyLevelAdapter levelAdapter;
     private List<EnergyTag> energyList;
@@ -237,7 +238,6 @@ public class EnergyTabItemFragment extends BaseFragment implements OnChartValueS
     }
 
     private void setPieData() {
-        pieChart.setVisibility(children.size() > 0 ? View.VISIBLE : View.GONE);
         String current = energyList.get(currentIndex).getTagShortName();
         pieChart.setCenterText(generateCenterSpannableText(getString(R.string.energy_pie_title,
                 current)));
@@ -291,7 +291,6 @@ public class EnergyTabItemFragment extends BaseFragment implements OnChartValueS
     }
 
     private void setBarData() {
-        barChart.setVisibility(children.size() > 0 ? View.VISIBLE : View.GONE);
 
         BarData barData = barChart.getBarData();
         if (barData != null) {
@@ -348,19 +347,7 @@ public class EnergyTabItemFragment extends BaseFragment implements OnChartValueS
             public void run() {
                 try {
                     Thread.sleep(3000);
-                    tagLogs = new List[energyList.size()];
-                    childrenValues = new ArrayMap<>();
-                    children = energyList.get(currentIndex).getEnergyChildren(energyList);
-                    for (int i = 0; i < energyList.size(); i++) {
-                        EnergyTag tag = energyList.get(i);
-                        String baseValue = tag.getTagValue();
-                        tagLogs[i] = Generator.genLastNowEntryList(startTime, field, baseValue);
-                        if (children.contains(tag)) {
-                            List<String> yValues = tagLogs[i].subList(countOfLast, tagLogs[i]
-                                    .size());
-                            childrenValues.put(tag.getTagShortName(), calSum(yValues));
-                        }
-                    }
+                    updateChildren();
                     refreshViewsInThread(null);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -379,7 +366,7 @@ public class EnergyTabItemFragment extends BaseFragment implements OnChartValueS
 
     @Override
     public void onValueSelected(Entry e, Highlight h) {
-        scrollView.scrollTo(0,0);
+        scrollView.scrollTo(0, 0);
         PieEntry pieEntry = (PieEntry) e;
         for (EnergyTag tag : children) {
             if (tag.getTagShortName().equals(pieEntry.getLabel())) {
@@ -416,8 +403,14 @@ public class EnergyTabItemFragment extends BaseFragment implements OnChartValueS
     protected void onRefreshViews(String jsonData) {
         progress.setVisibility(View.GONE);
         setLineData();
-        setBarData();
-        setPieData();
+        int visibility=children.size()>0?View.VISIBLE:View.GONE;
+        barChart.setVisibility(visibility);
+        pieChart.setVisibility(visibility);
+        textTip.setVisibility(visibility);
+        if (children.size() > 0) {
+            setBarData();
+            setPieData();
+        }
     }
 
     @Override
@@ -426,7 +419,24 @@ public class EnergyTabItemFragment extends BaseFragment implements OnChartValueS
         parents.addAll(currentLevel.getEnergyParents(energyList));
         levelAdapter.notifyDataSetChanged();
         currentIndex = energyList.indexOf(currentLevel);
+        updateChildren();
         onRefreshViews(null);
+    }
+
+    private void updateChildren() {
+        tagLogs = new List[energyList.size()];
+        childrenValues = new ArrayMap<>();
+        children = energyList.get(currentIndex).getEnergyChildren(energyList);
+        for (int i = 0; i < energyList.size(); i++) {
+            EnergyTag tag = energyList.get(i);
+            String baseValue = tag.getTagValue();
+            tagLogs[i] = Generator.genLastNowEntryList(startTime, field, baseValue);
+            if (children.contains(tag)) {
+                List<String> yValues = tagLogs[i].subList(countOfLast, tagLogs[i]
+                        .size());
+                childrenValues.put(tag.getTagShortName(), calSum(yValues));
+            }
+        }
     }
 
     @Override

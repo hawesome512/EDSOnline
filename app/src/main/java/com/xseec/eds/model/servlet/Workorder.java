@@ -4,23 +4,12 @@ import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import android.text.TextUtils;
 
-import com.luck.picture.lib.config.PictureMimeType;
-import com.luck.picture.lib.entity.LocalMedia;
 import com.xseec.eds.R;
-import com.xseec.eds.model.WAServicer;
 import com.xseec.eds.util.DateHelper;
 import com.xseec.eds.util.EDSApplication;
-import com.xseec.eds.util.WAJsonHelper;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by Administrator on 2018/10/8.
@@ -246,7 +235,7 @@ public class Workorder extends BaseModel implements Comparable,Parcelable {
         Context context = EDSApplication.getContext();
         StringBuilder stringBuilder=new StringBuilder();
         stringBuilder.append(context.getString(R.string.app_name)+"\n");
-        stringBuilder.append("▶"+context.getString(R.string.nav_schedule)+":"+title+"\n");
+        stringBuilder.append("▶"+context.getString(R.string.nav_workorder)+":"+title+"\n");
         stringBuilder.append("▶"+context.getString(getStateTextRes())+"\n");
         if(getWorkorderState()==WorkorderState.DONE){
             stringBuilder.append("▶"+context.getString(R.string.workorder_log)+":\n"+getShowString(log));

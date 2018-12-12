@@ -12,7 +12,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -24,10 +23,9 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import com.xseec.eds.R;
 import com.xseec.eds.activity.ListActivity;
+import com.xseec.eds.adapter.FunctionAdapter;
 import com.xseec.eds.adapter.OverviewAdapter;
-import com.xseec.eds.model.Device;
 import com.xseec.eds.model.State;
-import com.xseec.eds.model.WAServicer;
 import com.xseec.eds.model.servlet.Basic;
 import com.xseec.eds.model.tags.OverviewTag;
 import com.xseec.eds.model.tags.Tag;
@@ -89,13 +87,15 @@ public class OverviewFragment extends BaseFragment {
     SwipeRefreshLayout swipeRefreshLayout;
 
     private static final String KEY_TAGS = "tag_list";
-    private static final String KEY_BASIC="basic";
+    private static final String KEY_BASIC = "basic";
     Basic basic;
     List<Tag> tagList;
     List<Tag> basicTagList;
     List<OverviewTag> overviewTagList;
 
     OverviewAdapter overviewAdapter;
+    FunctionAdapter functionAdapter;
+    FunctionAdapter.FunctionListener functionListener;
 
     @InjectView(R.id.layout_status)
     LinearLayout layoutStatus;
@@ -107,17 +107,19 @@ public class OverviewFragment extends BaseFragment {
     LinearLayout layoutEngineer;
     @InjectView(R.id.layout_location)
     LinearLayout layoutLocation;
+    @InjectView(R.id.recycler_function)
+    RecyclerView recyclerFunction;
 
     public OverviewFragment() {
         // Required empty public constructor
     }
 
     public static OverviewFragment newInstance(ArrayList<Tag>
-            tagList,Basic basic) {
+            tagList, Basic basic) {
         OverviewFragment fragment = new OverviewFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList(KEY_TAGS, tagList);
-        bundle.putParcelable(KEY_BASIC,basic);
+        bundle.putParcelable(KEY_BASIC, basic);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -127,17 +129,13 @@ public class OverviewFragment extends BaseFragment {
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
         tagList = bundle.getParcelableArrayList(KEY_TAGS);
-        basic= bundle.getParcelable(KEY_BASIC);
+        basic = bundle.getParcelable(KEY_BASIC);
         overviewTagList = LitePal.findAll(OverviewTag.class);
         if (overviewTagList == null || overviewTagList.size() == 0) {
             Generator.initOverviewTagStore();
             overviewTagList = LitePal.findAll(OverviewTag.class);
         }
         basicTagList = TagsFilter.getBasicTagList(tagList);
-
-        //绑定服务
-        //Intent intent = new Intent(getContext(), ComService.class);
-        //getActivity().bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
     }
 
     @Override
@@ -154,7 +152,7 @@ public class OverviewFragment extends BaseFragment {
     private void initViews() {
         //init BasicInfo
         getActivity().setTitle(basic.getUser());
-        String s=basic.getBannerUrl();
+        String s = basic.getBannerUrl();
         Glide.with(this).load(basic.getBannerUrl()).into(imageArea);
         int deviceCount = TagsFilter.getDeviceList(tagList).size();
         textDevice.setText(getResources().getString(R.string.overview_device_value, deviceCount));
@@ -164,7 +162,12 @@ public class OverviewFragment extends BaseFragment {
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
         recyclerOverview.setLayoutManager(layoutManager);
         overviewAdapter = new OverviewAdapter(overviewTagList);
+
+        GridLayoutManager layoutManager1 = new GridLayoutManager(getContext(), 3);
         recyclerOverview.setAdapter(overviewAdapter);
+        recyclerFunction.setLayoutManager(layoutManager1);
+        functionAdapter=new FunctionAdapter(getContext(),Generator.genFunctions(),functionListener);
+        recyclerFunction.setAdapter(functionAdapter);
         //init SwipeRefreshLayout
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -219,9 +222,11 @@ public class OverviewFragment extends BaseFragment {
         ArrayList<Tag> abnormalDevices = (ArrayList<Tag>) TagsFilter.getAbnormalStateList
                 (basicTagList);
         if (abnormalDevices.size() != 0) {
-            ListActivity.start(getContext(), getString(R.string.detail_title_error), abnormalDevices);
-        }else {
-            Toast.makeText(getContext(), R.string.overview_devices_normal, Toast.LENGTH_SHORT).show();
+            ListActivity.start(getContext(), getString(R.string.detail_title_error),
+                    abnormalDevices);
+        } else {
+            Toast.makeText(getContext(), R.string.overview_devices_normal, Toast.LENGTH_SHORT)
+                    .show();
         }
     }
 
@@ -233,16 +238,21 @@ public class OverviewFragment extends BaseFragment {
 
     @OnClick(R.id.layout_grid)
     public void onLayoutGridClicked() {
-        PhotoPicker.previewSelectedPhotos(getActivity(),PhotoPicker.getImageMediaList(basic.getImage()),0);
+        PhotoPicker.previewSelectedPhotos(getActivity(), PhotoPicker.getImageMediaList(basic
+                .getImage()), 0);
     }
 
     @OnClick(R.id.layout_engineer)
     public void onLayoutEngineerClicked() {
-        ContentHelper.callPhone(getContext(),basic.getPricipal());
+        ContentHelper.callPhone(getContext(), basic.getPricipal());
     }
 
     @OnClick(R.id.layout_location)
     public void onLayoutLocationClicked() {
-        OpenMapHelper.getMapAppIntent(getContext(),basic.getLocation());
+        OpenMapHelper.getMapAppIntent(getContext(), basic.getLocation());
+    }
+
+    public void setFunctionListener(FunctionAdapter.FunctionListener functionListener) {
+        this.functionListener=functionListener;
     }
 }

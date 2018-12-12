@@ -26,7 +26,7 @@ import butterknife.InjectView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class EnergyFragment extends Fragment implements ViewPager.OnPageChangeListener {
+public class EnergyFragment extends BaseFragment implements ViewPager.OnPageChangeListener {
 
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
@@ -95,6 +95,11 @@ public class EnergyFragment extends Fragment implements ViewPager.OnPageChangeLi
 
     @Override
     public void onPageScrollStateChanged(int state) {
+
+    }
+
+    @Override
+    protected void onRefreshViews(String jsonData) {
 
     }
 }

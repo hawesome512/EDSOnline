@@ -46,7 +46,7 @@ public class ReportHelper {
         Date start=DateHelper.getServletDate( startTime );
         Date end=DateHelper.getServletDate( endTime );
         context=EDSApplication.getContext();
-        String time=context.getString( R.string.filter_time,DateHelper.getYMDString( start ),
+        String time=context.getString( R.string.report_time,DateHelper.getYMDString( start ),
                 DateHelper.getYMDString( end ));
         return time;
     }
