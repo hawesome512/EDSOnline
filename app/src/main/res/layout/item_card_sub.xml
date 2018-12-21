@@ -18,20 +18,31 @@
 
             <TextView
                 android:id="@+id/text_name"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="@dimen/view_margin_small"
+                android:layout_gravity="center_vertical"
                 android:textColor="@color/colorPrimary"
                 android:text="@{tag.tagAlias}" />
 
+            <ProgressBar
+                android:id="@+id/progress_modify"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:visibility="gone"/>
+
             <TextView
                 android:id="@+id/text_value"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="@dimen/view_margin_small"
                 android:gravity="right"
+                android:layout_gravity="center_vertical"
                 android:text="@{tag.tagValue}"
-                android:textColor="@color/colorPrimaryText" />
+                android:textColor="@color/colorPrimaryText"
+                android:drawableRight="@drawable/ic_arrow_right__blue_700_24dp"/>
         </LinearLayout>
 
         <View

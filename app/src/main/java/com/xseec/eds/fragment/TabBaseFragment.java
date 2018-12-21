@@ -94,7 +94,7 @@ public abstract class TabBaseFragment extends ComFragment implements TagListener
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onTagClick(tag);
+                onTagClick(tag,v);
             }
         });
         ItemCardSubBinding binding = DataBindingUtil.bind(view);

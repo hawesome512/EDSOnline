@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.xseec.eds.R;
 import com.xseec.eds.activity.ProtectSettingActivity;
@@ -43,6 +45,9 @@ public class TabProtectFragment extends TabBaseFragment {
     private List<Protect> protectList;
     private String strSwitchOff;
     private Tag modifyTag;
+    //用于判断修改是否提交成功
+    private ValidTag targetModifyTag;
+    private ProgressBar modifyProgress;
 
     //nj--创建设备参数操作记录数值 18\11\05
     private String actionDevic;
@@ -109,6 +114,13 @@ public class TabProtectFragment extends TabBaseFragment {
             }
             tagList.get(i).setTagValue(value);
         }
+        if (targetModifyTag != null) {
+            Tag tag = TagsFilter.filterTagList(tagList, targetModifyTag.getTagName()).get(0);
+            if (tag.getTagValue().equals(targetModifyTag.getTagValue())) {
+                modifyProgress.setVisibility(View.INVISIBLE);
+                targetModifyTag = null;
+            }
+        }
     }
 
     private Protect getProtect(String name) {
@@ -137,14 +149,19 @@ public class TabProtectFragment extends TabBaseFragment {
     }
 
     @Override
-    public void onTagClick(Tag tag) {
+    public void onTagClick(Tag tag, View view) {
+        if(targetModifyTag!=null){
+            //正在提交参数修改
+            return;
+        }
+        modifyProgress=view.findViewById(R.id.progress_modify);
         modifyTag = tag;
 
         //nj--记录设备名称、参数名称与参数旧值
-        String DeviceName=tag.getTagName();
-        Device device=Device.initWithTagName( DeviceName );
-        actionDevic=device.getDeviceAlias();
-        oldActionValue=tag.getTagValue();
+        String DeviceName = tag.getTagName();
+        Device device = Device.initWithTagName(DeviceName);
+        actionDevic = device.getDeviceAlias();
+        oldActionValue = tag.getTagValue();
 
         checkCtrlAuthority(REQUEST_PROTECT_AUTHORITY);
         if (hasCode) {
@@ -159,11 +176,10 @@ public class TabProtectFragment extends TabBaseFragment {
                 //返回修改值
                 if (resultCode == Activity.RESULT_OK) {
                     modifyTags(data);
-
                     //nj--记录参数修改操作的新值、添加参数操作记录
-                    String actionInfo=getString( R.string.action_device_paramenter,actionDevic,
-                            actionName,oldActionValue,newActionValue );
-                    RecordHelper.actionLog( actionInfo );
+                    String actionInfo = getString(R.string.action_device_paramenter, actionDevic,
+                            actionName, oldActionValue, newActionValue);
+                    RecordHelper.actionLog(actionInfo);
                 }
                 break;
             case REQUEST_PROTECT_AUTHORITY:
@@ -207,6 +223,7 @@ public class TabProtectFragment extends TabBaseFragment {
         String result = data.getStringExtra(RESULT_TAG);
         result = result.replace(Protect.IN, Protect.IE);
         String[] tmps = result.split(":");
+        targetModifyTag=new ValidTag(tmps[0],tmps[1]);
 
         //保护开关设置：Isd(on/off),Tsd(I2t on/I2t off),Ii(on/off),Ig(on/off),Tg(I2t on/I2t off)
         Tag switchTag = TagsFilter.filterDeviceTagList(tagList, NAME_SWITCH).get(0);
@@ -217,7 +234,7 @@ public class TabProtectFragment extends TabBaseFragment {
         targets.add(new ValidTag(switchTag.getTagName(), String.valueOf(switchValue)));
 
         //nj--记录修改参数的名称 2018/11/6
-        actionName=tmps[0];
+        actionName = tmps[0];
 
         //保护值设置
         Tag protectTag = TagsFilter.filterDeviceTagList(tagList, tmps[0]).get(0);
@@ -229,27 +246,33 @@ public class TabProtectFragment extends TabBaseFragment {
             String strValue = tmps[1].replaceAll(Protect.I2T_OFF, "").replaceAll(Protect
                     .I2T_ON, "").replaceAll(protect.getUnit(), "").replaceAll("\\(\\)", "");
             //eg. ACB:6xIr设置为6x1000=6000; MCCB:6xIr设置为6（factor=null)
+            targetModifyTag.setTagValue(tmps[1].replaceAll(protect.getUnit(), ""));
             if (factor != null) {
                 //eg. 630A*0.95=598.5A
                 strValue = Generator.calFloatValue(strValue, factor, Generator.Operator.MULTIPLY);
                 strValue = String.valueOf(Math.round(Float.valueOf(strValue)));
-
+                targetModifyTag.setTagValue(strValue);
                 //nj--记录参数修改后的数值 2018/11/6
-                newActionValue=strValue;
-            }else{
-                newActionValue=tmps[1];
+                newActionValue = strValue;
+            } else {
+                newActionValue = tmps[1];
             }
-            targets.add(new ValidTag(protectTag.getTagName(), strValue));
+            targets.add(new ValidTag(protectTag.getTagName(),strValue));
 
             //Isd为Ir的倍数，当Ir改变时，Isd应跟着改变，以保持不变的倍数,而以xIr为单位的不处理
             if (tmps[0].equals(NAME_IR) && TextUtils.isEmpty(getXUnit(NAME_IR))) {
                 Tag IsdTag = TagsFilter.filterDeviceTagList(tagList, NAME_ISD).get(0);
-                String times = Generator.calFloatValue(IsdTag.getTagValue(), protectTag
-                        .getTagValue(), Generator.Operator.DIVIDE);
-                strValue = Generator.calFloatValue(strValue, times, Generator.Operator.MULTIPLY);
-                targets.add(new ValidTag(IsdTag.getTagName(), strValue));
+                //Isd:off，短延时保护关闭，不处理
+                if (!IsdTag.getTagValue().equals(getString(R.string.device_protect_off))) {
+                    String times = Generator.calFloatValue(IsdTag.getTagValue(), protectTag
+                            .getTagValue(), Generator.Operator.DIVIDE);
+                    strValue = Generator.calFloatValue(strValue, times, Generator.Operator
+                            .MULTIPLY);
+                    targets.add(new ValidTag(IsdTag.getTagName(), strValue));
+                }
             }
         }
-        onModifyTags(targets,layoutContainer);
+        onModifyTags(targets, layoutContainer);
+        modifyProgress.setVisibility(View.VISIBLE);
     }
 }

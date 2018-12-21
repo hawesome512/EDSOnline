@@ -52,12 +52,12 @@ public class TabMonitorFragment extends TabBaseFragment {
             addCard(getString(R.string.device_energy), realZone.getEnergy());
         }
         if (realZone.getHarmonic().size() != 0) {
-            View view= addCard(getString(R.string.overview_item_harmonic), new ArrayList<String>());
+            final View view= addCard(getString(R.string.overview_item_harmonic), new ArrayList<String>());
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     String deviceName=getArguments().getString(KEY_DEVICE_NAME);
-                    onTagClick(new Tag(deviceName+":THD"));
+                    onTagClick(new Tag(deviceName+":THD"),view);
                 }
             });
         }
@@ -96,7 +96,7 @@ public class TabMonitorFragment extends TabBaseFragment {
     }
 
     @Override
-    public void onTagClick(Tag tag) {
+    public void onTagClick(Tag tag,View view) {
         ArrayList<String> tags = new ArrayList<>();
         tags.add(tag.getTagName());
         ChartActivity.start(getContext(), tags, new DataLogFactor());

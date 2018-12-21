@@ -155,6 +155,8 @@ public abstract class ComFragment extends Fragment implements ComListener {
                 Toast.makeText(getContext(), R.string.device_modify_null, Toast.LENGTH_SHORT).show();
                 return;
             }else if (mode.equals(CTRL_LOCAL)) {
+                //极小概率触发：初始远程模式，已有密码，切换本地模式，仍能遥调
+                hasCode=false;
                 final AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
                         .setTitle(R.string.device_modify_refuse)
                         .setMessage(R.string.device_modify_local)
