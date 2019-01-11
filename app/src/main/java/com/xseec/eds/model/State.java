@@ -49,19 +49,19 @@ public enum State {
         }
     }
 
-    public static State getState(String value) {
-        if (value == null) {
-            return State.OFFLINE;
-        } else if (value.contains(STATE_ALARM)) {
-            return State.ALARM;
-        } else if (value.contains(STATE_OFFLINE)) {
-            return State.OFFLINE;
-        } else if (value.contains(STATE_ON)) {
-            return State.ON;
-        } else {
-            return State.OFF;
-        }
-    }
+//    public static State getState(String value) {
+//        if (value == null) {
+//            return State.OFFLINE;
+//        } else if (value.contains(STATE_ALARM)) {
+//            return State.ALARM;
+//        } else if (value.contains(STATE_OFFLINE)) {
+//            return State.OFFLINE;
+//        } else if (value.contains(STATE_ON)) {
+//            return State.ON;
+//        } else {
+//            return State.OFF;
+//        }
+//    }
 
     public String getStateText() {
         Context context = EDSApplication.getContext();

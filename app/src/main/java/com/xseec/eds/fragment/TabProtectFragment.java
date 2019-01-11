@@ -3,8 +3,10 @@ package com.xseec.eds.fragment;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.util.Pair;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -14,6 +16,7 @@ import com.xseec.eds.model.Device;
 import com.xseec.eds.model.deviceconfig.Protect;
 import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.model.tags.ValidTag;
+import com.xseec.eds.util.Device.DeviceConverterCenter;
 import com.xseec.eds.util.Generator;
 import com.xseec.eds.util.RecordHelper;
 import com.xseec.eds.util.TagsFilter;
@@ -21,6 +24,7 @@ import com.xseec.eds.util.TagsFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,9 +49,9 @@ public class TabProtectFragment extends TabBaseFragment {
     private List<Protect> protectList;
     private String strSwitchOff;
     private Tag modifyTag;
-    //用于判断修改是否提交成功
-    private ValidTag targetModifyTag;
     private ProgressBar modifyProgress;
+    private static final int REPEAT_LIMIT=5;
+    private int modifyRepeat;
 
     //nj--创建设备参数操作记录数值 18\11\05
     private String actionDevic;
@@ -71,10 +75,10 @@ public class TabProtectFragment extends TabBaseFragment {
     protected void initLayout() {
         protectList = getArguments().getParcelableArrayList(KEY_PROTECTS);
         strSwitchOff = getString(R.string.device_protect_off);
-        addCard(getString(R.string.device_long), Arrays.asList(NAME_IR, NAME_TR));
-        addCard(getString(R.string.device_short), Arrays.asList(NAME_ISD, NAME_TSD));
-        addCard(getString(R.string.device_instant), Arrays.asList(NAME_II));
-        addCard(getString(R.string.device_ground), Arrays.asList(NAME_IG, NAME_TG));
+        Map<Integer,List<String>> cards= DeviceConverterCenter.genProtectCardMaps(tagList);
+        for(Map.Entry<Integer,List<String>> kv:cards.entrySet()){
+            addCard(kv.getKey(),kv.getValue());
+        }
     }
 
     @Override
@@ -114,11 +118,17 @@ public class TabProtectFragment extends TabBaseFragment {
             }
             tagList.get(i).setTagValue(value);
         }
-        if (targetModifyTag != null) {
-            Tag tag = TagsFilter.filterTagList(tagList, targetModifyTag.getTagName()).get(0);
-            if (tag.getTagValue().equals(targetModifyTag.getTagValue())) {
+        if (modifyTag != null) {
+            Tag tag = TagsFilter.filterTagList(tagList, modifyTag.getTagName()).get(0);
+            modifyRepeat++;
+            //tag.value发生变化,修改参数成功or超时修改失败
+            if (!tag.getTagValue().equals(modifyTag.getTagValue())||modifyRepeat==REPEAT_LIMIT) {
                 modifyProgress.setVisibility(View.INVISIBLE);
-                targetModifyTag = null;
+                modifyTag = null;
+                if(modifyRepeat==REPEAT_LIMIT){
+                    Snackbar.make(layoutContainer,R.string.device_modify_timeout,Snackbar.LENGTH_SHORT);
+                }
+                modifyRepeat=0;
             }
         }
     }
@@ -150,12 +160,13 @@ public class TabProtectFragment extends TabBaseFragment {
 
     @Override
     public void onTagClick(Tag tag, View view) {
-        if(targetModifyTag!=null){
+        if(modifyTag!=null){
             //正在提交参数修改
             return;
         }
         modifyProgress=view.findViewById(R.id.progress_modify);
-        modifyTag = tag;
+        //传递副本，对其修改不会影响原tag
+        modifyTag =new Tag(tag.getTagName(),tag.getTagValue());
 
         //nj--记录设备名称、参数名称与参数旧值
         String DeviceName = tag.getTagName();
@@ -223,7 +234,6 @@ public class TabProtectFragment extends TabBaseFragment {
         String result = data.getStringExtra(RESULT_TAG);
         result = result.replace(Protect.IN, Protect.IE);
         String[] tmps = result.split(":");
-        targetModifyTag=new ValidTag(tmps[0],tmps[1]);
 
         //保护开关设置：Isd(on/off),Tsd(I2t on/I2t off),Ii(on/off),Ig(on/off),Tg(I2t on/I2t off)
         Tag switchTag = TagsFilter.filterDeviceTagList(tagList, NAME_SWITCH).get(0);
@@ -246,12 +256,10 @@ public class TabProtectFragment extends TabBaseFragment {
             String strValue = tmps[1].replaceAll(Protect.I2T_OFF, "").replaceAll(Protect
                     .I2T_ON, "").replaceAll(protect.getUnit(), "").replaceAll("\\(\\)", "");
             //eg. ACB:6xIr设置为6x1000=6000; MCCB:6xIr设置为6（factor=null)
-            targetModifyTag.setTagValue(tmps[1].replaceAll(protect.getUnit(), ""));
             if (factor != null) {
                 //eg. 630A*0.95=598.5A
                 strValue = Generator.calFloatValue(strValue, factor, Generator.Operator.MULTIPLY);
                 strValue = String.valueOf(Math.round(Float.valueOf(strValue)));
-                targetModifyTag.setTagValue(strValue);
                 //nj--记录参数修改后的数值 2018/11/6
                 newActionValue = strValue;
             } else {

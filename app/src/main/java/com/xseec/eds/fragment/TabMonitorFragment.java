@@ -22,13 +22,14 @@ import java.util.List;
 public class TabMonitorFragment extends TabBaseFragment {
 
     private static final String KEY_REAL_ZONE = "real_zone";
-    private static final String KEY_DEVICE_NAME="device_name";
+    private static final String KEY_DEVICE_NAME = "device_name";
+
     public static Fragment newInstance(String deviceName, RealZone realZone) {
         Fragment fragment = new TabMonitorFragment();
         List<Tag> tags = realZone.getAllTagList(deviceName);
         Bundle bundle = getBundle(tags);
         bundle.putParcelable(KEY_REAL_ZONE, realZone);
-        bundle.putString(KEY_DEVICE_NAME,deviceName);
+        bundle.putString(KEY_DEVICE_NAME, deviceName);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -37,29 +38,36 @@ public class TabMonitorFragment extends TabBaseFragment {
     protected void initLayout() {
         RealZone realZone = getArguments().getParcelable(KEY_REAL_ZONE);
         if (realZone.getCurrent().size() != 0) {
-            addCard(getString(R.string.device_current), realZone.getCurrent());
+            addCard(R.string.device_current, realZone.getCurrent());
         }
         if (realZone.getVoltage().size() != 0) {
-            addCard(getString(R.string.device_voltage), realZone.getVoltage());
+            addCard(R.string.device_voltage, realZone.getVoltage());
         }
         if (realZone.getGrid().size() != 0) {
-            addCard(getString(R.string.device_grid), realZone.getGrid());
+            addCard(R.string.device_grid, realZone.getGrid());
         }
         if (realZone.getPower().size() != 0) {
-            addCard(getString(R.string.device_power), realZone.getPower());
+            addCard(R.string.device_power, realZone.getPower());
         }
         if (realZone.getEnergy().size() != 0) {
-            addCard(getString(R.string.device_energy), realZone.getEnergy());
+            addCard(R.string.device_energy, realZone.getEnergy());
         }
         if (realZone.getHarmonic().size() != 0) {
-            final View view= addCard(getString(R.string.overview_item_harmonic), new ArrayList<String>());
+            final View view = addCard(R.string.overview_item_harmonic, new
+                    ArrayList<String>());
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String deviceName=getArguments().getString(KEY_DEVICE_NAME);
-                    onTagClick(new Tag(deviceName+":THD"),view);
+                    String deviceName = getArguments().getString(KEY_DEVICE_NAME);
+                    onTagClick(new Tag(deviceName + ":THD"), view);
                 }
             });
+        }
+        if (realZone.getSource1().size() != 0) {
+            addCard(R.string.device_source1, realZone.getSource1());
+        }
+        if (realZone.getSource2().size() != 0) {
+            addCard(R.string.device_source2, realZone.getSource2());
         }
     }
 
@@ -69,34 +77,35 @@ public class TabMonitorFragment extends TabBaseFragment {
         List<Tag> currents = TagsFilter.filterDeviceTagList(validTagList, "Ia", "Ib", "Ic");
         List<Tag> voltages = TagsFilter.filterDeviceTagList(validTagList, "Ua", "Ub", "Uc");
         for (int i = 0; i < validTagList.size(); i++) {
-            Tag tag=validTagList.get(i);
-            String value;
-            switch (tag.getTagShortName()){
-                case "Iavg":
-                    value=String.valueOf(Generator.getAvgTagsValue(currents));
-                    break;
-                case "Ip":
-                    value=String.valueOf(Generator.getMaxDeltaTagsValue(currents));
-                    break;
-                case "Uavg":
-                    value=String.valueOf(Generator.getAvgTagsValue(voltages));
-                    break;
-                case "Up":
-                    value=String.valueOf(Generator.getMaxDeltaTagsValue(voltages));
-                    break;
-                case "Phase":
-                    value= Generator.getResourceString("tag_Phase_"+tag.getTagValue());
-                    break;
-                default:
-                    value=Generator.floatTryParse(tag.getTagValue())<0?"---":tag.getTagValue();
-                    break;
+            Tag tag = validTagList.get(i);
+            String value=tag.getTagValue();
+            if (value.equals(Tag.NULL_TAG_VALUE)) {
+                switch (tag.getTagShortName()) {
+                    case "Iavg":
+                        value = String.valueOf(Generator.getAvgTagsValue(currents));
+                        break;
+                    case "Ip":
+                        value = String.valueOf(Generator.getMaxDeltaTagsValue(currents));
+                        break;
+                    case "Uavg":
+                        value = String.valueOf(Generator.getAvgTagsValue(voltages));
+                        break;
+                    case "Up":
+                        value = String.valueOf(Generator.getMaxDeltaTagsValue(voltages));
+                        break;
+                    default:
+                        value = Tag.NULL_TAG_SHOW_VALUE;
+                        break;
+                }
+            } else if (tag.getTagShortName().equals("Phase")) {
+                value = Generator.getResourceString("tag_Phase_" + value);
             }
             tagList.get(i).setTagValue(value);
         }
     }
 
     @Override
-    public void onTagClick(Tag tag,View view) {
+    public void onTagClick(Tag tag, View view) {
         ArrayList<String> tags = new ArrayList<>();
         tags.add(tag.getTagName());
         ChartActivity.start(getContext(), tags, new DataLogFactor());

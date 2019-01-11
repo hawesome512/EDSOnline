@@ -2,14 +2,16 @@
   {
     "Type":"A1",
     "Name":"ACB",
-    "Overview":["State","Status","Ir","IdA","IdB","IdC"],
+    "Overview":["Status","Ir","IdA","IdB","IdC"],
     "Real":{
       "Current":["Ia","Ib","Ic","In","Igf"],
       "Voltage":["Ua","Ub","Uc"],
       "Grid":["Iavg","Ip","Uavg","Up"],
       "Power":[],
       "Energy":[],
-      "Harmonic":[]
+      "Harmonic":[],
+      "Source1":[],
+      "Source2":[]
     },
     "Protect":[
       {"Name":"Ie","Items":[]},
@@ -24,20 +26,22 @@
       {"Name":"Ig","Items":[0.2,0.3,0.4,0.5,0.6,0.7,0.8,1,"off"],"Unit":"Ie"},
       {"Name":"Tg","Items":["(I2t on)0.8","(I2t on)0.4","(I2t on)0.2","(I2t on)0.1","(I2t off)0.1","(I2t off)0.2","(I2t off)0.4","(I2t off)0.8"],"Unit":"s"}
     ],
-    "Control":["State","Status","CtrlMode","CtrlCode","FarCtrl"],
+    "Control":["Status","CtrlMode","CtrlCode","FarCtrl"],
     "Alarm":["Ia","Ib","Ic","Ir"]
   },
   {
     "Type":"A2",
     "Name":"ACB",
-    "Overview":["State","Status","Ir","IdA","IdB","IdC"],
+    "Overview":["Status","Ir","IdA","IdB","IdC"],
     "Real":{
       "Current":["Ia","Ib","Ic","In","Igf"],
       "Voltage":["Ua","Ub","Uc"],
       "Grid":["Iavg","Ip","Uavg","Up"],
       "Power":[],
       "Energy":[],
-      "Harmonic":[]
+      "Harmonic":[],
+      "Source1":[],
+      "Source2":[]
     },
     "Protect":[
       {"Name":"Ie","Items":[]},
@@ -52,20 +56,22 @@
       {"Name":"Ig","Items":[0.2,0.3,0.4,0.5,0.6,0.7,0.8,1,"off"],"Unit":"Ie"},
       {"Name":"Tg","Items":["(I2t on)0.4","(I2t on)0.3","(I2t on)0.2","(I2t on)0.1","(I2t off)0","(I2t off)0.1","(I2t off)0.2","(I2t off)0.3","(I2t off)0.4"],"Unit":"s"}
     ],
-    "Control":["State","Status","CtrlMode","CtrlCode","FarCtrl"],
+    "Control":["Status","CtrlMode","CtrlCode","FarCtrl"],
     "Alarm":["Ia","Ib","Ic","Ir"]
   },
   {
     "Type":"A3",
     "Name":"ACB",
-    "Overview":["State","Status","Ir","IdA","IdB","IdC"],
+    "Overview":["Status","Ir","IdA","IdB","IdC"],
     "Real":{
       "Current":["Ia","Ib","Ic","In","Igf"],
       "Voltage":["Ua","Ub","Uc","Uab","Ubc","Uca"],
       "Grid":["Iavg","Ip","Uavg","Up","T","F","Phase"],
       "Power":["P","Q","S","COS"],
       "Energy":["EP","EQ","ES","EPin","EPout","EQin","EQout"],
-      "Harmonic":["THD"]
+      "Harmonic":["THD"],
+      "Source1":[],
+      "Source2":[]
     },
     "Protect":[
       {"Name":"Ie","Items":[]},
@@ -80,20 +86,22 @@
       {"Name":"Ig","Items":[0.2,0.3,0.4,0.5,0.6,0.7,0.8,1,"off"],"Unit":"Ie"},
       {"Name":"Tg","Items":["(I2t on)0.4","(I2t on)0.3","(I2t on)0.2","(I2t on)0.1","(I2t off)0","(I2t off)0.1","(I2t off)0.2","(I2t off)0.3","(I2t off)0.4"],"Unit":"s"}
     ],
-    "Control":["State","Status","CtrlMode","CtrlCode","FarCtrl"],
+    "Control":["Status","CtrlMode","CtrlCode","FarCtrl"],
     "Alarm":["Ia","Ib","Ic","Ir"]
   },
   {
     "Type":"M2",
     "Name":"MCCB",
-    "Overview":["State","Status","IrReal","IdA","IdB","IdC"],
+    "Overview":["Status","IrReal","IdA","IdB","IdC"],
     "Real":{
       "Current":["Ia","Ib","Ic","In","Igf"],
       "Voltage":[],
       "Grid":["Iavg","Ip"],
       "Power":[],
       "Energy":[],
-      "Harmonic":[]
+      "Harmonic":[],
+      "Source1":[],
+      "Source2":[]
     },
     "Protect":[
       {"Name":"Ie","Items":[]},
@@ -108,7 +116,44 @@
       {"Name":"Ig","Items":[0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,"off"],"Unit":"xIe"},
       {"Name":"Tg","Items":["(I2t on)0.4","(I2t on)0.3","(I2t on)0.2","(I2t on)0.1","(I2t off)0.1","(I2t off)0.2","(I2t off)0.3","(I2t off)0.4"],"Unit":"s"}
     ],
-    "Control":["State","Status","CtrlMode","CtrlCode","FarCtrl"],
+    "Control":["Status","CtrlMode","CtrlCode","FarCtrl"],
     "Alarm":["Ia","Ib","Ic","IrReal"]
+  },
+  {
+    "Type":"T3",
+    "Name":"ATS",
+    "Overview":["Status","Ir","IdA","IdB","IdC"],
+    "Real":{
+      "Current":["Ia","Ib","Ic","Iavg","Ip"],
+      "Voltage":[],
+      "Grid":[],
+      "Power":[],
+      "Energy":[],
+      "Harmonic":[],
+      "Source1":["Ua_1","Ub_1","Uc_1","Up_1","F_1","Phase_1"],
+      "Source2":["Ua_2","Ub_2","Uc_2","Up_2","F_2","Phase_2"]
+    },
+    "Protect":[
+      {"Name":"CtrlCode","Items":[]},
+      {"Name":"Sw1","Items":[]},
+      {"Name":"Switch","Items":[]},
+      {"Name":"Ul","Items":["*",75,1,95],"Unit":"%Un"},
+      {"Name":"UlR","Items":["*",78,1,98],"Unit":"%Un"},
+      {"Name":"Uo","Items":["*",105,1,125],"Unit":"%Un"},
+      {"Name":"UoR","Items":["*",102,1,122],"Unit":"%Un"},
+      {"Name":"Fl","Items":["*",90,0.5,99],"Unit":"%Fn"},
+      {"Name":"FlR","Items":["*",90.5,0.5,99.5],"Unit":"%Fn"},
+      {"Name":"Fo","Items":["*",101,0.5,110],"Unit":"%Fn"},
+      {"Name":"FoR","Items":["*",100.5,0.5,109.5],"Unit":"%Fn"},
+      {"Name":"UpSet","Items":["*",10,1,30],"Unit":"%Un"},
+      {"Name":"UpRSet","Items":["*",5,1,25],"Unit":"%Un"},
+      {"Name":"T1","Items":["*",0,1,600],"Unit":"s"},
+      {"Name":"T2","Items":["*",0,1,60],"Unit":"s"},
+      {"Name":"T3","Items":["*",0,1,1800],"Unit":"s"},
+      {"Name":"T4","Items":["*",0,1,60],"Unit":"s"},
+      {"Name":"T5","Items":["*",0,1,1800],"Unit":"s"}
+    ],
+    "Control":["Status","Sw1","CtrlCode","FarCtrl"],
+    "Alarm":["Ia","Ib","Ic","Ir"]
   }
 ]

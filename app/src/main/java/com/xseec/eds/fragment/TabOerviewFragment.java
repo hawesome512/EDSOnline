@@ -30,6 +30,7 @@ import com.xseec.eds.model.State;
 import com.xseec.eds.model.WAServicer;
 import com.xseec.eds.model.servlet.Alarm;
 import com.xseec.eds.model.tags.Tag;
+import com.xseec.eds.util.Device.DeviceConverterCenter;
 import com.xseec.eds.util.EDSApplication;
 import com.xseec.eds.util.Generator;
 import com.xseec.eds.util.TagsFilter;
@@ -224,16 +225,12 @@ public class TabOerviewFragment extends ComFragment {
             @Override
             public void run() {
                 progress.setVisibility(View.GONE);
-                List<Tag> tags = TagsFilter.filterDeviceTagList(validTagList, "State", "Status");
-                if (tags != null && tags.size() >= 2) {
-                    State state = State.getState(tags.get(0).getTagValue());
+                List<Tag> tags = TagsFilter.filterDeviceTagList(validTagList, "Status");
+                if (tags != null && tags.size() >= 1) {
+                    State state = DeviceConverterCenter.getState(tags.get(0));
                     imageState.setImageResource(state.getStateColorRes());
                     state.setUnusualAnimator(imageState);
-                    if (state == State.ALARM) {
-                        textState.setText(Generator.getAlarmStateTextWithTag(tags.get(1)));
-                    } else {
-                        textState.setText(state.getStateText());
-                    }
+                    textState.setText(DeviceConverterCenter.getStateText(tags.get(0)));
                 }
 
                 //使用模糊匹配，因MCCB中IrReal

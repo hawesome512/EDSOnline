@@ -222,11 +222,9 @@ public class EnergyTabItemFragment extends BaseFragment implements OnChartValueS
         textFirst.setText(String.valueOf(totalToday));
         textSecend.setText(String.valueOf(totalYesterday));
         textLast.setText(linkRadio + "%");
-        if (ApiLevelHelper.isAtLeast(17)) {
-            int resId = linkRadio < 0 ? R.drawable.ic_arrow_downward_green_a700_24dp : R
-                    .drawable.ic_arrow_upward_red_a200_24dp;
-            textLast.setCompoundDrawablesRelativeWithIntrinsicBounds(resId, 0, 0, 0);
-        }
+        int resId = linkRadio < 0 ? R.drawable.ic_arrow_downward_green_a700_24dp : R
+                .drawable.ic_arrow_upward_red_a200_24dp;
+        ViewHelper.drawTextBounds(textLast, resId, 0, 0, 0);
     }
 
     private void initPieChart() {
@@ -403,7 +401,7 @@ public class EnergyTabItemFragment extends BaseFragment implements OnChartValueS
     protected void onRefreshViews(String jsonData) {
         progress.setVisibility(View.GONE);
         setLineData();
-        int visibility=children.size()>0?View.VISIBLE:View.GONE;
+        int visibility = children.size() > 0 ? View.VISIBLE : View.GONE;
         barChart.setVisibility(visibility);
         pieChart.setVisibility(visibility);
         textTip.setVisibility(visibility);

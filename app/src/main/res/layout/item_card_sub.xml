@@ -38,7 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="@dimen/view_margin_small"
-                android:gravity="right"
+                android:gravity="right|center_vertical"
                 android:layout_gravity="center_vertical"
                 android:text="@{tag.tagValue}"
                 android:textColor="@color/colorPrimaryText"

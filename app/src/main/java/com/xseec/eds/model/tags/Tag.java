@@ -17,6 +17,8 @@ import com.xseec.eds.util.Generator;
 public class Tag extends BaseObservable implements Parcelable {
     public static final String SPIT_ZONE="_";
     public static final String SPIT_NAME=":";
+    public static final String NULL_TAG_VALUE="-2";
+    public static final String NULL_TAG_SHOW_VALUE="---";
 
     @SerializedName("Name")
     private String tagName;
@@ -66,7 +68,12 @@ public class Tag extends BaseObservable implements Parcelable {
     }
 
     public String getTagShortName(){
-        return tagName.split(":")[1];
+        //CY_T3_4:Ua_1→ATS中I/II次侧
+        return tagName.split(SPIT_NAME)[1].split(SPIT_ZONE)[0];
+    }
+
+    public String getDeviceID(){
+        return tagName.split(SPIT_NAME)[0];
     }
 
     public void setTagValue(String tagValue) {

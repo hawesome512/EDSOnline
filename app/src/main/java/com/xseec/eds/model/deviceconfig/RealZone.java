@@ -27,6 +27,10 @@ public class RealZone implements Parcelable {
     private List<String> energy;
     @SerializedName("Harmonic")
     private List<String> harmonic;
+    @SerializedName("Source1")
+    private List<String> source1;
+    @SerializedName("Source2")
+    private List<String> source2;
 
     protected RealZone(Parcel in) {
         current = in.createStringArrayList();
@@ -35,6 +39,8 @@ public class RealZone implements Parcelable {
         power = in.createStringArrayList();
         energy = in.createStringArrayList();
         harmonic = in.createStringArrayList();
+        source1=in.createStringArrayList();
+        source2=in.createStringArrayList();
     }
 
     public static final Creator<RealZone> CREATOR = new Creator<RealZone>() {
@@ -97,6 +103,22 @@ public class RealZone implements Parcelable {
         this.harmonic = harmonic;
     }
 
+    public List<String> getSource1() {
+        return source1;
+    }
+
+    public void setSource1(List<String> source1) {
+        this.source1 = source1;
+    }
+
+    public List<String> getSource2() {
+        return source2;
+    }
+
+    public void setSource2(List<String> source2) {
+        this.source2 = source2;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -110,17 +132,8 @@ public class RealZone implements Parcelable {
         dest.writeStringList(power);
         dest.writeStringList(energy);
         dest.writeStringList(harmonic);
-    }
-
-    //不包含谐波
-    private List<String> getAllList(){
-        List<String> target=new ArrayList<>();
-        target.addAll(current);
-        target.addAll(voltage);
-        target.addAll(grid);
-        target.addAll(power);
-        target.addAll(energy);
-        return target;
+        dest.writeStringList(source1);
+        dest.writeStringList(source2);
     }
 
     public List<Tag> getAllTagList(String deviceSerial){
@@ -130,6 +143,8 @@ public class RealZone implements Parcelable {
         temps.addAll(grid);
         temps.addAll(power);
         temps.addAll(energy);
+        temps.addAll(source1);
+        temps.addAll(source2);
         List<Tag> tagList=new ArrayList<>();
         for(String temp:temps){
             tagList.add(new Tag(deviceSerial+":"+temp));

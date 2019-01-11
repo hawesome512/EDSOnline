@@ -292,11 +292,9 @@ public class DataLogFragment extends BaseFragment {
             textFrist.setText(String.valueOf(totalToday));
             textSecend.setText(String.valueOf(totalYesterday));
             textLast.setText(linkRadio + "%");
-            if (ApiLevelHelper.isAtLeast(17)) {
-                int resId = linkRadio < 0 ? R.drawable.ic_arrow_downward_green_a700_24dp : R
-                        .drawable.ic_arrow_upward_red_a200_24dp;
-                textLast.setCompoundDrawablesRelativeWithIntrinsicBounds(resId, 0, 0, 0);
-            }
+            int resId = linkRadio < 0 ? R.drawable.ic_arrow_downward_green_a700_24dp : R
+                    .drawable.ic_arrow_upward_red_a200_24dp;
+            ViewHelper.drawTextBounds(textLast,resId,0,0,0);
             values[0]=value;
         }
 
