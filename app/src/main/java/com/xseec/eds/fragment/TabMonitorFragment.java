@@ -37,6 +37,12 @@ public class TabMonitorFragment extends TabBaseFragment {
     @Override
     protected void initLayout() {
         RealZone realZone = getArguments().getParcelable(KEY_REAL_ZONE);
+        if (realZone.getSource1().size() != 0) {
+            addCard(R.string.device_source1, realZone.getSource1());
+        }
+        if (realZone.getSource2().size() != 0) {
+            addCard(R.string.device_source2, realZone.getSource2());
+        }
         if (realZone.getCurrent().size() != 0) {
             addCard(R.string.device_current, realZone.getCurrent());
         }
@@ -62,12 +68,6 @@ public class TabMonitorFragment extends TabBaseFragment {
                     onTagClick(new Tag(deviceName + ":THD"), view);
                 }
             });
-        }
-        if (realZone.getSource1().size() != 0) {
-            addCard(R.string.device_source1, realZone.getSource1());
-        }
-        if (realZone.getSource2().size() != 0) {
-            addCard(R.string.device_source2, realZone.getSource2());
         }
     }
 

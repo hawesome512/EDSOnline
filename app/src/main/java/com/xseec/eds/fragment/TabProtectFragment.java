@@ -1,6 +1,7 @@
 package com.xseec.eds.fragment;
 
 import android.app.Activity;
+import android.app.Instrumentation;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -50,7 +51,7 @@ public class TabProtectFragment extends TabBaseFragment {
     private String strSwitchOff;
     private Tag modifyTag;
     private ProgressBar modifyProgress;
-    private static final int REPEAT_LIMIT=5;
+    private static final int REPEAT_LIMIT = 20;
     private int modifyRepeat;
 
     //nj--创建设备参数操作记录数值 18\11\05
@@ -75,9 +76,9 @@ public class TabProtectFragment extends TabBaseFragment {
     protected void initLayout() {
         protectList = getArguments().getParcelableArrayList(KEY_PROTECTS);
         strSwitchOff = getString(R.string.device_protect_off);
-        Map<Integer,List<String>> cards= DeviceConverterCenter.genProtectCardMaps(tagList);
-        for(Map.Entry<Integer,List<String>> kv:cards.entrySet()){
-            addCard(kv.getKey(),kv.getValue());
+        Map<Integer, List<String>> cards = DeviceConverterCenter.genProtectCardMaps(tagList);
+        for (Map.Entry<Integer, List<String>> kv : cards.entrySet()) {
+            addCard(kv.getKey(), kv.getValue());
         }
     }
 
@@ -122,13 +123,15 @@ public class TabProtectFragment extends TabBaseFragment {
             Tag tag = TagsFilter.filterTagList(tagList, modifyTag.getTagName()).get(0);
             modifyRepeat++;
             //tag.value发生变化,修改参数成功or超时修改失败
-            if (!tag.getTagValue().equals(modifyTag.getTagValue())||modifyRepeat==REPEAT_LIMIT) {
+            if (!tag.getTagValue().equals(modifyTag.getTagValue()) || modifyRepeat >=
+                    REPEAT_LIMIT) {
                 modifyProgress.setVisibility(View.INVISIBLE);
                 modifyTag = null;
-                if(modifyRepeat==REPEAT_LIMIT){
-                    Snackbar.make(layoutContainer,R.string.device_modify_timeout,Snackbar.LENGTH_SHORT);
+                if (modifyRepeat >= REPEAT_LIMIT) {
+                    Snackbar.make(layoutContainer, R.string.device_modify_timeout, Snackbar
+                            .LENGTH_SHORT);
                 }
-                modifyRepeat=0;
+                modifyRepeat = 0;
             }
         }
     }
@@ -160,13 +163,13 @@ public class TabProtectFragment extends TabBaseFragment {
 
     @Override
     public void onTagClick(Tag tag, View view) {
-        if(modifyTag!=null){
+        if (modifyTag != null) {
             //正在提交参数修改
             return;
         }
-        modifyProgress=view.findViewById(R.id.progress_modify);
+        modifyProgress = view.findViewById(R.id.progress_modify);
         //传递副本，对其修改不会影响原tag
-        modifyTag =new Tag(tag.getTagName(),tag.getTagValue());
+        modifyTag = new Tag(tag.getTagName(), tag.getTagValue());
 
         //nj--记录设备名称、参数名称与参数旧值
         String DeviceName = tag.getTagName();
@@ -182,23 +185,23 @@ public class TabProtectFragment extends TabBaseFragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_CANCELED) {
+            modifyTag = null;
+            return;
+        }
         switch (requestCode) {
             case REQUEST_MODIFY:
                 //返回修改值
-                if (resultCode == Activity.RESULT_OK) {
-                    modifyTags(data);
-                    //nj--记录参数修改操作的新值、添加参数操作记录
-                    String actionInfo = getString(R.string.action_device_paramenter, actionDevic,
-                            actionName, oldActionValue, newActionValue);
-                    RecordHelper.actionLog(actionInfo);
-                }
+                modifyTags(data);
+                //nj--记录参数修改操作的新值、添加参数操作记录
+                String actionInfo = getString(R.string.action_device_paramenter, actionDevic,
+                        actionName, oldActionValue, newActionValue);
+                RecordHelper.actionLog(actionInfo);
                 break;
             case REQUEST_PROTECT_AUTHORITY:
                 //输入正确设备密码
-                if (resultCode == Activity.RESULT_OK) {
-                    hasCode = true;
-                    selectItems();
-                }
+                hasCode = true;
+                selectItems();
                 break;
             default:
                 break;
@@ -265,7 +268,7 @@ public class TabProtectFragment extends TabBaseFragment {
             } else {
                 newActionValue = tmps[1];
             }
-            targets.add(new ValidTag(protectTag.getTagName(),strValue));
+            targets.add(new ValidTag(protectTag.getTagName(), strValue));
 
             //Isd为Ir的倍数，当Ir改变时，Isd应跟着改变，以保持不变的倍数,而以xIr为单位的不处理
             if (tmps[0].equals(NAME_IR) && TextUtils.isEmpty(getXUnit(NAME_IR))) {

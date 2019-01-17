@@ -148,7 +148,8 @@
     <string name="device_A1_status">过载_短路_瞬动_接地_*_*_*_脱扣_触头磨损_超温_拒动_自诊断_*_欠相_MCR</string>
     <string name="device_A2_status">过载_短路_瞬动_接地_*_*_*_脱扣_触头磨损_超温_拒动_自诊断_*_欠相_MCR</string>
     <string name="device_A3_status">过载_短路_瞬动_接地_*_*_*_脱扣_触头磨损_超温_拒动_铁电_自诊断_电流不平衡_电压不平衡</string>
-    <string name="device_M2_status">过载_短路_瞬动_接地_热记忆_预过载_*_脱扣_*_*_拒动_不平衡</string>
+    <!--<string name="device_M2_status">过载_短路_瞬动_接地_热记忆_预过载_*_脱扣_*_*_拒动_不平衡</string>-->
+    <string name="device_M2_status">*_*_拒动_不平衡_*_*_*_*_过载_短路_瞬动_接地_热记忆_预过载_*_脱扣</string>
     <string name="device_T3_status">*_常电投入_常电故障_*_备电投入_备电故障</string>
     <string name="device_ATS_U">电压保护(%Un)</string>
     <string name="device_ATS_F">频率保护(%Fn)</string>
