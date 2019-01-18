@@ -26,6 +26,7 @@ import com.xseec.eds.model.ComListener;
 import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.model.tags.ValidTag;
 import com.xseec.eds.service.ComService;
+import com.xseec.eds.util.Device.DeviceConverterCenter;
 import com.xseec.eds.util.TagsFilter;
 import com.xseec.eds.util.WAServiceHelper;
 
@@ -42,8 +43,6 @@ import static android.content.Context.ACTIVITY_SERVICE;
 public abstract class ComFragment extends Fragment implements ComListener {
 
     private static final String KEY_TAGS = "tag_list";
-    private static final String CTRL_MODE = "CtrlMode";
-    private static final String CTRL_CODE = "CtrlCode";
     private static final String CTRL_LOCAL = "76";
 
     protected static Bundle getBundle(List<Tag> tagList) {
@@ -141,6 +140,7 @@ public abstract class ComFragment extends Fragment implements ComListener {
 
     @Override
     public void onRefreshed(List<Tag> validTagList) {
+        DeviceConverterCenter.convert(validTagList);
         Activity activity = getActivity();
         if (validTagList == null || validTagList.size() == 0 || getActivity() == null) {
             return;
@@ -148,13 +148,15 @@ public abstract class ComFragment extends Fragment implements ComListener {
     }
 
     protected void checkCtrlAuthority(int authorityCode) {
-        List<Tag> ctrlTags = TagsFilter.filterDeviceTagList(tagList, CTRL_MODE, CTRL_CODE);
+        List<Tag> ctrlTags = DeviceConverterCenter.getCtrlList(tagList);
         if (ctrlTags.size() == 2) {
             String mode = ctrlTags.get(0).getTagValue();
             if(mode==null){
                 Toast.makeText(getContext(), R.string.device_modify_null, Toast.LENGTH_SHORT).show();
                 return;
             }else if (mode.equals(CTRL_LOCAL)) {
+                //极小概率触发：初始远程模式，已有密码，切换本地模式，仍能遥调
+                hasCode=false;
                 final AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
                         .setTitle(R.string.device_modify_refuse)
                         .setMessage(R.string.device_modify_local)
@@ -185,7 +187,7 @@ public abstract class ComFragment extends Fragment implements ComListener {
             @Override
             public void onResponse(Response response) throws IOException {
                 Snackbar.make(view, R.string.device_modify_success, Snackbar
-                        .LENGTH_LONG).show();
+                        .LENGTH_SHORT).show();
             }
         });
     }

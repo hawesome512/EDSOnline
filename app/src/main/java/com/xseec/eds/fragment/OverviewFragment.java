@@ -152,7 +152,6 @@ public class OverviewFragment extends BaseFragment {
     private void initViews() {
         //init BasicInfo
         getActivity().setTitle(basic.getUser());
-        String s = basic.getBannerUrl();
         Glide.with(this).load(basic.getBannerUrl()).into(imageArea);
         int deviceCount = TagsFilter.getDeviceList(tagList).size();
         textDevice.setText(getResources().getString(R.string.overview_device_value, deviceCount));

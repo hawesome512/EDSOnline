@@ -1,5 +1,7 @@
 package com.xseec.eds.model;
 
+import android.view.View;
+
 import com.xseec.eds.model.tags.Tag;
 
 /**
@@ -7,5 +9,5 @@ import com.xseec.eds.model.tags.Tag;
  */
 
 public interface TagListener {
-    void onTagClick(Tag tag);
+    void onTagClick(Tag tag,View view);
 }

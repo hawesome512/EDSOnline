@@ -125,19 +125,26 @@ public class Alarm extends BaseModel implements Comparable,Parcelable {
     @Override
     public int compareTo(@NonNull Object o) {
         Alarm alarm = (Alarm) o;
-        if (this.confirm < alarm.getConfirm()) {
-            return 1;
-        } else if (this.confirm > alarm.getConfirm()) {
+        if (this.time.before(alarm.getTime())) {
             return -1;
+        } else if (this.time.after(alarm.getTime())) {
+            return 1;
         } else {
-            if (this.time.before(alarm.getTime())) {
-                return -1;
-            } else if (this.time.after(alarm.getTime())) {
-                return 1;
-            } else {
-                return 0;
-            }
+            return 0;
         }
+//        if (this.confirm < alarm.getConfirm()) {
+//            return 1;
+//        } else if (this.confirm > alarm.getConfirm()) {
+//            return -1;
+//        } else {
+//            if (this.time.before(alarm.getTime())) {
+//                return -1;
+//            } else if (this.time.after(alarm.getTime())) {
+//                return 1;
+//            } else {
+//                return 0;
+//            }
+//        }
     }
 
     @Override

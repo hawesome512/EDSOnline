@@ -128,11 +128,15 @@
     <string name="device_short">短路保护</string>
     <string name="device_instant">瞬时保护</string>
     <string name="device_ground">接地保护</string>
+    <string name="device_source1">Ⅰ电</string>
+    <string name="device_source2">Ⅱ电</string>
     <string name="device_on">ON</string>
     <string name="device_off">OFF</string>
+    <string name="device_protect_on">开启</string>
     <string name="device_protect_off">关闭</string>
     <string name="device_modify">修改</string>
     <string name="device_modify_success">修改成功，等待刷新(10s)</string>
+    <string name="device_modify_timeout">修改请求超时，请重试</string>
     <string name="device_modify_fail">修改失败，请重试</string>
     <string name="device_modify_refuse">请求已被拒绝</string>
     <string name="device_modify_local">当前设备模式为：【本地】，不可进行远程操作</string>
@@ -144,7 +148,13 @@
     <string name="device_A1_status">过载_短路_瞬动_接地_*_*_*_脱扣_触头磨损_超温_拒动_自诊断_*_欠相_MCR</string>
     <string name="device_A2_status">过载_短路_瞬动_接地_*_*_*_脱扣_触头磨损_超温_拒动_自诊断_*_欠相_MCR</string>
     <string name="device_A3_status">过载_短路_瞬动_接地_*_*_*_脱扣_触头磨损_超温_拒动_铁电_自诊断_电流不平衡_电压不平衡</string>
-    <string name="device_M2_status">过载_短路_瞬动_接地_热记忆_预过载_*_脱扣_*_*_拒动_不平衡</string>
+    <!--<string name="device_M2_status">过载_短路_瞬动_接地_热记忆_预过载_*_脱扣_*_*_拒动_不平衡</string>-->
+    <string name="device_M2_status">*_*_拒动_不平衡_*_*_*_*_过载_短路_瞬动_接地_热记忆_预过载_*_脱扣</string>
+    <string name="device_T3_status">*_常电投入_常电故障_*_备电投入_备电故障</string>
+    <string name="device_ATS_U">电压保护(%Un)</string>
+    <string name="device_ATS_F">频率保护(%Fn)</string>
+    <string name="device_ATS_Up">不平衡保护(%Un)</string>
+    <string name="device_ATS_T">延时(s)</string>
 
     <!--Workorder-->
     <string name="workorder_filter">筛选</string>
@@ -234,6 +244,22 @@
     <string name="tag_Ii">Ii(A)</string>
     <string name="tag_Ig">Ig(A)</string>
     <string name="tag_Tg">Tg(s)</string>
+    <!--ATS-->
+    <string name="tag_Ul">欠压转换</string>
+    <string name="tag_UlR">欠压返回</string>
+    <string name="tag_Uo">过压转换</string>
+    <string name="tag_UoR">过压返回</string>
+    <string name="tag_Fl">欠频转换</string>
+    <string name="tag_FlR">欠频返回</string>
+    <string name="tag_Fo">过频转换</string>
+    <string name="tag_FoR">过频返回</string>
+    <string name="tag_UpSet">不平衡转换</string>
+    <string name="tag_UpRSet">不平衡返回</string>
+    <string name="tag_T1">故障确认·T1</string>
+    <string name="tag_T2">暂态停留·T2</string>
+    <string name="tag_T3">返回·T3</string>
+    <string name="tag_T4">备电稳定确认·T4</string>
+    <string name="tag_T5">油机停止·T5</string>
 
     <!--TransitionName-->
     <string name="trans_image_device">image_device</string>

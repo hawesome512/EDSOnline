@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewPropertyAnimator;
+import android.widget.TextView;
 
 import com.xseec.eds.R;
 
@@ -82,6 +83,12 @@ public class ViewHelper {
     public static void resetViewAnimator(View view) {
         view.setScaleX(1f);
         view.setAlpha(1f);
+    }
+
+    public static void drawTextBounds(TextView view,int start,int top,int end,int bottom){
+        if (ApiLevelHelper.isAtLeast(17)) {
+            view.setCompoundDrawablesRelativeWithIntrinsicBounds(start, top, end, bottom);
+        }
     }
 
 }

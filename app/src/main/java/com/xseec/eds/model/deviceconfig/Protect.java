@@ -25,6 +25,9 @@ public class Protect implements Parcelable {
     public static final String NEGATE="_negate";
     public static final String IN="In";
     public static final String IE="Ie";
+    public static final String LOCAL="76";
+    public static final String REMOTE="82";
+    public static final String CTRL_MODE="CtrlMode";
     private static final String STEP="*";
 
     @SerializedName("Name")

@@ -15,6 +15,7 @@ import com.xseec.eds.model.Device;
 import com.xseec.eds.model.State;
 import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.util.ApiLevelHelper;
+import com.xseec.eds.util.Device.DeviceConverterCenter;
 import com.xseec.eds.util.EDSApplication;
 import com.xseec.eds.util.TagsFilter;
 
@@ -95,13 +96,13 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
         } else {
             //设备标签
             Tag tag = TagsFilter.filterTagList(stateTags,item).get(0);
-            State state = State.getState(tag.getTagValue());
-            String stateText = context.getString(R.string.detail_state, state.getStateText());
+            State state = DeviceConverterCenter.getState(tag);
+            String stateText = context.getString(R.string.detail_state, DeviceConverterCenter.getStateText(tag));
             holder.imageDevice.setImageResource(device.getDeviceResId());
             holder.textValue.setText(stateText);
             holder.textName.setText(device.getDeviceAlias());
             holder.imageState.setImageResource(state.getStateColorRes());
-            state.setUnusualAnimator(holder.imageState);
+            //state.setUnusualAnimator(holder.imageState);
             //最后一个设备标签不显示分割线，美化效果
             if(position==showItems.size()-1||Device.initWithTagName(showItems.get(position+1))==null){
                 holder.viewDivider.setVisibility(View.GONE);

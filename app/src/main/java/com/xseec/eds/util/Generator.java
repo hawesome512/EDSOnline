@@ -170,6 +170,11 @@ public class Generator {
         }
     }
 
+    public static boolean checkIsOne(String switchValue,int index){
+        int value=(int)floatTryParse(switchValue);
+        return (value&(int)Math.pow(2,index))>0;
+    }
+
     public static boolean checkProtectStateZero(String switchValue, List<String> items, String
             item) {
         int value = (int) floatTryParse(switchValue);

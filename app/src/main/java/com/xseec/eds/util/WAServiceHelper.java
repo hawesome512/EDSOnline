@@ -23,6 +23,7 @@ import com.xseec.eds.model.tags.ValidTag;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Administrator on 2018/7/9.
@@ -34,6 +35,7 @@ public class WAServiceHelper {
 
     private static final String TAG = "WAServiceHelper";
     private static final MediaType BODY_TYPE = MediaType.parse("application/json; charset=utf-8");
+    private static final int TIMEOUT=30;//超时时间：30秒
 
     private static Request getRequest(String url, String authority, String requestContent) {
         Request.Builder builder = new Request.Builder()
@@ -51,7 +53,7 @@ public class WAServiceHelper {
     private static void sendRequest(String url, String authority, String content, Callback
             callback) {
         Request request = getRequest(url, authority, content);
-        OkHttpClient okHttpClient = new OkHttpClient();
+        OkHttpClient okHttpClient = genOkhttpClientWithTimeout();
         okHttpClient.newCall(request).enqueue(callback);
     }
 
@@ -101,13 +103,21 @@ public class WAServiceHelper {
     //登录，基本信息，点列表三条数据请求同时处理，不使用callback
     private static Response executeRequest(String url, String authority, String content){
         Request request = getRequest(url, authority, content);
-        OkHttpClient okHttpClient = new OkHttpClient();
+        OkHttpClient okHttpClient = genOkhttpClientWithTimeout();
         try {
             return okHttpClient.newCall(request).execute();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return null;
+    }
+
+    private static OkHttpClient genOkhttpClientWithTimeout(){
+        OkHttpClient okHttpClient=new OkHttpClient();
+        okHttpClient.setReadTimeout(TIMEOUT, TimeUnit.SECONDS);
+        okHttpClient.setWriteTimeout(TIMEOUT,TimeUnit.SECONDS);
+        okHttpClient.setConnectTimeout(TIMEOUT,TimeUnit.SECONDS);
+        return okHttpClient;
     }
 
     public static Response getLoginRequest(String authority) {
@@ -131,16 +141,7 @@ public class WAServiceHelper {
 
     public static Response getBasicInfoRequest(String deviceName){
         String url=WAServicer.getBasicInfoUrl(deviceName);
-        Request request=new Request.Builder()
-                .url(url)
-                .build();
-        OkHttpClient client=new OkHttpClient();
-        try {
-            return client.newCall(request).execute();
-        }catch (IOException exp){
-
-        }
-        return null;
+        return executeRequest(url,null,null);
     }
 
     public static void sendWorkorderQueryRequest(Workorder workorder,String startTime,String endTime,Callback callback){

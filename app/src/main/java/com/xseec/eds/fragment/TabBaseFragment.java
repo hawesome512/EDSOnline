@@ -54,11 +54,11 @@ public abstract class TabBaseFragment extends ComFragment implements TagListener
         super.onResume();
     }
 
-    protected View addCard(String title, List<String> items) {
+    protected View addCard(int titleRes, List<String> items) {
         CardView cardView = (CardView) getLayoutInflater().inflate(R.layout.item_card,
                 layoutContainer, false);
         LinearLayout layout = getLinearLayout(LinearLayout.VERTICAL);
-        addTitle(layout, title);
+        addTitle(layout, getString(titleRes));
         for (int i = 0; i < items.size(); i++) {
             List<Tag> tags = TagsFilter.filterDeviceTagList(tagList, items.get(i));
             if (tags != null && tags.size() > 0) {
@@ -94,7 +94,7 @@ public abstract class TabBaseFragment extends ComFragment implements TagListener
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onTagClick(tag);
+                onTagClick(tag,v);
             }
         });
         ItemCardSubBinding binding = DataBindingUtil.bind(view);

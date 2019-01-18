@@ -35,7 +35,7 @@ public class WAComTask extends AsyncTask<String, Void, Boolean> {
     private void initInterval() {
         Context context = EDSApplication.getContext();
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        interval = preferences.getInt(INTERVAL, 5);
+        interval = preferences.getInt(INTERVAL, 3);
     }
 
     public void cancelCom() {
