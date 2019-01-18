@@ -82,6 +82,7 @@
             android:theme="@style/DialogActivity"/>
         <activity android:name=".activity.ReportActivity"/>
 
+        <activity android:name=".activity.FilterActivity"/>
     </application>
 
 </manifest>

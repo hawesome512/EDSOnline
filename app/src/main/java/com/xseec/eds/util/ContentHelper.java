@@ -63,13 +63,4 @@ public class ContentHelper {
         }
     }
 
-    //nj--读取本机电话号码 2018/11/14
-    public static String getTelephony(Activity activity){
-        TelephonyManager telephonyManager=(TelephonyManager) activity.getSystemService( Context.TELEPHONY_SERVICE );
-        if (PermissionHelper.checkPermission( activity,READ_PHONE_STATE,
-                PermissionHelper.CODE_READ_CONTACTS )){
-
-        }
-        return telephonyManager.getLine1Number();
-    }
 }

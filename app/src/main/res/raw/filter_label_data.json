@@ -1,0 +1,44 @@
+[
+//  workorder
+    [
+        {"groupName":"0_type","label":"类型","type":0},
+        {"groupName":"0_type","label":"全部","type":1,"labelValue":"-1"},
+        {"groupName":"0_type","label":"计划任务","type":1,"labelValue":"0"},
+        {"groupName":"0_type","label":"异常维护","type":1,"labelValue":"1"},
+        {"groupName":"0_type","label":"随工工单","type":1,"labelValue":"2"},
+        {"groupName":"0_type","label":"系统工单","type":1,"labelValue":"3"},
+
+        {"groupName":"0_state","label":"状态","type":0},
+        {"groupName":"0_state","label":"全部","type":1,"labelValue":"-1"},
+        {"groupName":"0_state","label":"已完成","type":1,"labelValue":"0"},
+        {"groupName":"0_state","label":"近期","type":1,"labelValue":"1"},
+        {"groupName":"0_state","label":"逾期","type":1,"labelValue":"2"}
+    ],
+  //  action
+    [
+        {"groupName":"0_type","label":"类型","type":0},
+        {"groupName":"0_type","label":"全部","type":1,"labelValue":"-1"},
+
+        {"groupName":"0_type","label":"系统登入","type":1,"labelValue":"0"},
+
+        {"groupName":"0_type","label":"工单操作","type":1,"labelValue":"1"},
+        {"groupName":"0_type","label":"设备操作","type":1,"labelValue":"2"},
+
+        {"groupName":"00_1","label":"工单操作","type":0},
+        {"groupName":"00_1","label":"创建工单","type":1,"labelValue":"0"},
+        {"groupName":"00_1","label":"执行工单","type":1,"labelValue":"1"},
+        {"groupName":"00_1","label":"删除工单","type":1,"labelValue":"2"},
+
+        {"groupName":"00_2","label":"设备操作","type":0},
+        {"groupName":"00_2","label":"参数修改","type":1,"labelValue":"0"},
+        {"groupName":"00_2","label":"远程合闸","type":1,"labelValue":"1"},
+        {"groupName":"00_2","label":"远程分闸","type":1,"labelValue":"2"}
+    ],
+  // alarm
+    [
+        {"groupName":"0_confirm","label":"状态","type":0},
+        {"groupName":"0_confirm","label":"全部","type":1,"labelValue":"-1"},
+        {"groupName":"0_confirm","label":"未处理","type":1,"labelValue":"0"},
+        {"groupName":"0_confirm","label":"已处理","type":1,"labelValue":"1"}
+   ]
+]

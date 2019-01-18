@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.xseec.eds.R;
 import com.xseec.eds.util.ApiLevelHelper;
@@ -94,6 +93,11 @@ public class ReportTimeSettingActivity extends BaseActivity {
             }
         }, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
                 calendar.get(Calendar.DAY_OF_MONTH));
+        if (!isStart){
+            Calendar calendar=(Calendar) startTime.clone();
+            calendar.add( Calendar.DAY_OF_MONTH,1);
+            dialog.getDatePicker().setMinDate( calendar.getTime().getTime() );
+        }
         dialog.getDatePicker().setMaxDate( calendar.getTime().getTime() );
         dialog.show();
     }
@@ -108,14 +112,10 @@ public class ReportTimeSettingActivity extends BaseActivity {
     public void onBtnSettingClicked() {
         start=DateHelper.getServletString( startTime.getTime() );
         end=DateHelper.getServletString( endTime.getTime() );
-        if(startTime.before( endTime )){
-            Intent intent=new Intent(  );
-            intent.putExtra( KEY_START_TIME, start);
-            intent.putExtra( KEY_END_TIME,end );
-            setResult( RESULT_OK,intent );
-            finish();
-        }else{
-            Toast.makeText( this, "请重新选择时间", Toast.LENGTH_SHORT ).show();
-        }
+        Intent intent=new Intent(  );
+        intent.putExtra( KEY_START_TIME, start);
+        intent.putExtra( KEY_END_TIME,end );
+        setResult( RESULT_OK,intent );
+        finish();
     }
 }

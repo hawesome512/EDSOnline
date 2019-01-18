@@ -11,6 +11,8 @@ import com.xseec.eds.util.CodeHelper;
 
 public class User implements Parcelable{
 
+    //nj--定义系统用户名
+    private static final String SYSTEM_USER_NAME="admin";
     //[username:psw] base64 encode，eg.admin:xseec→YWRtaW46eHNlZWM=
     private String authority;
     //owned device，eg.1/ADAM3600:1→portNumber;ADAM3600→deviceName
@@ -40,6 +42,10 @@ public class User implements Parcelable{
 
     public String getUsername(){
         return CodeHelper.decode(authority).split(":")[0];
+    }
+
+    public boolean isAdministrator(){
+        return getUsername().equals( SYSTEM_USER_NAME )?true:false;
     }
 
     //Parcelable:pass user message in intent between activities.

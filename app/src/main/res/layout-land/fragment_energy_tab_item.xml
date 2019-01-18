@@ -23,17 +23,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/recyclerView_tag"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"></android.support.v7.widget.RecyclerView>
+
 
                 <TextView
                     android:id="@+id/text_time"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
+                    android:layout_gravity="center"
                     android:drawableLeft="@drawable/ic_today_grey_600_24dp"
                     android:gravity="center"
                     android:padding="@dimen/view_padding_small" />
@@ -78,8 +81,8 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="@dimen/view_margin_normal"
-                        android:text="@string/energy_click_tip"
                         android:gravity="center"
+                        android:text="@string/energy_click_tip"
                         android:textColor="@color/colorSecondaryText"
                         android:textSize="@dimen/font_small" />
                 </LinearLayout>

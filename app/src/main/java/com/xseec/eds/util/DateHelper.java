@@ -178,13 +178,14 @@ public class DateHelper {
         return getServletString( calendar.getTime());
     }
 
-    //nj--获取月末日期 2018/11/20
+    //nj--获取上月结束日期 2018/11/20
     public static String getEndTimeOfMonth(){
         Calendar calendar=Calendar.getInstance();
         calendar=getDayStartTime( calendar );
         calendar.add( Calendar.MONTH,-1 );
+        calendar.set( Calendar.DAY_OF_MONTH,1 );
         int i=calendar.getActualMaximum( Calendar.DAY_OF_MONTH );
-        calendar.set( Calendar.DAY_OF_MONTH,i );
+        calendar.add( Calendar.DAY_OF_MONTH,i );
         return getServletString( calendar.getTime());
     }
 
@@ -194,5 +195,13 @@ public class DateHelper {
         Date end=getServletDate( endTime );
         int days=(int)((end.getTime()-start.getTime())/(1000*3600*24));
         return days;
+    }
+
+    //nj-计算当前时间往前往后的一段时间 2018/12/19
+    public static Date getNearTimeOfMonth(int month,int day){
+        Calendar calendar=Calendar.getInstance();
+        calendar.add( Calendar.MONTH, month);
+        calendar.add( Calendar.DAY_OF_MONTH,day );
+        return calendar.getTime();
     }
 }

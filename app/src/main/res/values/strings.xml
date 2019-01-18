@@ -175,9 +175,12 @@
         <item>计划任务</item>
         <item>异常排查</item>
         <item>随工运维</item>
+        <item>系统工单</item>
     </string-array>
     <string name="workorder_album">相册</string>
     <string name="workorder_camera">拍照</string>
+    <string name="woekorder_system">系统工单</string>
+    <string name="woekorder_sys_id">SYS</string>
 
     <!--Alarm-->
     <string name="alarm_device">设备：%1$s</string>
@@ -301,8 +304,6 @@
     <string name="report_energy">能耗情况</string>
     <string name="report_start_time">起始时间</string>
     <string name="report_end_time">结束时间</string>
-    <string name="report_file_storage">/eds/reportInfo/IMAG/</string>
-    <string name="report_file_format">.PNG</string>
     <string-array name="report_workorder">
         <item>运维工单</item>
         <item>总工单数</item>
@@ -321,6 +322,12 @@
         <item>已处理</item>
         <item>未处理</item>
     </string-array>
+    <string-array name="report_energy">
+        <item>能耗情况（kW.h）</item>
+        <item>实际能耗</item>
+        <item>预期能耗</item>
+        <item>对比值</item>
+    </string-array>
     <string-array name="report_temperture">
         <item>环境温度(℃)</item>
         <item>最大值</item>
@@ -338,4 +345,15 @@
         <item>上一月</item>
         <item>自定义</item>
     </string-array>
+
+    <!--Filter-->  <!--nj-2018/12/20-->
+    <string name="filter">筛选</string>
+    <string name="filter_workorder">工单筛选</string>
+    <string name="filter_action">操作筛选</string>
+    <string name="filter_alarm">异常筛选</string>
+    <string name="filter_device_label">设备</string>
+    <string name="filter_device_name">0_device</string>
+    <string name="filter_type">type</string>
+    <string name="filter_state">state</string>
+    <string name="filter_confirm">confirm</string>
 </resources>

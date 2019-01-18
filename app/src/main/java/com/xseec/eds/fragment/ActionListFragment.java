@@ -18,25 +18,34 @@ import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import com.xseec.eds.R;
+import com.xseec.eds.activity.FilterActivity;
 import com.xseec.eds.adapter.ActionAdapter;
+import com.xseec.eds.model.FilterLabel;
 import com.xseec.eds.model.WAServicer;
 import com.xseec.eds.model.servlet.Action;
+import com.xseec.eds.util.DateHelper;
 import com.xseec.eds.util.ViewHelper;
 import com.xseec.eds.util.WAJsonHelper;
 import com.xseec.eds.util.WAServiceHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
+import static android.app.Activity.RESULT_OK;
+
 /*
   nj--create a fragment for action list on 2018/11/2
 * */
 public class ActionListFragment extends BaseFragment {
+
+    private static final int REQUEST_FILTER=2;
+    private boolean isFilter=false;
 
     @InjectView( R.id.toolbar )
     Toolbar toolbar;
@@ -47,6 +56,10 @@ public class ActionListFragment extends BaseFragment {
 
     private ActionAdapter adapter;
     private List<Action> actionList;
+    private List<FilterLabel> filterFactor;
+
+    private String startTime;
+    private String endTime;
 
     public static ActionListFragment newInstance(){
         return new ActionListFragment();
@@ -60,11 +73,14 @@ public class ActionListFragment extends BaseFragment {
         ButterKnife.inject( this,view );
         getActivity().setTitle( R.string.nav_action );
         ViewHelper.initToolbar( (AppCompatActivity) getActivity(),toolbar,R.drawable.menu );
-        initRecycleView();
+        //nj--查询时间为近一个月时间 2018/12/19
+        startTime=DateHelper.getServletString( DateHelper.getNearTimeOfMonth( 0,-7 ) );
+        endTime=DateHelper.getServletString( DateHelper.getNearTimeOfMonth( 0,0 ) );
+        initRecyclerView();
         return view;
     }
 
-    private void initRecycleView(){
+    private void initRecyclerView(){
         LinearLayoutManager layoutManager=new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager( layoutManager );
         actionList=new ArrayList( );
@@ -73,22 +89,28 @@ public class ActionListFragment extends BaseFragment {
 
     private void queryAction() {
         Action action=new Action( WAServicer.getUser().getDeviceName());
-        WAServiceHelper.sendActionQueryRequest( action, null, null, new Callback() {
+        WAServiceHelper.sendActionQueryRequest( action, startTime, endTime, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
 
             }
             @Override
             public void onResponse(Response response) throws IOException {
-                List<Action> list = WAJsonHelper.getActionList( response );
+                List<Action> totalList = WAJsonHelper.getActionList( response );
 
                 actionList=new ArrayList<>(  );
-                //nj--用户信息屏蔽 2018/11/14
-                for (Action action:list){
-                    if (action.getActionType()!= Action.ActionType.LOGIN){
-                        actionList.add( action);
+                if (isFilter){
+                    //nj--筛选操作信息
+                    filterAction( filterFactor,totalList );
+                }else {
+                    //nj--用户信息屏蔽 2018/11/14
+                    for (Action action:totalList){
+                        if (action.getActionType()!= Action.ActionType.LOGIN){
+                            actionList.add( action);
+                        }
                     }
                 }
+                isFilter=false;
                 Collections.sort( actionList,Collections.<Action>reverseOrder());
                 refreshViewsInThread( response );
             }
@@ -105,6 +127,7 @@ public class ActionListFragment extends BaseFragment {
         switch (item.getItemId()){
             case R.id.filter:
                 //nj--操作记录查询筛选
+                FilterActivity.start(getActivity(), FilterActivity.ACTION,REQUEST_FILTER);
                 break;
         }
         return super.onOptionsItemSelected( item );
@@ -113,6 +136,20 @@ public class ActionListFragment extends BaseFragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         //nj--启动操作记录筛选查询
+        switch (requestCode){
+            case REQUEST_FILTER:
+                if(resultCode==RESULT_OK){
+                    startTime=null;
+                    endTime=null;
+                    filterFactor=data.getParcelableArrayListExtra( FilterActivity.DATA_RESULT );
+                    isFilter=true;
+                    progress.setVisibility( View.VISIBLE );
+                    queryAction();
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     @Override
@@ -126,5 +163,33 @@ public class ActionListFragment extends BaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset( this );
+    }
+
+    //nj--筛选操作记录信息 2018/12/22
+    private void filterAction(List<FilterLabel> factor,List<Action> totalList){
+        if (factor==null){
+            isFilter=false;
+            return;
+        }
+        if (factor.size()==1){
+            FilterLabel label=factor.get( 0 );
+            if (label.getValueOfInt()!=-1){
+                for (Action action:totalList){
+                    if (action.getActionType().ordinal()==label.getValueOfInt()){
+                        actionList.add( action );
+                    }
+                }
+            }else{
+                actionList=totalList;
+            }
+        }else{
+            for (Action action:totalList){
+                if (action.getActionType().ordinal()==factor.get( 0 ).getValueOfInt()){
+                    if (action.getActionMethod().ordinal()==factor.get( 1 ).getValueOfInt()){
+                        actionList.add( action );
+                    }
+                }
+            }
+        }
     }
 }

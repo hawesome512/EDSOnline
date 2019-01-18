@@ -17,123 +17,15 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.xseec.eds.R;
-import com.xseec.eds.model.DataLogFactor;
-import com.xseec.eds.model.servlet.Action;
-import com.xseec.eds.model.servlet.Alarm;
-import com.xseec.eds.model.servlet.Workorder;
-import com.xseec.eds.model.tags.StoredTag;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
 
 import static android.support.v4.content.ContextCompat.getColor;
 
-//nj--报表使用的工具类 2018/11/17
-public class ReportHelper {
-
-    private static Context context;
-
-    //nj--获取报表时间段信息 2018/11/19
-    public static String getTime(String startTime,String endTime){
-        Date start=DateHelper.getServletDate( startTime );
-        Date end=DateHelper.getServletDate( endTime );
-        context=EDSApplication.getContext();
-        String time=context.getString( R.string.report_time,DateHelper.getYMDString( start ),
-                DateHelper.getYMDString( end ));
-        return time;
-    }
-
-    //nj--工单信息筛选 2018/11/19
-    public static List<Workorder> filterWorkorderList(List<Workorder> sources,int state){
-        List<Workorder> workorderList=new ArrayList<Workorder>(  );
-        if (sources!=null){
-            for(int i=0; i<sources.size();i++){
-                if (sources.get(i).getState()==state){
-                    workorderList.add( sources.get( i ));
-                }
-            }
-        }
-        return workorderList;
-    }
-
-    //nj--异常管理信息筛选 2018/11/19
-    public static List<Alarm> filterAlarmList(List<Alarm> sources,int confirm){
-        List<Alarm> alarmList=new ArrayList<>(  );
-        for (Alarm alarm:sources){
-            if (alarm.getConfirm()==confirm){
-                alarmList.add( alarm );
-            }
-        }
-        return alarmList;
-    }
-
-    //nj--操作信息筛选 2018/11/19
-    public static List<Action> filterActionList(List<Action> sources, Action.ActionType type){
-        List<Action> actionList=new ArrayList<>(  );
-        for (Action action:sources){
-            if (action.getActionType()==type){
-                actionList.add( action );
-            }
-        }
-        return actionList;
-    }
-
-    //nj--环境报表查询请求信息 2018/11/23
-    public static DataLogFactor getDataLogFactor(String startTime, String endTime) {
-        DataLogFactor factor=new DataLogFactor(  );
-        Date start=DateHelper.getServletDate( startTime );
-        Calendar calendar=Calendar.getInstance();
-        calendar.setTime( start );
-        factor.setStartTime( calendar );
-        factor.setDataType( StoredTag.DataType.MAX );
-        factor.setIntervalType( StoredTag.IntervalType.D );
-        factor.setInterval( 1 );
-        int records=DateHelper.getBetweenOfDay( startTime,endTime );
-        factor.setRecords( records );
-        return factor;
-    }
-
-    //nj--环境报表数据最大值 、最小值、总数、平均值2018/11/25
-    public static String getMax(List<String> sources){
-        return Collections.max(sources);
-    }
-
-    public static String getMin(List<String> sources){
-        return Collections.min( sources );
-    }
-
-    public static String getSum(List<String> sources){
-        float sum=0;
-        for (int i=0;i<sources.size();i++){
-            sum+=Float.valueOf( sources.get( i ) );
-        }
-        return String.valueOf( sum );
-    }
-
-    public static String getAve(List<String> sources){
-        String sum=getSum( sources );
-        float ave=Math.round(Float.valueOf( sum )/sources.size()*100)/100f;
-        return String.valueOf( ave );
-    }
-
-    //nj--产生字符串List 2018/11/25
-    public static List<String> randomList(int lenght,int min,int max){
-        Random rand=new Random(  );
-        List<String> valueList=new ArrayList<>(  );
-        for (int i=0;i<lenght;i++){
-            float value=(rand.nextInt(max-min)+min)*10/10f;
-            valueList.add( String.valueOf( value ) );
-        }
-        return valueList;
-    }
+public class ShareHelper {
 
     //nj--截取scrollview界面 2018/11/23
     public static Bitmap getLinearLayoutBitmap(LinearLayout linearLayout){
@@ -206,6 +98,7 @@ public class ReportHelper {
         int height=firstBitmap.getHeight()+secondBitmap.getHeight();
         bitmap=Bitmap.createBitmap( weight,height,Bitmap.Config.ARGB_8888 );
         Canvas canvas=new Canvas( bitmap );
+        Context context=EDSApplication.getContext();
         canvas.drawColor(getColor(context,R.color.colorWhite ) );
         canvas.drawBitmap( firstBitmap,0,0,null );
         canvas.drawBitmap( secondBitmap,0,firstBitmap.getHeight(),null );
@@ -221,7 +114,7 @@ public class ReportHelper {
     }
 
     //nj--将报表界面截屏保存、分享 2018/11/25
-    public static void shareReport(Context context,Bitmap bitmap){
+    public static void shareCapture(Context context,Bitmap bitmap){
         File file=setFileName();
         FileOutputStream out;
         try {

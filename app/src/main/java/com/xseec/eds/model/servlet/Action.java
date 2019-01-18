@@ -135,7 +135,6 @@ public class Action extends BaseModel implements Comparable,Parcelable {
             return info;
         }
     }
-
     public String getId() {
         return id;
     }

@@ -1,6 +1,8 @@
 package com.xseec.eds.util;
 
 import android.content.Context;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 
 import com.github.mikephil.charting.data.Entry;
 import com.xseec.eds.R;
@@ -14,6 +16,9 @@ import com.xseec.eds.fragment.WorkorderListFragment;
 import com.xseec.eds.model.Device;
 import com.xseec.eds.model.Function;
 import com.xseec.eds.model.deviceconfig.Protect;
+import com.xseec.eds.model.servlet.Action;
+import com.xseec.eds.model.servlet.Alarm;
+import com.xseec.eds.model.servlet.Workorder;
 import com.xseec.eds.model.tags.EnergyTag;
 import com.xseec.eds.model.tags.OverviewTag;
 import com.xseec.eds.model.tags.Tag;
@@ -23,8 +28,11 @@ import org.litepal.LitePal;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
  * Created by Administrator on 2018/7/25.
@@ -359,5 +367,127 @@ public class Generator {
             default:
                 return null;
         }
+    }
+
+    //nj--统计list的尺寸 2018/11/19
+    public static String countList(List sources){
+            return sources!=null?String.valueOf( sources.size() ):"0";
+    }
+
+    //nj--获取报表时间段信息 2018/11/19
+    public static String getReportTime(String startTime,String endTime){
+        Date start=DateHelper.getServletDate( startTime );
+        Date end=DateHelper.getServletDate( endTime );
+        Context context=EDSApplication.getContext();
+        String time=context.getString( R.string.workorder_time,DateHelper.getYMDString( start ),
+                DateHelper.getYMDString( end ));
+        return time;
+    }
+
+    //nj--工单信息筛选 2018/11/19
+    public static List<Workorder> filterWorkorderListOfState(List<Workorder> sources, int state){
+        List<Workorder> workorderList=new ArrayList<Workorder>(  );
+        if (state==-1){
+            workorderList.addAll( sources );
+        }else{
+            for(Workorder workorder:sources){
+                if (workorder.getWorkorderState().ordinal()==state){
+                    workorderList.add( workorder);
+                }
+            }
+        }
+        return workorderList;
+    }
+
+    public static List<Workorder> filterWorkorderListOfType(List<Workorder> sources, int type){
+        List<Workorder> workorderList=new ArrayList<>(  );
+        if (type==-1){
+            workorderList.addAll( sources );
+        }else{
+            for(Workorder workorder:sources){
+                if (workorder.getType()==type){
+                    workorderList.add( workorder);
+                }
+            }
+        }
+        return workorderList;
+    }
+
+    //nj--异常管理信息筛选 2018/11/19
+    public static List<Alarm> filterAlarmConfim(List<Alarm> sources, int confirm){
+        List<Alarm> alarmList=new ArrayList<>(  );
+        if (confirm==-1){
+             alarmList.addAll( sources );
+        }else {
+            for (Alarm alarm:sources){
+                if (alarm.getConfirm()==confirm){
+                    alarmList.add( alarm );
+                }
+            }
+        }
+        return alarmList;
+    }
+
+    public static List<Alarm> filterAlarmDevice(List<Alarm> sources, String device){
+        List<Alarm> alarmList=new ArrayList<>(  );
+        for (Alarm alarm:sources){
+            if (alarm.getDevice().equals( device )){
+                alarmList.add( alarm );
+            }
+        }
+        return alarmList;
+    }
+
+    //nj--操作信息筛选 2018/11/19
+    public static List<Action> filterActionList(List<Action> sources, Action.ActionType type){
+        List<Action> actionList=new ArrayList<>(  );
+        for (Action action:sources){
+            if (action.getActionType()==type){
+                actionList.add( action );
+            }
+        }
+        return actionList;
+    }
+
+    //nj--环境报表数据总数、平均值2018/11/25
+    public static String getReportMax(List<String> sources){
+        String value=Collections.max( sources );;
+        if (!value.equals( "#" )){
+            float max=Math.round( Float.valueOf( value )*100 )/100f;
+            return String.valueOf( max );
+        }else {
+            return String.valueOf( 0.0 );
+        }
+    }
+
+    public static String getReportMin(List<String> sources){
+        String value=Collections.min( sources );;
+        if (!value.equals( "#" )){
+            float min=Math.round( Float.valueOf( value )*100 )/100f;
+            return String.valueOf( min );
+        }else {
+            return String.valueOf( 0.0 );
+        }
+    }
+
+    public static String getReportSum(List<String> sources){
+        float sum=0;
+        for (int i=0;i<sources.size();i++){
+            float value;
+            String itemValue=sources.get( i );
+            if (itemValue.equals( "#" )){
+                value=0;
+            }else {
+                value=Float.valueOf( sources.get( i ) );
+            }
+            sum+=value;
+        }
+        return String.valueOf( sum );
+    }
+
+    public static String getReportAve(List<String> sources){
+        String sum=getReportSum( sources );
+        float ave=Math.round(Float.valueOf( sum )/sources.size()*100)/100f;
+        return String.valueOf( ave );
     }
 }

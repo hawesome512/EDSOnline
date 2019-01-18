@@ -9,12 +9,14 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
 import com.squareup.okhttp.Callback;
@@ -36,12 +38,16 @@ import com.xseec.eds.util.WAJsonHelper;
 import com.xseec.eds.util.WAServiceHelper;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import io.reactivex.internal.schedulers.NewThreadWorker;
 
 public class WorkorderCreatorActivity extends BaseActivity {
 
@@ -101,6 +107,7 @@ public class WorkorderCreatorActivity extends BaseActivity {
         ViewHelper.initToolbar(this, toolbar, R.drawable.ic_arrow_back_white_24dp);
         workorder = new Workorder();
         initIfAlarm();
+        initIfSysUse();
     }
 
     private void initIfAlarm() {
@@ -119,6 +126,22 @@ public class WorkorderCreatorActivity extends BaseActivity {
         }
     }
 
+    //nj--为admin系统管理员时初始化Spinner控件
+    private void initIfSysUse(){
+        if (!WAServicer.getUser().isAdministrator()){
+            String[] types= getResources().getStringArray( R.array.workorder_types );
+            List<String> workorderType= new ArrayList<>(  );
+            for (int i=0;i<types.length;i++){
+                workorderType.add( types[i] );
+            }
+            workorderType.remove( workorderType.size()-1 );
+            ArrayAdapter<String> adapter=new ArrayAdapter<>( this,
+                    android.R.layout.simple_spinner_item,workorderType );
+            adapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item );
+            spinnerType.setAdapter( adapter );
+        }
+    }
+
     @OnClick(R.id.btn_save)
     public void onViewClicked() {
         String title = editTitle.getText().toString();
@@ -133,7 +156,12 @@ public class WorkorderCreatorActivity extends BaseActivity {
         } else if (workorder.getStart().after(workorder.getEnd())) {
             Toast.makeText(this, R.string.workorder_range_error, Toast.LENGTH_SHORT).show();
         } else {
-            workorder.genId(WAServicer.getUser().getDeviceName());
+            //nj--判断用户类型设置 2018/12/25
+            String sysId=getString( R.string.woekorder_sys_id );
+            String user=WAServicer.getUser().getUsername();
+            String id=WAServicer.getUser().isAdministrator()? sysId :user;
+
+            workorder.genId(id);
             workorder.setType(type);
             workorder.setTitle(title);
             workorder.setTask(Workorder.getServletString(task));

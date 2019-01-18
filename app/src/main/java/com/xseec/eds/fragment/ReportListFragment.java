@@ -30,12 +30,12 @@ import butterknife.InjectView;
 
 public class ReportListFragment extends BaseFragment {
 
-    private static final String EXT_TYPE = "type";
-    private static final String EXT_LIST = "list";
+    public static final String EXT_ITEM_TYPE = "itemType";
+    public static final String EXT_ITEM_LIST = "itemList";
 
-    public static final int WORKORDER = 0;
-    public static final int ALARM = 1;
-    public static final int ACTION = 2;
+    private static final int WORKORDER = 0;
+    private static final int ALARM = 1;
+    private static final int ACTION = 2;
 
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
@@ -46,13 +46,13 @@ public class ReportListFragment extends BaseFragment {
     @InjectView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
 
-    private int type;
-    private List list;
+    private int itemType;
+    private List itemList;
 
-    public static ReportListFragment newInstance(int type, List list){
+    public static ReportListFragment newInstance(int itemType, List itemList){
         Bundle bundle=new Bundle();
-        bundle.putParcelableArrayList( EXT_LIST, (ArrayList<? extends Parcelable>) list );
-        bundle.putInt( EXT_TYPE,type );
+        bundle.putParcelableArrayList( EXT_ITEM_LIST, (ArrayList<? extends Parcelable>) itemList );
+        bundle.putInt( EXT_ITEM_TYPE,itemType );
         ReportListFragment fragment=new ReportListFragment();
         fragment.setArguments( bundle );
         return fragment;
@@ -64,35 +64,39 @@ public class ReportListFragment extends BaseFragment {
         View view = inflater.inflate( R.layout.layout_list, container, false );
         ButterKnife.inject( this, view );
         ViewHelper.initToolbar( (AppCompatActivity) getActivity(),toolbar,R.drawable.ic_arrow_back_white_24dp );
+        initView();
+        loadData();
+        return view;
+    }
+
+    private void initView(){
         progress.setVisibility( View.GONE );
         swipeRefreshLayout.setEnabled( false );
         LinearLayoutManager manager=new LinearLayoutManager( getContext() );
         recycler.setLayoutManager( manager );
         Bundle bundle=this.getArguments();
-        type=bundle.getInt( EXT_TYPE );
-        list=bundle.getParcelableArrayList( EXT_LIST );
-        initData();
-        return view;
+        itemType=bundle.getInt( EXT_ITEM_TYPE);
+        itemList=bundle.getParcelableArrayList( EXT_ITEM_LIST );
     }
 
-    private void initData() {
-        switch (type) {
+    private void loadData() {
+        switch (itemType) {
             case WORKORDER:
-                getActivity().setTitle( R.string.nav_workorder);
-                Collections.sort( list, Collections.<Workorder>reverseOrder() );
-                WorkorderAdapter workorderAdapter = new WorkorderAdapter( getActivity(), list );
+                getActivity().setTitle( R.string.nav_workorder );
+                Collections.sort( itemList, Collections.<Workorder>reverseOrder() );
+                WorkorderAdapter workorderAdapter = new WorkorderAdapter( getActivity(), itemList );
                 recycler.setAdapter( workorderAdapter );
                 break;
             case ALARM:
                 getActivity().setTitle( R.string.nav_alarm );
-                Collections.sort( list, Collections.<Alarm>reverseOrder() );
-                AlarmAdapter alarmAdapter = new AlarmAdapter( list, getContext() );
+                Collections.sort( itemList, Collections.<Alarm>reverseOrder() );
+                AlarmAdapter alarmAdapter = new AlarmAdapter( itemList, getContext() );
                 recycler.setAdapter( alarmAdapter );
                 break;
             case ACTION:
                 getActivity().setTitle( R.string.nav_action );
-                Collections.sort( list, Collections.<Action>reverseOrder() );
-                ActionAdapter actionAdapter = new ActionAdapter( getContext(), list );
+                Collections.sort( itemList, Collections.<Action>reverseOrder() );
+                ActionAdapter actionAdapter = new ActionAdapter( getContext(), itemList );
                 recycler.setAdapter( actionAdapter );
                 break;
         }
@@ -105,7 +109,5 @@ public class ReportListFragment extends BaseFragment {
     }
 
     @Override
-    protected void onRefreshViews(String jsonData) {
-
-    }
+    protected void onRefreshViews(String jsonData) { }
 }

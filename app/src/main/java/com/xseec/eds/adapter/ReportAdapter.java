@@ -9,18 +9,20 @@ import android.view.ViewGroup;
 
 import com.xseec.eds.R;
 import com.xseec.eds.activity.ReportActivity;
+import com.xseec.eds.fragment.ReportFragment;
 import com.xseec.eds.model.DataLogFactor;
 import com.xseec.eds.model.Report;
-import com.xseec.eds.util.ReportHelper;
+import com.xseec.eds.model.tags.OverviewTag;
+import com.xseec.eds.util.Generator;
 import com.xseec.eds.widget.ReportItemView;
 
+import org.litepal.LitePal;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ReportAdapter extends  RecyclerView.Adapter<ReportAdapter.ViewHolder> {
-
-    public final static String REPORT_TEMPERATURE = "XRD:Tempreture";
-    public final static String REPORT_HUMIDITY = "XRD:Humidity";
 
     private List<Report> reportList;
     private Context context;
@@ -40,24 +42,16 @@ public class ReportAdapter extends  RecyclerView.Adapter<ReportAdapter.ViewHolde
 
     @Override
     public void onBindViewHolder(ReportAdapter.ViewHolder holder, int position) {
-
         Report report = reportList.get( position );
         holder.item.setTitle( report.getTitle() );
-        holder.item.setTitleLeft( report.getLeft() );
-        holder.item.setTitleCenter( report.getCenter() );
-        holder.item.setTitleRight( report.getRight() );
 
-        //nj--根据不同列表类型加载不同值 2018/12/6
-        if (report.getEnvironmentList()==null){
-            holder.item.setValueLeft( report.getValueLeft() );
-            holder.item.setValueCenter( report.getValueCenter() );
-            holder.item.setValueRight( report.getValueRight() );
-        }else {
-            List<String> list=report.getEnvironmentList();
-            holder.item.setValueLeft( ReportHelper.getMax( list ) );
-            holder.item.setValueCenter( ReportHelper.getMin( list ) );
-            holder.item.setValueRight( ReportHelper.getAve( list ) );
-        }
+        holder.item.setTitleLeft( report.getLeftTitle() );
+        holder.item.setTitleCenter( report.getCenterTitle() );
+        holder.item.setTitleRight( report.getRightTitle() );
+
+        holder.item.setValueLeft( report.getLeftValue() );
+        holder.item.setValueCenter( report.getCenterValue() );
+        holder.item.setValueRight( report.getRightValue() );
     }
 
     @Override
@@ -75,10 +69,10 @@ public class ReportAdapter extends  RecyclerView.Adapter<ReportAdapter.ViewHolde
                 @Override
                 public void Click(View v) {
                     int position=getAdapterPosition();
-                    if (position<3){
+                    if (reportList.get( position ).getReportType()==0){
                         //nj--执行工单、操作、异常点击事件 2018/12/6
                         onDeviceClick( v,position );
-                    }else{
+                    }else if (reportList.get( position ).getReportType()==2){
                         //nj--执行温度、湿度点击事件 2018/12/6
                         onEnverimentItemClicked( v,position );
                     }
@@ -88,30 +82,31 @@ public class ReportAdapter extends  RecyclerView.Adapter<ReportAdapter.ViewHolde
     }
 
     private void onDeviceClick(View v,int position) {
-        List list = null;
         switch (v.getId()) {
             case R.id.item_left:
-                list = reportList.get( position ).getLeftList();
+                List leftList = reportList.get( position ).getLeftList();
+                ReportActivity.start( context, position, leftList );
                 break;
             case R.id.item_center:
-                list= reportList.get( position ).getCenterList();
+                List centerList= reportList.get( position ).getCenterList();
+                ReportActivity.start( context, position, centerList );
                 break;
             case R.id.item_right:
-                list = reportList.get( position ).getRightList();
+                List rightList = reportList.get( position ).getRightList();
+                ReportActivity.start( context, position, rightList );
                 break;
         }
-        ReportActivity.start( context, position, list );
     }
 
     private void onEnverimentItemClicked(View v,int position) {
-        ArrayList<String> tags = new ArrayList<>();
-        if (position==3) {
-            tags.add( REPORT_TEMPERATURE );
+        ArrayList<String> tagName = new ArrayList<>();
+        List<OverviewTag> tagList= LitePal.limit( 2 ).find( OverviewTag.class );
+        if (position==4) {
+            tagName.add( tagList.get( 0 ).getMapTagName());
         } else {
-            tags.add( REPORT_HUMIDITY );
+            tagName.add( tagList.get( 1 ).getMapTagName() );
         }
-        List<String> valueList = reportList.get( position ).getEnvironmentList();
-        ReportActivity.start( context, factor, tags, valueList );
+        ReportActivity.start( context, factor, tagName);
     }
 }
 

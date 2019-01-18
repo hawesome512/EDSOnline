@@ -16,6 +16,7 @@ public class RecordHelper {
     public static void actionLog(String actionInfo) {
         Action action = new Action();
         User user = WAServicer.getUser();
+        action.setUser( user.getUsername() );
         action.genId(user.getDeviceName());
 
         action.setInfo(actionInfo);
