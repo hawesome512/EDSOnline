@@ -12,9 +12,11 @@ import com.squareup.okhttp.Response;
 import com.xseec.eds.R;
 import com.xseec.eds.model.DataLogFactor;
 import com.xseec.eds.model.WAServicer;
+import com.xseec.eds.model.servlet.Account;
 import com.xseec.eds.model.servlet.Action;
 import com.xseec.eds.model.servlet.Alarm;
 import com.xseec.eds.model.servlet.Basic;
+import com.xseec.eds.model.servlet.Phone;
 import com.xseec.eds.model.servlet.UploadListener;
 import com.xseec.eds.model.servlet.Workorder;
 import com.xseec.eds.model.tags.StoredTag;
@@ -185,6 +187,29 @@ public class WAServiceHelper {
     public static void sendBasicUpdateRequest(Basic basic,Callback callback){
         String url=WAServicer.getBasicUpdateUrl(basic);
         String content=basic.toJson();
+        sendRequest(url,null,content,callback);
+    }
+
+    public static void sendAccountQueryRequest(String deviceName,Callback callback){
+        String url=WAServicer.getAccountQueryUrl(deviceName);
+        sendRequest(url,null,null,callback);
+    }
+
+    public static void sendAccountUpdateRequest(Account account,Callback callback){
+        String url=WAServicer.getAccountUpdateUrl();
+        String content=account.toJson();
+        sendRequest(url,null,content,callback);
+    }
+
+    public static void sendPhoneQueryRequest(Phone phone,Callback callback){
+        String url=WAServicer.getPhoneQueryUrl();
+        String content=phone.toJson();
+        sendRequest(url,null,content,callback);
+    }
+
+    public static void sendPhoneUpdateRequest(Phone phone,Callback callback){
+        String url=WAServicer.gePhoneUpdateUrl();
+        String content=phone.toJson();
         sendRequest(url,null,content,callback);
     }
 

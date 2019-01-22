@@ -15,11 +15,17 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 import com.xseec.eds.R;
 import com.xseec.eds.model.Device;
 import com.xseec.eds.model.User;
 import com.xseec.eds.model.WAServicer;
+import com.xseec.eds.model.servlet.Account;
 import com.xseec.eds.model.servlet.Basic;
+import com.xseec.eds.model.servlet.Phone;
+import com.xseec.eds.model.servlet.ResponseResult;
 import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.util.CodeHelper;
 import com.xseec.eds.util.RecordHelper;
@@ -29,6 +35,7 @@ import com.xseec.eds.util.ViewHelper;
 import com.xseec.eds.util.WAJsonHelper;
 import com.xseec.eds.util.WAServiceHelper;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import butterknife.ButterKnife;
@@ -56,8 +63,8 @@ public class LoginActivity extends AppCompatActivity {
     @InjectView(R.id.text_failure)
     TextView textFailure;
 
-    public static void start(Context context){
-        Intent intent=new Intent(context,LoginActivity.class);
+    public static void start(Context context) {
+        Intent intent = new Intent(context, LoginActivity.class);
         context.startActivity(intent);
     }
 
@@ -88,24 +95,26 @@ public class LoginActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String deviceName = WAJsonHelper.getUserProjectInfo(WAServiceHelper.getLoginRequest(authority));
+                String deviceName = WAJsonHelper.getUserProjectInfo(WAServiceHelper
+                        .getLoginRequest(authority));
                 if (!TextUtils.isEmpty(deviceName)) {
                     setLoginInfo();
                     final User user = new User(authority, deviceName);
                     WAServicer.setUser(user);
-                    final Basic basic=WAJsonHelper.getBasicList(WAServiceHelper.getBaiscQueryRequest(deviceName));
+                    final Basic basic = WAJsonHelper.getBasicList(WAServiceHelper
+                            .getBaiscQueryRequest(deviceName));
                     WAServicer.setBasic(basic);
                     final ArrayList<Tag> tagList = (ArrayList<Tag>) WAJsonHelper.getTagList
                             (WAServiceHelper.getTagListRequest(deviceName));
                     TagsFilter.setAllTagList(tagList);
                     //nj--添加登录操作信息
-                    String actionInfo=getString( R.string.action_login);
-                    RecordHelper.actionLog( actionInfo );
+                    String actionInfo = getString(R.string.action_login);
+                    RecordHelper.actionLog(actionInfo);
 
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            MainActivity.start(LoginActivity.this, tagList,basic);
+                            MainActivity.start(LoginActivity.this, tagList, basic);
                             finish();
                         }
                     });

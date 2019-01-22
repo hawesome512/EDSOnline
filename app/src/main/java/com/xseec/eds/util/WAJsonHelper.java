@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.okhttp.Response;
 import com.xseec.eds.model.BasicInfo;
+import com.xseec.eds.model.servlet.Account;
 import com.xseec.eds.model.servlet.Action;
 import com.xseec.eds.model.servlet.Alarm;
 import com.xseec.eds.model.servlet.Basic;
@@ -153,6 +154,19 @@ public class WAJsonHelper {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static Account getAccount(Response jsonData){
+        Gson gson=new Gson();
+        try {
+            List<Account> accounts=  gson.fromJson(jsonData.body().string(),new TypeToken<List<Account>>(){}.getType());
+            if(accounts!=null&&accounts.size()>0){
+                return accounts.get(0);
+            }
+        }catch (Exception exp){
+            exp.printStackTrace();
         }
         return null;
     }
