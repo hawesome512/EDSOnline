@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.xseec.eds.R;
 import com.xseec.eds.model.deviceconfig.DeviceConfig;
+import com.xseec.eds.model.servlet.Account;
 import com.xseec.eds.model.servlet.Action;
 import com.xseec.eds.model.servlet.Alarm;
 import com.xseec.eds.model.servlet.Basic;
@@ -178,6 +179,22 @@ public class WAServicer {
 
     public static String getBasicUpdateUrl(@NonNull Basic basic){
         return context.getString(R.string.svl_basic_update,hostUrl);
+    }
+
+    public static String getAccountQueryUrl(@NonNull String deviceName){
+        return context.getString(R.string.svl_account_query,hostUrl)+"id="+deviceName;
+    }
+
+    public static String getAccountUpdateUrl(){
+        return context.getString(R.string.svl_account_update,hostUrl);
+    }
+
+    public static String getPhoneQueryUrl(){
+        return context.getString(R.string.svl_phone_query,hostUrl);
+    }
+
+    public static String gePhoneUpdateUrl(){
+        return context.getString(R.string.svl_phone_update,hostUrl);
     }
 
     public static String getUploadImageUrl(){

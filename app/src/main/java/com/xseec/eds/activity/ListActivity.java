@@ -61,23 +61,33 @@ public class ListActivity extends BaseActivity {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                WAServiceHelper.sendGetValueRequest(tagList, new Callback() {
-                    @Override
-                    public void onFailure(Request request, IOException e) {
+                refreshDevices();
+            }
+        });
+    }
 
-                    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+        refreshDevices();
+    }
 
+    private void refreshDevices() {
+        WAServiceHelper.sendGetValueRequest(tagList, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                tagList = WAJsonHelper.refreshTagValue(response);
+                runOnUiThread(new Runnable() {
                     @Override
-                    public void onResponse(Response response) throws IOException {
-                        tagList=WAJsonHelper.refreshTagValue(response);
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                adapter=new DeviceAdapter(ListActivity.this,tagList);
-                                recycler.setAdapter(adapter);
-                                swipeRefreshLayout.setRefreshing(false);
-                            }
-                        });
+                    public void run() {
+                        adapter = new DeviceAdapter(ListActivity.this, tagList);
+                        recycler.setAdapter(adapter);
+                        swipeRefreshLayout.setRefreshing(false);
                     }
                 });
             }
@@ -85,9 +95,9 @@ public class ListActivity extends BaseActivity {
     }
 
     private void initDeviceRecycler() {
-        int column =1;// ViewHelper.isPort() ? 1 : 2;
+        int column = 1;// ViewHelper.isPort() ? 1 : 2;
         GridLayoutManager manager = new GridLayoutManager(this, column);
-        adapter = new DeviceAdapter(ListActivity.this,tagList);
+        adapter = new DeviceAdapter(ListActivity.this, tagList);
         recycler.setLayoutManager(manager);
         recycler.setAdapter(adapter);
     }

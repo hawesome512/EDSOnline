@@ -290,6 +290,12 @@
     <string name="svl_alarm_query">http://%1$s:8080/EDSServlet/QueryAlarmServlet?</string>
     <string name="svl_alarm_update">http://%1$s:8080/EDSServlet/UpdateAlarmServlet</string>
     <string name="svl_alarm_request">{\"id\":\"%1$s\",\"device\":\"%2$s\",\"alarm\":\"%3$s\",\"time\":\"%4$s\",\"confirm\":%5$d,\"report\":\"%6$s\"}</string>
+    <string name="svl_account_query">http://%1$s:8080/EDSServlet/QueryAccountServlet?</string>
+    <string name="svl_account_update">http://%1$s:8080/EDSServlet/UpdateAccountServlet</string>
+    <string name="svl_account_request">{\"id\":\"%1$s\",\"authority\":\"%2$s\",\"number\":%3$d,\"phone\":\"%4$s\"}</string>
+    <string name="svl_phone_query">http://%1$s:8080/EDSServlet/QueryPhoneServlet</string>
+    <string name="svl_phone_update">http://%1$s:8080/EDSServlet/UpdatePhoneServlet</string>
+    <string name="svl_phone_request">{\"id\":\"%1$s\",\"code\":\"%2$s\",\"time\":\"%3$s\",\"level\":%4$d,\"account\":\"%5$s\"}</string>
     <string name="svl_upload">http://%1$s:8080/EDSServlet/UploadServlet</string>
     <string name="svl_download">http://%1$s:8080/EDSServlet/upload/</string>
 
