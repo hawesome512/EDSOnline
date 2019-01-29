@@ -237,11 +237,11 @@ public class ReportFragment extends BaseFragment {
             public void onResponse(Response response) throws IOException {
                 List<Action> actionList=WAJsonHelper.getActionList( response );
                 List<Action> itemList;
-                itemList = Generator.filterActionList( actionList, Action.ActionType.DEVICE );
+                itemList = Generator.filterActionsType( actionList, Action.ActionType.DEVICE.ordinal());
                 action.setLeftList( itemList );
-                itemList = Generator.filterActionList( actionList, Action.ActionType.WORKORDER );
+                itemList = Generator.filterActionsType( actionList, Action.ActionType.WORKORDER.ordinal() );
                 action.setCenterList( itemList );
-                itemList = Generator.filterActionList( actionList, Action.ActionType.LOGIN );
+                itemList = Generator.filterActionsType( actionList, Action.ActionType.LOGIN.ordinal() );
                 action.setRightList( itemList );
                 //nj--阻挡线程 2018//12/5
                 setBarrierAwait( barrier );

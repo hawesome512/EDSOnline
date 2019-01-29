@@ -158,7 +158,7 @@ public class WorkorderCreatorActivity extends BaseActivity {
         } else {
             //nj--判断用户类型设置 2018/12/25
             String sysId=getString( R.string.woekorder_sys_id );
-            String user=WAServicer.getUser().getUsername();
+            String user=WAServicer.getUser().getDeviceName();
             String id=WAServicer.getUser().isAdministrator()? sysId :user;
 
             workorder.genId(id);

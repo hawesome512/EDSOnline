@@ -444,12 +444,24 @@ public class Generator {
     }
 
     //nj--操作信息筛选 2018/11/19
-    public static List<Action> filterActionList(List<Action> sources, Action.ActionType type){
+    public static List<Action> filterActionsType(List<Action> sources,int type){
+        List<Action> actionList=new ArrayList<>(  );
+        if (type==-1){
+            actionList.addAll( sources );
+        }else {
+            for (Action action:sources){
+                if (action.getActionType().ordinal()==type)
+                    actionList.add( action );
+            }
+        }
+        return actionList;
+    }
+
+    public static List<Action> filterActionsMethod(List<Action> sources,int method){
         List<Action> actionList=new ArrayList<>(  );
         for (Action action:sources){
-            if (action.getActionType()==type){
+            if (action.getActionMethod().ordinal()==method)
                 actionList.add( action );
-            }
         }
         return actionList;
     }

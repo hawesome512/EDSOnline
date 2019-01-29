@@ -24,11 +24,13 @@ import com.xseec.eds.model.FilterLabel;
 import com.xseec.eds.model.WAServicer;
 import com.xseec.eds.model.servlet.Action;
 import com.xseec.eds.util.DateHelper;
+import com.xseec.eds.util.Generator;
 import com.xseec.eds.util.ViewHelper;
 import com.xseec.eds.util.WAJsonHelper;
 import com.xseec.eds.util.WAServiceHelper;
 
 import java.io.IOException;
+import java.nio.channels.NonReadableChannelException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -45,7 +47,6 @@ import static android.app.Activity.RESULT_OK;
 public class ActionListFragment extends BaseFragment {
 
     private static final int REQUEST_FILTER=2;
-    private boolean isFilter=false;
 
     @InjectView( R.id.toolbar )
     Toolbar toolbar;
@@ -97,20 +98,9 @@ public class ActionListFragment extends BaseFragment {
             @Override
             public void onResponse(Response response) throws IOException {
                 List<Action> totalList = WAJsonHelper.getActionList( response );
-
                 actionList=new ArrayList<>(  );
-                if (isFilter){
-                    //nj--筛选操作信息
-                    filterAction( filterFactor,totalList );
-                }else {
-                    //nj--用户信息屏蔽 2018/11/14
-                    for (Action action:totalList){
-                        if (action.getActionType()!= Action.ActionType.LOGIN){
-                            actionList.add( action);
-                        }
-                    }
-                }
-                isFilter=false;
+                //nj--筛选操作记录
+                actionList=filterAction( filterFactor,totalList );
                 Collections.sort( actionList,Collections.<Action>reverseOrder());
                 refreshViewsInThread( response );
             }
@@ -142,7 +132,6 @@ public class ActionListFragment extends BaseFragment {
                     startTime=null;
                     endTime=null;
                     filterFactor=data.getParcelableArrayListExtra( FilterActivity.DATA_RESULT );
-                    isFilter=true;
                     progress.setVisibility( View.VISIBLE );
                     queryAction();
                 }
@@ -166,30 +155,21 @@ public class ActionListFragment extends BaseFragment {
     }
 
     //nj--筛选操作记录信息 2018/12/22
-    private void filterAction(List<FilterLabel> factor,List<Action> totalList){
-        if (factor==null){
-            isFilter=false;
-            return;
-        }
-        if (factor.size()==1){
-            FilterLabel label=factor.get( 0 );
-            if (label.getValueOfInt()!=-1){
-                for (Action action:totalList){
-                    if (action.getActionType().ordinal()==label.getValueOfInt()){
-                        actionList.add( action );
-                    }
-                }
-            }else{
-                actionList=totalList;
+    private List<Action> filterAction(List<FilterLabel> factor,List<Action> sources){
+        List<Action> actionList=new ArrayList<>(  );
+        if (factor==null||factor.size()==0){
+            for (Action action:sources){
+                if (action.getActionType()!= Action.ActionType.LOGIN)
+                    actionList.add( action);
             }
+        }else if (factor.size()==1){
+            actionList= Generator.filterActionsType( sources,factor.get( 0 ).getValueOfInt() );
         }else{
-            for (Action action:totalList){
-                if (action.getActionType().ordinal()==factor.get( 0 ).getValueOfInt()){
-                    if (action.getActionMethod().ordinal()==factor.get( 1 ).getValueOfInt()){
-                        actionList.add( action );
-                    }
-                }
-            }
+            actionList= Generator.filterActionsType( sources,factor.get( 0 ).getValueOfInt() );
+            sources.clear();
+            sources.addAll( actionList );
+            actionList=Generator.filterActionsMethod( sources,factor.get( 1 ).getValueOfInt() );
         }
+        return actionList;
     }
 }

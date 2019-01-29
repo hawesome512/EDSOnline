@@ -66,8 +66,6 @@ public class WorkorderListFragment extends BaseFragment {
     private WorkorderAdapter workorderAdapter;
     private List<Workorder> workorderList;
 
-    private String startTime;
-    private String endTime;
     private List<FilterLabel> filterList;
 
     public static Fragment newInstance() {
@@ -88,10 +86,6 @@ public class WorkorderListFragment extends BaseFragment {
         ButterKnife.inject(this, view);
         getActivity().setTitle(R.string.nav_workorder);
         ViewHelper.initToolbar((AppCompatActivity) getActivity(), toolbar, R.drawable.menu);
-        //nj--查询时间为当前时间的前后三个月 2018/12/19
-        startTime= DateHelper.getServletString( DateHelper.getNearTimeOfMonth( -2,0 ) );
-        endTime=DateHelper.getServletString( DateHelper.getNearTimeOfMonth( 1,0 ) );
-
         initRecyclerView();
         return view;
     }
@@ -110,7 +104,7 @@ public class WorkorderListFragment extends BaseFragment {
         String workorderId=isSystemsWorkorder()?systemId:userId;
 
         Workorder workorder=new Workorder( workorderId );
-        WAServiceHelper.sendWorkorderQueryRequest(workorder, startTime, endTime, new Callback() {
+        WAServiceHelper.sendWorkorderQueryRequest(workorder, null, null, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
 
@@ -166,8 +160,6 @@ public class WorkorderListFragment extends BaseFragment {
         switch (requestCode){
             case REQUEST_FILTER:
                 if (resultCode==RESULT_OK){
-                    startTime=null;
-                    endTime=null;
                     filterList=data.getParcelableArrayListExtra( FilterActivity.DATA_RESULT );
                 }
                 break;
@@ -211,6 +203,7 @@ public class WorkorderListFragment extends BaseFragment {
         }
     }
 
+    //NJ--判断是否为系统工单
     private boolean isSystemsWorkorder(){
         if (filterList!=null){
             String type=getString( R.string.filter_type );
