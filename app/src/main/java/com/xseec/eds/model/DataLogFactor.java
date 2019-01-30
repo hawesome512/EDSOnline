@@ -7,12 +7,13 @@ import com.xseec.eds.model.tags.StoredTag;
 import com.xseec.eds.util.DateHelper;
 
 import java.util.Calendar;
+import java.util.regex.Pattern;
 
 /**
  * Created by Administrator on 2018/8/13.
  */
 
-public class DataLogFactor implements Parcelable{
+public class DataLogFactor implements Parcelable {
 
     private Calendar startTime;
     private StoredTag.IntervalType intervalType;
@@ -20,14 +21,36 @@ public class DataLogFactor implements Parcelable{
     private int records;
     private StoredTag.DataType dataType;
 
-    public DataLogFactor(){
-        Calendar startTime=Calendar.getInstance();
-        startTime.add(Calendar.MINUTE,-5);
-        this.startTime=startTime;
-        this.intervalType= StoredTag.IntervalType.S;
-        this.interval=5;
-        this.records=60;
-        this.dataType= StoredTag.DataType.MAX;
+    public static final int INTERVAL_ENERGY_LINK_RADIO=49;
+
+    public DataLogFactor() {
+        initDefault();
+    }
+
+    private void initDefault() {
+        Calendar startTime = Calendar.getInstance();
+        startTime.add(Calendar.MINUTE, -5);
+        this.startTime = startTime;
+        this.intervalType = StoredTag.IntervalType.S;
+        this.interval = 5;
+        this.records = 60;
+        this.dataType = StoredTag.DataType.MAX;
+    }
+
+    public DataLogFactor(String tagName) {
+        if (Pattern.compile("E[PQS]").matcher(tagName).find()) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.DATE, -1);
+            Calendar yesterday = DateHelper.getDayStartTime(calendar);
+            this.startTime=yesterday;
+            this.intervalType= StoredTag.IntervalType.H;
+            this.interval=1;
+            //电能为累加值，取49比数据处理得48比数据
+            this.records=INTERVAL_ENERGY_LINK_RADIO;
+            this.dataType = StoredTag.DataType.MAX;
+        } else {
+            initDefault();
+        }
     }
 
     public DataLogFactor(Calendar startTime, StoredTag.IntervalType intervalType, int interval,
@@ -36,22 +59,22 @@ public class DataLogFactor implements Parcelable{
         this.intervalType = intervalType;
         this.interval = interval;
         this.records = records;
-        this.dataType= StoredTag.DataType.MAX;
+        this.dataType = StoredTag.DataType.MAX;
     }
 
     public DataLogFactor(Calendar startTime, StoredTag.IntervalType intervalType, int interval,
-            int records,StoredTag.DataType dataType) {
-        this(startTime, intervalType,interval,records);
-        this.dataType=dataType;
+            int records, StoredTag.DataType dataType) {
+        this(startTime, intervalType, interval, records);
+        this.dataType = dataType;
     }
 
     protected DataLogFactor(Parcel in) {
-        startTime=Calendar.getInstance();
+        startTime = Calendar.getInstance();
         startTime.setTime(DateHelper.getDate(in.readString()));
-        intervalType= StoredTag.IntervalType.values()[in.readInt()];
+        intervalType = StoredTag.IntervalType.values()[in.readInt()];
         interval = in.readInt();
         records = in.readInt();
-        dataType= StoredTag.DataType.values()[in.readInt()];
+        dataType = StoredTag.DataType.values()[in.readInt()];
     }
 
     public static final Creator<DataLogFactor> CREATOR = new Creator<DataLogFactor>() {
@@ -106,7 +129,7 @@ public class DataLogFactor implements Parcelable{
         this.records = records;
     }
 
-    public String getStartTimeString(){
+    public String getStartTimeString() {
         return DateHelper.getString(startTime.getTime());
     }
 

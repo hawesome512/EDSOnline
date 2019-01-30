@@ -108,6 +108,6 @@ public class TabMonitorFragment extends TabBaseFragment {
     public void onTagClick(Tag tag, View view) {
         ArrayList<String> tags = new ArrayList<>();
         tags.add(tag.getTagName());
-        ChartActivity.start(getContext(), tags, new DataLogFactor());
+        ChartActivity.start(getContext(), tags, new DataLogFactor(tag.getTagName()));
     }
 }

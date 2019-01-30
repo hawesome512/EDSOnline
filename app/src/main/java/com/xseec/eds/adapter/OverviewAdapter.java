@@ -72,17 +72,7 @@ public class OverviewAdapter extends RecyclerView.Adapter<OverviewAdapter.ViewHo
                 @Override
                 public void onClick(View v) {
                     String tagName = tagList.get(getAdapterPosition()).getMapTagName();
-                    DataLogFactor factor;
-                    if (tagName.contains("Energy")) {
-                        Calendar calendar = Calendar.getInstance();
-                        calendar.add(Calendar.DATE, -1);
-                        Calendar yesterday = DateHelper.getDayStartTime(calendar);
-                        factor = new DataLogFactor(yesterday, StoredTag.IntervalType.H, 1, 48);
-                    } else {
-                        factor = new DataLogFactor();
-                    }
-                    StoredTag.IntervalType intervalType = tagName.contains("Energy") ? StoredTag
-                            .IntervalType.H : StoredTag.IntervalType.M;
+                    DataLogFactor factor=new DataLogFactor(tagName);
                     ArrayList<String> tags = new ArrayList<>();
                     tags.add(tagName);
                     ChartActivity.start(EDSApplication.getContext(), tags, factor);

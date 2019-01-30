@@ -60,10 +60,10 @@
     <string name="overview_location">位置</string>
     <string name="overview_device_value">%1$d 台</string>
     <string name="overview_item_tempreture">环境温度</string>
-    <string name="overview_item_humidity">环境湿度</string>
+    <string name="overview_item_apparent_power">视在功率</string>
     <string name="overview_item_activie_power">有功功率</string>
     <string name="overview_item_reactive_power">无功功率</string>
-    <string name="overview_item_energy">今日用电</string>
+    <string name="overview_item_energy">系统用电</string>
     <string name="overview_item_harmonic">谐波监测</string>
     <string name="overview_item_detail">查看详情</string>
     <string name="overview_state_on">运行</string>

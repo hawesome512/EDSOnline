@@ -45,33 +45,33 @@ public class Generator {
         Context context = EDSApplication.getContext();
         String name = context.getString(R.string.overview_item_tempreture);
         OverviewTag tag0 = new OverviewTag(0, R.drawable.circle_tempreture, name, null, "℃",
-                "XRD:Tempreture", true);
+                "XRD:T", true);
         tag0.save();
 
-        name = context.getString(R.string.overview_item_humidity);
-        OverviewTag tag1 = new OverviewTag(1, R.drawable.circle_water, name, null, "%",
-                "XRD:Humidity", true);
-        tag1.save();
-
-        name = context.getString(R.string.overview_item_activie_power);
-        OverviewTag tag2 = new OverviewTag(2, R.drawable.circle_line_2, name, null, "kW",
-                "XRD:P", true);
-        tag2.save();
-
-        name = context.getString(R.string.overview_item_reactive_power);
-        OverviewTag tag3 = new OverviewTag(3, R.drawable.circle_line_4, name, null, "kVar",
-                "XRD:Q", true);
-        tag3.save();
-
         name = context.getString(R.string.overview_item_energy);
-        OverviewTag tag4 = new OverviewTag(4, R.drawable.circle_light, name, null, "kW·h",
-                "XRD:Energy", true);
-        tag4.save();
+        OverviewTag tag1 = new OverviewTag(1, R.drawable.circle_light, name, null, "kW·h",
+                "XRD:EP", true);
+        tag1.save();
 
         name = context.getString(R.string.overview_item_harmonic);
         String valueText = context.getString(R.string.overview_item_detail);
-        OverviewTag tag5 = new OverviewTag(5, R.drawable.circle_bar_hor, name, valueText, null,
+        OverviewTag tag2 = new OverviewTag(2, R.drawable.circle_bar_hor, name, valueText, null,
                 "RD_A3_6:THD", true);
+        tag2.save();
+
+        name = context.getString(R.string.overview_item_apparent_power);
+        OverviewTag tag3 = new OverviewTag(3, R.drawable.circle_line_3, name, null, "kVA",
+                "XRD:S", true);
+        tag3.save();
+
+        name = context.getString(R.string.overview_item_activie_power);
+        OverviewTag tag4 = new OverviewTag(4, R.drawable.circle_line_2, name, null, "kW",
+                "XRD:P", true);
+        tag4.save();
+
+        name = context.getString(R.string.overview_item_reactive_power);
+        OverviewTag tag5 = new OverviewTag(5, R.drawable.circle_line_4, name, null, "kVar",
+                "XRD:Q", true);
         tag5.save();
     }
 
@@ -322,6 +322,21 @@ public class Generator {
             target.add(Calendar.HOUR, 1);
         }
         return values;
+    }
+
+    public static List<String> genPerEnergyEntryList(List<String> totals){
+        List<String> pers=new ArrayList<>();
+        boolean endWithSharp=true;
+        for(int i=totals.size()-1;i>0;i--){
+            if(totals.get(i).equals("#")&&endWithSharp){
+                continue;
+            }
+            endWithSharp=false;
+            float now=floatTryParse(totals.get(i));
+            float last=floatTryParse(totals.get(i-1));
+            pers.add(0,String.valueOf(now-last));
+        }
+        return pers;
     }
 
     /*

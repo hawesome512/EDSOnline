@@ -43,6 +43,7 @@ import com.xseec.eds.widget.TimeXAxisValueFormatter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -77,7 +78,7 @@ public class DataLogFragment extends BaseFragment {
     private DataLogFactor defaultFactor;
 
     private static final String EXT_TAG = "tags";
-    private static final String EXT_FACTOR="default_factor";
+    private static final String EXT_FACTOR = "default_factor";
     public static final String KEY_FACOTR = "factor";
     private static final int REQUEST_CODE_TIME = 1;
 
@@ -117,43 +118,10 @@ public class DataLogFragment extends BaseFragment {
         for (String tagName : tagNames) {
             storedTagList.add(new StoredTag(tagName, StoredTag.DataType.MAX));
         }
-        defaultFactor=getArguments().getParcelable(EXT_FACTOR);
+        defaultFactor = getArguments().getParcelable(EXT_FACTOR);
 //        initFactor();
         initChart();
     }
-
-//    private void initFactor() {
-//        Calendar calendar = Calendar.getInstance();
-//        switch (defaultFactor.getIntervalType()) {
-//            case S:
-//                //过去5分钟，60点
-//                calendar.add(Calendar.MINUTE, -5);
-//                defaultFactor = new DataLogFactor(calendar, StoredTag.IntervalType.S, 5, 60);
-//                break;
-//            case M:
-//                //过去1小时，60点
-//                calendar.add(Calendar.HOUR_OF_DAY, -1);
-//                defaultFactor = new DataLogFactor(calendar, StoredTag.IntervalType.M, 1, 60);
-//                break;
-//            case H:
-//                //昨日+今日，48点
-//                calendar.add(Calendar.DATE, -1);
-//                Calendar yesterday = DateHelper.getDayStartTime(calendar);
-//                defaultFactor = new DataLogFactor(yesterday, StoredTag.IntervalType.H, 1, 48);
-//                break;
-//            case D:
-//                //本月数据
-//                calendar.add(Calendar.DATE, 1 - calendar.get(Calendar.DAY_OF_MONTH));
-//                calendar = DateHelper.getDayStartTime(calendar);
-//                int maxMonthDay = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
-//                defaultFactor = new DataLogFactor(calendar, StoredTag.IntervalType.D, 1,
-//                        maxMonthDay);
-//                break;
-//            default:
-//                defaultFactor = null;
-//                break;
-//        }
-//    }
 
     private void initChart() {
         //lineChart.animateX(2000);
@@ -202,11 +170,6 @@ public class DataLogFragment extends BaseFragment {
                 });
     }
 
-    private boolean isEnergyAnalysis() {
-        return defaultFactor.getIntervalType() == StoredTag.IntervalType.H && defaultFactor
-                .getRecords() == 48;
-    }
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -251,37 +214,46 @@ public class DataLogFragment extends BaseFragment {
         }
     }
 
+    private boolean isEnergy() {
+        String tagName = storedTagList.get(0).getTagName();
+        return Pattern.compile("E[PQS]").matcher(tagName).find();
+    }
+
+    private boolean hasLinkRadio() {
+        return isEnergy() && defaultFactor.getIntervalType() == StoredTag.IntervalType.H &&
+                defaultFactor.getRecords() == DataLogFactor.INTERVAL_ENERGY_LINK_RADIO;
+    }
+
     @Override
     protected void onRefreshViews(String jsonData) {
         List<String>[] values = WAJsonHelper.getTagLog(jsonData);
-        if (values==null||values.length == 0) {
+        if (values == null || values.length == 0) {
             return;
         }
+
         progressDataLog.setVisibility(View.GONE);
         LineData lineData = new LineData();
         String legenName = null;
 
-        //暂时方案,模拟值
         LineDataSet lineDataSet1 = null;
-        if (isEnergyAnalysis()) {
-            List<String> value = values[0];
-            value = Generator.genYesTodayEntryList(defaultFactor.getStartTime());
+        if (hasLinkRadio()) {
+            List<String> value = Generator.genPerEnergyEntryList(values[0]);
             List<String> today = value.subList(24, value.size());
             legenName = getString(R.string.detail_yesterday);
             value = value.subList(0, 24);
             //新增今日值曲线
-            List<Entry> entryList1 = Generator.convertEntryList(today,0);
+            List<Entry> entryList1 = Generator.convertEntryList(today, 0);
             lineDataSet1 = new LineDataSet(entryList1, getString(R.string.detail_today));
             lineDataSet1.setColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
             lineDataSet1.setCircleColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
             lineDataSet1.setLineWidth(2f);
             lineDataSet1.setCircleRadius(4f);
-            lineChart.getAxisLeft().setAxisMinimum(0);
+            //lineChart.getAxisLeft().setAxisMinimum(0);
             //lineData.addDataSet(lineDataSet1);
             //赋值
             float totalToday = Generator.getSumFromEntryList(entryList1, entryList1.size());
             //此语句与下面语句重复计算
-            List<Entry> yesterdayEntryList = Generator.convertEntryList(value,0);
+            List<Entry> yesterdayEntryList = Generator.convertEntryList(value, 0);
             float totalYesterday = Generator.getSumFromEntryList(yesterdayEntryList,
                     entryList1.size());
             float linkRadio = Math.round((totalToday - totalYesterday) / totalYesterday * 10000)
@@ -294,35 +266,37 @@ public class DataLogFragment extends BaseFragment {
             textLast.setText(linkRadio + "%");
             int resId = linkRadio < 0 ? R.drawable.ic_arrow_downward_green_a700_24dp : R
                     .drawable.ic_arrow_upward_red_a200_24dp;
-            ViewHelper.drawTextBounds(textLast,resId,0,0,0);
-            values[0]=value;
+            ViewHelper.drawTextBounds(textLast, resId, 0, 0, 0);
+            values[0] = value;
         }
 
-        int[] colors=new int[]{R.color.colorPhaseA,R.color.colorPhaseB,R.color.colorPhaseC,R.color.colorAlarm};
-        List<Entry> entryLists=new ArrayList<>();
+        int[] colors = new int[]{R.color.colorPhaseA, R.color.colorPhaseB, R.color.colorPhaseC, R
+                .color.colorAlarm};
+        List<Entry> entryLists = new ArrayList<>();
         for (int i = 0; i < values.length; i++) {
             List<String> value = values[i];
-            List<Entry> entryList = Generator.convertEntryList(value,0);
-            legenName=(i==0&&legenName!=null)?legenName:storedTagList.get(i).getTagAlias();
-            LineDataSet lineDataSet = new LineDataSet(entryList,legenName);
+            List<Entry> entryList = Generator.convertEntryList(value, 0);
+            legenName = (i == 0 && legenName != null) ? legenName : storedTagList.get(i)
+                    .getTagAlias();
+            LineDataSet lineDataSet = new LineDataSet(entryList, legenName);
             int colorIndex;
             if (values.length == 1) {
-                colorIndex=1;
+                colorIndex = 1;
                 lineDataSet.setDrawFilled(true);
                 Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable
                         .chart_fade_blue);
                 lineDataSet.setFillDrawable(drawable);
-            }else {
-                colorIndex=i%colors.length;
+            } else {
+                colorIndex = i % colors.length;
                 lineDataSet.setLineWidth(2f);
             }
 
             lineDataSet.setColor(ContextCompat.getColor(getContext(), colors[colorIndex]));
             lineDataSet.setCircleColor(ContextCompat.getColor(getContext(), colors[colorIndex]));
             //临时方案：Ir,不能计入均值计算列中
-            if(i>=3){
+            if (i >= 3) {
                 lineDataSet.setDrawCircles(false);
-            }else {
+            } else {
                 entryLists.addAll(entryList);
             }
             lineData.addDataSet(lineDataSet);
@@ -338,7 +312,7 @@ public class DataLogFragment extends BaseFragment {
         lineChart.animateX(2000);
         lineChart.invalidate();
         //赋值
-        if (!isEnergyAnalysis()) {
+        if (!hasLinkRadio()) {
             textFrist.setText(String.valueOf(lineData.getYMax()));
             textSecend.setText(String.valueOf(lineData.getYMin()));
             textLast.setText(String.valueOf(Generator.getAvgFromEntryList(entryLists)));
