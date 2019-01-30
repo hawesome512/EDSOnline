@@ -40,6 +40,44 @@ import java.util.stream.Collectors;
 
 public class Generator {
 
+    //因版本变更较大，此处临时处理，后续关于Overview的配置模块处理
+    public static List<OverviewTag> genOverviewTags(){
+        List<OverviewTag> overviewTags=new ArrayList<>();
+
+        Context context = EDSApplication.getContext();
+        String name = context.getString(R.string.overview_item_tempreture);
+        OverviewTag tag0 = new OverviewTag(0, R.drawable.circle_tempreture, name, null, "℃",
+                "XRD:T", true);
+        overviewTags.add(tag0);
+
+        name = context.getString(R.string.overview_item_energy);
+        OverviewTag tag1 = new OverviewTag(1, R.drawable.circle_light, name, null, "kW·h",
+                "XRD:EP", true);
+        overviewTags.add(tag1);
+
+        name = context.getString(R.string.overview_item_harmonic);
+        String valueText = context.getString(R.string.overview_item_detail);
+        OverviewTag tag2 = new OverviewTag(2, R.drawable.circle_bar_hor, name, valueText, null,
+                "RD_A3_6:THD", true);
+        overviewTags.add(tag2);
+
+        name = context.getString(R.string.overview_item_apparent_power);
+        OverviewTag tag3 = new OverviewTag(3, R.drawable.circle_line_3, name, null, "kVA",
+                "XRD:S", true);
+        overviewTags.add(tag3);
+
+        name = context.getString(R.string.overview_item_activie_power);
+        OverviewTag tag4 = new OverviewTag(4, R.drawable.circle_line_2, name, null, "kW",
+                "XRD:P", true);
+        overviewTags.add(tag4);
+
+        name = context.getString(R.string.overview_item_reactive_power);
+        OverviewTag tag5 = new OverviewTag(5, R.drawable.circle_line_4, name, null, "kVar",
+                "XRD:Q", true);
+        overviewTags.add(tag5);
+        return overviewTags;
+    }
+
     public static void initOverviewTagStore() {
         LitePal.getDatabase();
         Context context = EDSApplication.getContext();

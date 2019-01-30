@@ -130,11 +130,12 @@ public class OverviewFragment extends BaseFragment {
         Bundle bundle = getArguments();
         tagList = bundle.getParcelableArrayList(KEY_TAGS);
         basic = bundle.getParcelable(KEY_BASIC);
-        overviewTagList = LitePal.findAll(OverviewTag.class);
-        if (overviewTagList == null || overviewTagList.size() == 0) {
-            Generator.initOverviewTagStore();
-            overviewTagList = LitePal.findAll(OverviewTag.class);
-        }
+        overviewTagList=Generator.genOverviewTags();
+//        overviewTagList = LitePal.findAll(OverviewTag.class);
+//        if (overviewTagList == null || overviewTagList.size() == 0) {
+//            Generator.initOverviewTagStore();
+//            overviewTagList = LitePal.findAll(OverviewTag.class);
+//        }
         basicTagList = TagsFilter.getBasicTagList(tagList);
     }
 
