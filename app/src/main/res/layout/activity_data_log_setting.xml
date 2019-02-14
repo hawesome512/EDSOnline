@@ -17,6 +17,41 @@
         android:paddingTop="@dimen/view_padding_normal"
         android:background="@color/colorWhite"
         android:orientation="vertical">
+
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <RadioButton
+                android:id="@+id/radio_null"
+                style="@style/RadioButton"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="@string/detail_time_null"
+                android:layout_marginRight="@dimen/view_margin_tiny"/>
+            <RadioButton
+                android:id="@+id/radio_min"
+                style="@style/RadioButton"
+                android:layout_marginHorizontal="@dimen/view_margin_tiny"
+                android:text="@string/detail_time_min"/>
+            <RadioButton
+                android:id="@+id/radio_hour"
+                style="@style/RadioButton"
+                android:layout_marginHorizontal="@dimen/view_margin_tiny"
+                android:text="@string/detail_time_hour"/>
+            <RadioButton
+                android:id="@+id/radio_day"
+                style="@style/RadioButton"
+                android:layout_marginHorizontal="@dimen/view_margin_tiny"
+                android:text="@string/detail_time_day"/>
+            <RadioButton
+                android:id="@+id/radio_month"
+                style="@style/RadioButton"
+                android:layout_marginLeft="@dimen/view_margin_tiny"
+                android:text="@string/detail_time_month"/>
+        </RadioGroup>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -36,10 +71,31 @@
                 android:focusable="false"
                 android:clickable="true"/>
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/detail_end"/>
+            <EditText
+                android:id="@+id/edit_end"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:drawableRight="@drawable/ic_access_time_grey_600_24dp"
+                android:editable="false"
+                android:focusable="false"
+                android:clickable="true"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone">
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -62,7 +118,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -92,7 +149,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="3"
-                android:entries="@array/detail_types"/>
+                android:entries="@array/detail_types"
+                />
         </LinearLayout>
         <Button
             android:id="@+id/btn_setting"

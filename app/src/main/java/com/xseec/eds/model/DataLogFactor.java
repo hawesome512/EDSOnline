@@ -133,6 +133,51 @@ public class DataLogFactor implements Parcelable {
         return DateHelper.getString(startTime.getTime());
     }
 
+    public Calendar getEndTime(){
+        int field=Calendar.SECOND;
+        switch (intervalType){
+            case S:
+                field=Calendar.SECOND;
+                break;
+            case M:
+                field=Calendar.MINUTE;
+                break;
+            case H:
+                field=Calendar.HOUR_OF_DAY;
+                break;
+            case D:
+                field=Calendar.DATE;
+                break;
+        }
+        Calendar endTime= (Calendar) startTime.clone();
+        endTime.add(field,interval*records);
+        return endTime;
+    }
+
+    public void setEndTime(Calendar endTime){
+        long intervalSecend=(endTime.getTime().getTime()-startTime.getTime().getTime())/1000;
+        if(intervalSecend<=60*30){
+            //30min
+            intervalType= StoredTag.IntervalType.S;
+            records=60;
+            interval= (int) (intervalSecend/records);
+        }else if(intervalSecend<=60*60*12) {
+            //12h
+            intervalType= StoredTag.IntervalType.M;
+            records= 60;
+            interval=(int)(intervalSecend/60/records);
+        }else if(intervalSecend<=60*60*48){
+            //48h
+            intervalType=StoredTag.IntervalType.H;
+            interval=1;
+            records=(int)(intervalSecend/60/60);
+        }else {
+            intervalType= StoredTag.IntervalType.D;
+            interval=1;
+            records=(int)(intervalSecend/60/60/24);
+        }
+    }
+
     @Override
     public int describeContents() {
         return 0;

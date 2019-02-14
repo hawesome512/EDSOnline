@@ -129,11 +129,9 @@ public class DataLogFragment extends BaseFragment {
 
         MyMarkerView mv = new MyMarkerView(getContext(), R.layout.custom_marker_view);
         mv.setChartView(lineChart); // For bounds control
-
+        lineChart.setMarker(mv);
         YAxis yAxis = lineChart.getAxisRight();
         yAxis.setEnabled(false);
-
-        lineChart.setMarker(mv);
 
         setData();
     }
@@ -153,6 +151,8 @@ public class DataLogFragment extends BaseFragment {
         for (StoredTag tag : storedTagList) {
             tag.setDataType(defaultFactor.getDataType());
         }
+        //取消曲线上已经高亮的点，否则重绘（如查询其他时间）时因找不到高亮点而闪退
+        lineChart.highlightValues(null);
 
         WAServiceHelper.sendTagLogRequest(defaultFactor.getStartTimeString(),
                 defaultFactor.getIntervalType(), defaultFactor.getInterval(), defaultFactor
@@ -226,18 +226,24 @@ public class DataLogFragment extends BaseFragment {
 
     @Override
     protected void onRefreshViews(String jsonData) {
+        //查询时间可能包含尚未发生的"未来时间区段"数据
+        jsonData = jsonData.replaceAll("(,\"#\")+]", "]");
         List<String>[] values = WAJsonHelper.getTagLog(jsonData);
         if (values == null || values.length == 0) {
             return;
         }
-
+        //电能累加值换算
+        if (isEnergy()) {
+            values[0] = Generator.genPerEnergyEntryList(values[0]);
+        }
         progressDataLog.setVisibility(View.GONE);
         LineData lineData = new LineData();
         String legenName = null;
 
         LineDataSet lineDataSet1 = null;
-        if (hasLinkRadio()) {
-            List<String> value = Generator.genPerEnergyEntryList(values[0]);
+        //今日值曲线+昨日环比
+        if (hasLinkRadio() && values[0].size() > 24) {
+            List<String> value = values[0];// Generator.genPerEnergyEntryList(values[0]);
             List<String> today = value.subList(24, value.size());
             legenName = getString(R.string.detail_yesterday);
             value = value.subList(0, 24);
@@ -245,7 +251,8 @@ public class DataLogFragment extends BaseFragment {
             List<Entry> entryList1 = Generator.convertEntryList(today, 0);
             lineDataSet1 = new LineDataSet(entryList1, getString(R.string.detail_today));
             lineDataSet1.setColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
-            lineDataSet1.setCircleColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
+            lineDataSet1.setCircleColor(ContextCompat.getColor(getContext(), R.color
+                    .colorAccent));
             lineDataSet1.setLineWidth(2f);
             lineDataSet1.setCircleRadius(4f);
             //lineChart.getAxisLeft().setAxisMinimum(0);
@@ -268,13 +275,22 @@ public class DataLogFragment extends BaseFragment {
                     .drawable.ic_arrow_upward_red_a200_24dp;
             ViewHelper.drawTextBounds(textLast, resId, 0, 0, 0);
             values[0] = value;
+        } else {
+            textItemFirst.setText(getString(R.string.detail_max));
+            textItemSecend.setText(getString(R.string.detail_min));
+            textItemLast.setText(getString(R.string.detail_avg));
+            ViewHelper.drawTextBounds(textLast, 0, 0, 0, 0);
         }
 
-        int[] colors = new int[]{R.color.colorPhaseA, R.color.colorPhaseB, R.color.colorPhaseC, R
+        int[] colors = new int[]{R.color.colorPhaseA, R.color.colorPhaseB, R.color
+                .colorPhaseC, R
                 .color.colorAlarm};
         List<Entry> entryLists = new ArrayList<>();
         for (int i = 0; i < values.length; i++) {
             List<String> value = values[i];
+            if(value.size()==0){
+                continue;
+            }
             List<Entry> entryList = Generator.convertEntryList(value, 0);
             legenName = (i == 0 && legenName != null) ? legenName : storedTagList.get(i)
                     .getTagAlias();
@@ -292,7 +308,8 @@ public class DataLogFragment extends BaseFragment {
             }
 
             lineDataSet.setColor(ContextCompat.getColor(getContext(), colors[colorIndex]));
-            lineDataSet.setCircleColor(ContextCompat.getColor(getContext(), colors[colorIndex]));
+            lineDataSet.setCircleColor(ContextCompat.getColor(getContext(),
+                    colors[colorIndex]));
             //临时方案：Ir,不能计入均值计算列中
             if (i >= 3) {
                 lineDataSet.setDrawCircles(false);

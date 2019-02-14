@@ -14,7 +14,7 @@ import java.io.IOException;
 public abstract class BaseFragment extends Fragment {
 
     protected boolean refreshViewsInThread(final Response response) {
-        final String jsonData=getString(response);
+        final String jsonData = getString(response);
         //横竖屏切换时，可能造成getActivity==null
         if (getActivity() == null) {
             return false;
@@ -35,7 +35,7 @@ public abstract class BaseFragment extends Fragment {
     /*
      *在主线程onRefreshViews再处理response.body().string()大概率出现调用异常
      */
-    private String getString(Response response){
+    private String getString(Response response) {
         try {
             return response.body().string();
         } catch (Exception e) {

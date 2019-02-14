@@ -28,6 +28,7 @@ import com.xseec.eds.fragment.SettingFragment;
 import com.xseec.eds.fragment.WorkorderListFragment;
 import com.xseec.eds.model.Device;
 import com.xseec.eds.model.Function;
+import com.xseec.eds.model.User;
 import com.xseec.eds.model.WAServicer;
 import com.xseec.eds.model.servlet.Basic;
 import com.xseec.eds.model.tags.Tag;
@@ -77,11 +78,15 @@ public class MainActivity extends BaseActivity implements NavigationView
         tagList = getIntent().getParcelableArrayListExtra(EXT_TAGS);
         basic = getIntent().getParcelableExtra(EXT_BASIC);
         if (basic != null && tagList != null) {
-            TextView textUser = navView.getHeaderView(0).findViewById(R.id.text_account);
-            textUser.setText(getString(R.string.nav_account, WAServicer.getUser().getUsername()));
+            User user = WAServicer.getUser();
+            if (user != null) {
+                TextView textUser = navView.getHeaderView(0).findViewById(R.id.text_account);
+                textUser.setText(getString(R.string.nav_account, user.getUsername
+                        ()));
+            }
             if (savedInstanceState != null) {
                 selectedId = savedInstanceState.getInt(KEY_MENU_ITEM);
-            }else {
+            } else {
                 selectedId = R.id.nav_overview;
             }
             navView.getMenu().performIdentifierAction(selectedId, 0);
@@ -149,11 +154,11 @@ public class MainActivity extends BaseActivity implements NavigationView
 
     @Override
     public void onFunctionChanged(Function function) {
-        selectedId=function.getMenuId();
+        selectedId = function.getMenuId();
         replaceFragment(function.getFragment());
     }
 
-    private void replaceFragment(Fragment fragment){
+    private void replaceFragment(Fragment fragment) {
         int statusColor = ContextCompat.getColor(this, R.color.colorPrimaryDark);
         if (fragment instanceof OverviewFragment) {
             ((OverviewFragment) fragment).setFunctionListener(this);

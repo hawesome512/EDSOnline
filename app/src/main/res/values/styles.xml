@@ -206,4 +206,17 @@
         <item name="android:gravity">center</item>
         <item name="android:orientation">vertical</item>
     </style>
+
+    <style name="RadioButton">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:paddingLeft">@dimen/view_padding_normal</item>
+        <item name="android:paddingRight">@dimen/view_padding_normal</item>
+        <item name="android:paddingTop">@dimen/view_padding_small</item>
+        <item name="android:paddingBottom">@dimen/view_padding_small</item>
+        <item name="android:gravity">center</item>
+        <item name="android:button">@null</item>
+        <item name="android:background">@drawable/ic_filter_label</item>
+        <item name="android:textColor">@color/selector_radio_color</item>
+    </style>
 </resources>

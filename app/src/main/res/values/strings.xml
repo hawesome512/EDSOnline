@@ -84,9 +84,15 @@
     <string name="detail_min">最小值</string>
     <string name="detail_avg">平均值</string>
     <string name="detail_start">起始时间</string>
+    <string name="detail_end">截止时间</string>
     <string name="detail_interval">间隔时间</string>
     <string name="detail_record">资料笔数</string>
     <string name="detail_data_type">数据类型</string>
+    <string name="detail_time_null">默认</string>
+    <string name="detail_time_min">分</string>
+    <string name="detail_time_hour">时</string>
+    <string name="detail_time_day">日</string>
+    <string name="detail_time_month">月</string>
     <!--Units Types选项顺序应严格与StoredTag Enum顺序一致,对应WebAccess说明文档【0-Last,1-Min,2-Max,3-Avg】-->
     <string-array name="detail_units">
         <item>秒</item>

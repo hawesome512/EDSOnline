@@ -1,6 +1,7 @@
 package com.xseec.eds.util;
 
 import com.xseec.eds.model.State;
+import com.xseec.eds.model.User;
 import com.xseec.eds.model.WAServicer;
 import com.xseec.eds.model.tags.OverviewTag;
 import com.xseec.eds.model.tags.Tag;
@@ -25,7 +26,7 @@ import java.util.List;
 
 public class TagsFilter {
 
-    private static final String FILTER_AREA = WAServicer.getUser().getGatewayName();
+    //private static final String FILTER_AREA = WAServicer.getUser().getGatewayName();
     //private static final String FILTER_STATE = "State";
     private static final String FILTER_STATUS="Status";
 
@@ -93,7 +94,7 @@ public class TagsFilter {
 
     public static List<Tag> getBasicTagList(List<Tag> source) {
         List<Tag> target = new ArrayList<>();
-        target.addAll(filterTagList(source, FILTER_AREA));
+        target.addAll(filterTagList(source, getFilterArea()));
         target.addAll(filterTagList(source, FILTER_STATUS));
         return target;
     }
@@ -107,11 +108,16 @@ public class TagsFilter {
             String tagName = source.get(i).getTagName();
             String deviceName = tagName.split(":")[0];
             //排除自定义点
-            if (!deviceList.contains(deviceName)&&!deviceName.equals(FILTER_AREA)) {
+            if (!deviceList.contains(deviceName)&&!deviceName.equals(getFilterArea())) {
                 deviceList.add(deviceName);
             }
         }
         return deviceList;
+    }
+
+    private static String getFilterArea(){
+        User user=WAServicer.getUser();
+        return user!=null?user.getGatewayName():"";
     }
 
     public static List<String> getZoneAndDeviceList(List<String> devices) {

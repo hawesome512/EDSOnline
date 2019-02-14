@@ -364,15 +364,12 @@ public class Generator {
 
     public static List<String> genPerEnergyEntryList(List<String> totals){
         List<String> pers=new ArrayList<>();
-        boolean endWithSharp=true;
-        for(int i=totals.size()-1;i>0;i--){
-            if(totals.get(i).equals("#")&&endWithSharp){
-                continue;
-            }
-            endWithSharp=false;
+        for (int i = 1; i <totals.size() ; i++) {
             float now=floatTryParse(totals.get(i));
-            float last=floatTryParse(totals.get(i-1));
-            pers.add(0,String.valueOf(now-last));
+            float pre=floatTryParse(totals.get(i-1));
+            //暂时方案，数据清零等操作造成累加值突变or通信异常造成pre为0
+            now=(pre==0||now==0)?0:now-pre;
+            pers.add(String.valueOf(now));
         }
         return pers;
     }
