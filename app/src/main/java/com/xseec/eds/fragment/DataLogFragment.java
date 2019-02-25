@@ -140,8 +140,7 @@ public class DataLogFragment extends BaseFragment {
         progressDataLog.setVisibility(View.VISIBLE);
         //横坐标设定
         XAxis xAxis = lineChart.getXAxis();
-        IAxisValueFormatter iAxisValueFormatter = new TimeXAxisValueFormatter(lineChart,
-                defaultFactor);
+        IAxisValueFormatter iAxisValueFormatter = new TimeXAxisValueFormatter(lineChart,defaultFactor);
         xAxis.setValueFormatter(iAxisValueFormatter);
 
         LineData data = lineChart.getData();

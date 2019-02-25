@@ -12,32 +12,33 @@ import java.util.Locale;
 
 public class DateHelper {
 
-    public final static String dateRegex="\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}";
+    public final static String dateRegex = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}";
 
     public final static SimpleDateFormat sdfServlet = new SimpleDateFormat("yyyy-MM-dd%20HH:mm:ss");
-    public final static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    private final static SimpleDateFormat sdf=new SimpleDateFormat("yyyyMMddHHmmss");
-    private final static SimpleDateFormat sdfYMD=new SimpleDateFormat("yyyy-MM-dd");
-    private final static SimpleDateFormat sdfMD=new SimpleDateFormat("MMM dd");
+    public final static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd " +
+            "HH:mm:ss");
+    private final static SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+    private final static SimpleDateFormat sdfYMD = new SimpleDateFormat("yyyy-MM-dd");
+    private final static SimpleDateFormat sdfMD = new SimpleDateFormat("MMM dd");
 
     public static String getString(Date date) {
-        if(date==null){
-            date=new Date();
+        if (date == null) {
+            date = new Date();
         }
         return simpleDateFormat.format(date);
     }
 
-    public static Date getServletDate(String strDate){
+    public static Date getServletDate(String strDate) {
         try {
-            return sdfServlet.parse( strDate );
-        }catch (Exception exp){
+            return sdfServlet.parse(strDate);
+        } catch (Exception exp) {
             return null;
         }
     }
 
-    public static Calendar getCalendar(String formatTime){
-        Calendar calendar=Calendar.getInstance();
-        Date date= null;
+    public static Calendar getCalendar(String formatTime) {
+        Calendar calendar = Calendar.getInstance();
+        Date date = null;
         try {
             date = simpleDateFormat.parse(formatTime);
         } catch (ParseException e) {
@@ -47,15 +48,15 @@ public class DateHelper {
         return calendar;
     }
 
-    public static String getYMDString(Date date){
+    public static String getYMDString(Date date) {
         return sdfYMD.format(date);
     }
 
-    public static String getServletString(Date date){
+    public static String getServletString(Date date) {
         return sdfServlet.format(date);
     }
 
-    public static Date getYMDDate(String strDate){
+    public static Date getYMDDate(String strDate) {
         try {
             return sdfYMD.parse(strDate);
 
@@ -64,7 +65,7 @@ public class DateHelper {
         }
     }
 
-    public static String getMDString(Date date){
+    public static String getMDString(Date date) {
         return sdfMD.format(date);
     }
 
@@ -77,8 +78,8 @@ public class DateHelper {
         }
     }
 
-    public static String getNowForId(){
-        Calendar now=Calendar.getInstance();
+    public static String getNowForId() {
+        Calendar now = Calendar.getInstance();
         return sdf.format(now.getTime());
     }
 
@@ -114,107 +115,107 @@ public class DateHelper {
         return tmp;
     }
 
-    public static Calendar getCalendarWithDate(Date date){
-        Calendar calendar=Calendar.getInstance();
+    public static Calendar getCalendarWithDate(Date date) {
+        Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         return calendar;
     }
 
-    public static String[] getXvaluesByField(int field){
+    public static String[] getXvaluesByField(int field) {
         String[] items;
-        switch (field){
+        switch (field) {
             case Calendar.DATE:
-                items=new String[24];
-                for(int i=0;i<24;i++){
-                    items[i]=String.format("%02d:00",i);
+                items = new String[24];
+                for (int i = 0; i < 24; i++) {
+                    items[i] = String.format("%02d:00", i);
                 }
                 break;
             case Calendar.MONTH:
-                items=new String[31];
-                for(int i=0;i<31;i++){
-                    items[i]=String.format("%02d",i+1);
+                items = new String[31];
+                for (int i = 0; i < 31; i++) {
+                    items[i] = String.format("%02d", i + 1);
                 }
                 break;
             case Calendar.YEAR:
-                items=new String[12];
-                for(int i=0;i<12;i++){
-                    items[i]=String.format("%02d",i+1);
+                items = new String[12];
+                for (int i = 0; i < 12; i++) {
+                    items[i] = String.format("%02d", i + 1);
                 }
                 break;
             default:
-                items=new String[0];
+                items = new String[0];
                 break;
         }
         return items;
     }
 
-    public static String getStringByField(Calendar calendar,int field) {
+    public static String getStringByField(Calendar calendar, int field) {
         SimpleDateFormat sdf;
         switch (field) {
             case Calendar.YEAR:
-                sdf = new SimpleDateFormat( "yyyy" );
+                sdf = new SimpleDateFormat("yyyy");
                 break;
             case Calendar.MONTH:
-                sdf = new SimpleDateFormat( "yyyy MMM" );
+                sdf = new SimpleDateFormat("yyyy MMM");
                 break;
             default:
-                sdf = new SimpleDateFormat( "MMM dd,EEE" );
+                sdf = new SimpleDateFormat("MMM dd,EEE");
                 break;
         }
-        return sdf.format( calendar.getTime() );
+        return sdf.format(calendar.getTime());
     }
 
     //nj--获取上周起始时间 2018/11/17
-    public static String getStartTimeOfWeek(){
-        Calendar calendar=Calendar.getInstance();
-        calendar=getDayStartTime( calendar );
-        int i=calendar.get(Calendar.DAY_OF_WEEK);
-        calendar.add( Calendar.DAY_OF_MONTH,-(i+6));
-        return getServletString( calendar.getTime() );
+    public static String getStartTimeOfWeek() {
+        Calendar calendar = Calendar.getInstance();
+        calendar = getDayStartTime(calendar);
+        int i = calendar.get(Calendar.DAY_OF_WEEK);
+        calendar.add(Calendar.DAY_OF_MONTH, -(i + 6));
+        return getServletString(calendar.getTime());
     }
 
     //nj--获取上周末时间 2018/11/17
-    public static String getEndTimeOfWeek(){
-        Calendar calendar=Calendar.getInstance();
-        calendar=getDayStartTime( calendar );
-        int i=calendar.get(Calendar.DAY_OF_WEEK);
-        calendar.add( Calendar.DAY_OF_MONTH,-(i-1));
-        return getServletString( calendar.getTime() );
+    public static String getEndTimeOfWeek() {
+        Calendar calendar = Calendar.getInstance();
+        calendar = getDayStartTime(calendar);
+        int i = calendar.get(Calendar.DAY_OF_WEEK);
+        calendar.add(Calendar.DAY_OF_MONTH, -(i - 1));
+        return getServletString(calendar.getTime());
     }
 
     //nj--获取上月的起始日期 2018/11/20
-    public static String getStartTimeOfMonth(){
-        Calendar calendar=Calendar.getInstance();
-        calendar=getDayStartTime( calendar );
-        calendar.add( Calendar.MONTH,-1 );
-        calendar.set( Calendar.DAY_OF_MONTH,1 );
-        return getServletString( calendar.getTime());
+    public static String getStartTimeOfMonth() {
+        Calendar calendar = Calendar.getInstance();
+        calendar = getDayStartTime(calendar);
+        calendar.add(Calendar.MONTH, -1);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        return getServletString(calendar.getTime());
     }
 
     //nj--获取上月结束日期 2018/11/20
-    public static String getEndTimeOfMonth(){
-        Calendar calendar=Calendar.getInstance();
-        calendar=getDayStartTime( calendar );
-        calendar.add( Calendar.MONTH,-1 );
-        calendar.set( Calendar.DAY_OF_MONTH,1 );
-        int i=calendar.getActualMaximum( Calendar.DAY_OF_MONTH );
-        calendar.add( Calendar.DAY_OF_MONTH,i );
-        return getServletString( calendar.getTime());
+    public static String getEndTimeOfMonth() {
+        Calendar calendar = Calendar.getInstance();
+        calendar = getDayStartTime(calendar);
+        calendar.add(Calendar.MONTH, -1);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        int i = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+        calendar.add(Calendar.DAY_OF_MONTH, i);
+        return getServletString(calendar.getTime());
     }
 
     //nj--计算两日期的间隔 2018/11/23
-    public static int getBetweenOfDay(String startTime,String endTime){
-        Date start=getServletDate( startTime );
-        Date end=getServletDate( endTime );
-        int days=(int)((end.getTime()-start.getTime())/(1000*3600*24));
+    public static int getBetweenOfDay(String startTime, String endTime) {
+        Date start = getServletDate(startTime);
+        Date end = getServletDate(endTime);
+        int days = (int) ((end.getTime() - start.getTime()) / (1000 * 3600 * 24));
         return days;
     }
 
     //nj-计算当前时间往前往后的一段时间 2018/12/19
-    public static Date getNearTimeOfMonth(int month,int day){
-        Calendar calendar=Calendar.getInstance();
-        calendar.add( Calendar.MONTH, month);
-        calendar.add( Calendar.DAY_OF_MONTH,day );
+    public static Date getNearTimeOfMonth(int month, int day) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MONTH, month);
+        calendar.add(Calendar.DAY_OF_MONTH, day);
         return calendar.getTime();
     }
 }

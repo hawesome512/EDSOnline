@@ -61,7 +61,7 @@ public class ReportListFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         setHasOptionsMenu( true );
-        View view = inflater.inflate( R.layout.layout_list, container, false );
+        View view = inflater.inflate( R.layout.layout_list, container, false);
         ButterKnife.inject( this, view );
         ViewHelper.initToolbar( (AppCompatActivity) getActivity(),toolbar,R.drawable.ic_arrow_back_white_24dp );
         initView();

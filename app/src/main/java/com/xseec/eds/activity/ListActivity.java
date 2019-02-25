@@ -38,15 +38,14 @@ public class ListActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_list);
+        setContentView(R.layout.layout_device_list);
         ButterKnife.inject(this);
         ViewHelper.initToolbar(this, toolbar, R.drawable.ic_arrow_back_white_24dp);
         setTitle(getIntent().getStringExtra(EXT_TITLE));
         swipeRefreshLayout.setEnabled(false);
         List<Tag> tagList = getIntent().getParcelableArrayListExtra(EXT_TAGS);
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.layout_container, DeviceListFragment
-                .newInstance((ArrayList<Tag>) tagList)).commit();
+        fragmentManager.beginTransaction().replace(R.id.layout_container, DeviceListFragment.newInstance((ArrayList<Tag>) tagList)).commit();
     }
 
 
