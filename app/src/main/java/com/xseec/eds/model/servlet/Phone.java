@@ -16,6 +16,10 @@ public class Phone extends BaseModel implements Parcelable {
     private int level;
     private String account;
 
+    public Phone(String id){
+        setId(id);
+    }
+
     protected Phone(Parcel in) {
         code = in.readString();
         time = in.readString();

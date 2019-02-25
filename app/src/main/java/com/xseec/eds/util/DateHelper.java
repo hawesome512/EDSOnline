@@ -1,5 +1,6 @@
 package com.xseec.eds.util;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -32,6 +33,18 @@ public class DateHelper {
         }catch (Exception exp){
             return null;
         }
+    }
+
+    public static Calendar getCalendar(String formatTime){
+        Calendar calendar=Calendar.getInstance();
+        Date date= null;
+        try {
+            date = simpleDateFormat.parse(formatTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        calendar.setTime(date);
+        return calendar;
     }
 
     public static String getYMDString(Date date){

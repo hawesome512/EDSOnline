@@ -20,6 +20,7 @@ import com.xseec.eds.model.DataLogFactor;
 import com.xseec.eds.model.Device;
 import com.xseec.eds.model.servlet.Alarm;
 import com.xseec.eds.util.DateHelper;
+import com.xseec.eds.util.Device.DeviceConverterCenter;
 import com.xseec.eds.util.Generator;
 
 import java.util.ArrayList;
@@ -50,7 +51,8 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Alarm alarm = alarmList.get(position);
-        Device device = Device.initWithTagName(alarm.getDevice());
+        Device device = DeviceConverterCenter.initWith(alarm.getDevice());
+        //Device device=Device.initWith(alarm.getDevice());
         String status = Generator.getAlarmStateText(alarm.getAlarmCode(), device.getStatusItems());
         holder.textAlarm.setText(status);
         holder.imageDevice.setImageResource(device.getDeviceResId());
@@ -112,7 +114,7 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder> 
                 @Override
                 public void onClick(View v) {
                     Alarm alarm = alarmList.get(getAdapterPosition());
-                    Device device=Device.initWithTagName(alarm.getDevice());
+                    Device device=Device.initWith(alarm.getDevice());
                     List<String> params=device.getDeviceConfig().getAlarmParams();
                     ArrayList<String> tagNames=new ArrayList<>();
                     for(String param:params){

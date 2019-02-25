@@ -3,23 +3,15 @@ package com.xseec.eds.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 import com.xseec.eds.R;
-import com.xseec.eds.adapter.DeviceAdapter;
-import com.xseec.eds.model.servlet.Basic;
+import com.xseec.eds.fragment.DeviceListFragment;
 import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.util.ViewHelper;
-import com.xseec.eds.util.WAJsonHelper;
-import com.xseec.eds.util.WAServiceHelper;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,15 +22,11 @@ public class ListActivity extends BaseActivity {
 
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
-    @InjectView(R.id.recycler)
-    RecyclerView recycler;
 
     private static final String EXT_TITLE = "title";
     private static final String EXT_TAGS = "tags";
     @InjectView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
-    List<Tag> tagList;
-    DeviceAdapter adapter;
 
     public static void start(Context context, String title, List<Tag> tagList) {
         Intent intent = new Intent(context, ListActivity.class);
@@ -54,52 +42,12 @@ public class ListActivity extends BaseActivity {
         ButterKnife.inject(this);
         ViewHelper.initToolbar(this, toolbar, R.drawable.ic_arrow_back_white_24dp);
         setTitle(getIntent().getStringExtra(EXT_TITLE));
-        tagList = getIntent().getParcelableArrayListExtra(EXT_TAGS);
-        //个性化列表
-        initDeviceRecycler();
-        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshDevices();
-            }
-        });
+        swipeRefreshLayout.setEnabled(false);
+        List<Tag> tagList = getIntent().getParcelableArrayListExtra(EXT_TAGS);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.layout_container, DeviceListFragment
+                .newInstance((ArrayList<Tag>) tagList)).commit();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        refreshDevices();
-    }
-
-    private void refreshDevices() {
-        WAServiceHelper.sendGetValueRequest(tagList, new Callback() {
-            @Override
-            public void onFailure(Request request, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Response response) throws IOException {
-                tagList = WAJsonHelper.refreshTagValue(response);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        adapter = new DeviceAdapter(ListActivity.this, tagList);
-                        recycler.setAdapter(adapter);
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                });
-            }
-        });
-    }
-
-    private void initDeviceRecycler() {
-        int column = 1;// ViewHelper.isPort() ? 1 : 2;
-        GridLayoutManager manager = new GridLayoutManager(this, column);
-        adapter = new DeviceAdapter(ListActivity.this, tagList);
-        recycler.setLayoutManager(manager);
-        recycler.setAdapter(adapter);
-    }
 
 }

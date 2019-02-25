@@ -153,10 +153,12 @@ public class DataLogFragment extends BaseFragment {
         }
         //取消曲线上已经高亮的点，否则重绘（如查询其他时间）时因找不到高亮点而闪退
         lineChart.highlightValues(null);
-
+        //累加值需要相减，应多取一点
+        if(isEnergy()){
+            defaultFactor.setRecords(defaultFactor.getRecords()+1);
+        }
         WAServiceHelper.sendTagLogRequest(defaultFactor.getStartTimeString(),
-                defaultFactor.getIntervalType(), defaultFactor.getInterval(), defaultFactor
-                        .getRecords(), storedTagList, new Callback() {
+                defaultFactor.getIntervalType(), defaultFactor.getInterval(), defaultFactor.getRecords(), storedTagList, new Callback() {
 
                     @Override
                     public void onFailure(Request request, IOException e) {
@@ -187,6 +189,10 @@ public class DataLogFragment extends BaseFragment {
         switch (item.getItemId()) {
             case R.id.query_time:
                 if (defaultFactor != null) {
+                    if(isEnergy()){
+                        //查询前做＋1操作
+                        defaultFactor.setRecords(defaultFactor.getRecords()-1);
+                    }
                     DataLogSettingActivity.start(getActivity(), REQUEST_CODE_TIME, defaultFactor);
                 }
                 break;
@@ -220,8 +226,7 @@ public class DataLogFragment extends BaseFragment {
     }
 
     private boolean hasLinkRadio() {
-        return isEnergy() && defaultFactor.getIntervalType() == StoredTag.IntervalType.H &&
-                defaultFactor.getRecords() == DataLogFactor.INTERVAL_ENERGY_LINK_RADIO;
+        return isEnergy() && defaultFactor.getIntervalType() == StoredTag.IntervalType.H &&defaultFactor.getRecords() == DataLogFactor.INTERVAL_ENERGY_LINK_RADIO+1;
     }
 
     @Override

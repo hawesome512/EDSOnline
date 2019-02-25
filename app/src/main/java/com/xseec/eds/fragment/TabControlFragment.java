@@ -19,7 +19,6 @@ import com.xseec.eds.model.State;
 import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.model.tags.ValidTag;
 import com.xseec.eds.util.Device.DeviceConverterCenter;
-import com.xseec.eds.util.Generator;
 import com.xseec.eds.util.RecordHelper;
 import com.xseec.eds.util.TagsFilter;
 
@@ -156,7 +155,7 @@ public class TabControlFragment extends ComFragment {
 
                         //nj--添加远程合分闸操作记录 18/11/05
                         String deviceName=tags.get( 0 ).getTagName();
-                        Device device=Device.initWithTagName( deviceName );
+                        Device device=Device.initWith( deviceName);
                         String actionDevice=device.getDeviceAlias();
                         String actionInfo;
                         switch (farCtrlCode){

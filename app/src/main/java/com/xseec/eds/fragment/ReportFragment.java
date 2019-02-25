@@ -214,9 +214,9 @@ public class ReportFragment extends BaseFragment {
                 List<Alarm> alarmList=WAJsonHelper.getAlarmList( response );
                 List<Alarm> itemList;
                 alarm.setLeftList( alarmList );
-                itemList = Generator.filterAlarmConfim( alarmList, DONE );
+                itemList = Generator.filterAlarmConfirm( alarmList, DONE);
                 alarm.setCenterList( itemList );
-                itemList = Generator.filterAlarmConfim( alarmList, DUE );
+                itemList = Generator.filterAlarmConfirm( alarmList, DUE);
                 alarm.setRightList( itemList );
                 //nj--阻挡线程 2018//12/5
                 setBarrierAwait( barrier );
@@ -254,8 +254,8 @@ public class ReportFragment extends BaseFragment {
         factor = getDataLogFactor( startTime, endTime );
         List<OverviewTag> tagList= LitePal.limit( 2 ).find( OverviewTag.class );
         List<StoredTag> storedTags = new ArrayList<>();
-        storedTags.add( new StoredTag( tagList.get( 0 ).getMapTagName(), StoredTag.DataType.MAX ) );
-        storedTags.add( new StoredTag( tagList.get( 1 ).getMapTagName(), StoredTag.DataType.MAX ) );
+        storedTags.add( new StoredTag( tagList.get( 0 ).getAliasTagName(), StoredTag.DataType.MAX ));
+        storedTags.add( new StoredTag( tagList.get( 1 ).getAliasTagName(), StoredTag.DataType.MAX ));
         WAServiceHelper.sendTagLogRequest( factor, storedTags, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {

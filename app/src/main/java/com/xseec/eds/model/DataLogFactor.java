@@ -21,7 +21,7 @@ public class DataLogFactor implements Parcelable {
     private int records;
     private StoredTag.DataType dataType;
 
-    public static final int INTERVAL_ENERGY_LINK_RADIO=49;
+    public static final int INTERVAL_ENERGY_LINK_RADIO=48;
 
     public DataLogFactor() {
         initDefault();

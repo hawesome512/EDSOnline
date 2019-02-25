@@ -27,7 +27,6 @@ import com.xseec.eds.adapter.AlarmAdapter;
 import com.xseec.eds.model.FilterLabel;
 import com.xseec.eds.model.WAServicer;
 import com.xseec.eds.model.servlet.Alarm;
-import com.xseec.eds.model.servlet.Workorder;
 import com.xseec.eds.util.DateHelper;
 import com.xseec.eds.util.Generator;
 import com.xseec.eds.util.ViewHelper;
@@ -35,8 +34,6 @@ import com.xseec.eds.util.WAJsonHelper;
 import com.xseec.eds.util.WAServiceHelper;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -180,7 +177,7 @@ public class AlarmListFragment extends BaseFragment {
             for(FilterLabel label:filterList){
                 List<Alarm> alarmList;
                 if (label.getType().equals( "confirm" )){
-                    alarmList=Generator.filterAlarmConfim( sources,label.getValueOfInt() );
+                    alarmList=Generator.filterAlarmConfirm( sources,label.getValueOfInt());
                 }else {
                     alarmList=Generator.filterAlarmDevice( sources,label.getValue() );
                 }

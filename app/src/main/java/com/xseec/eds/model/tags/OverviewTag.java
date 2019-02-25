@@ -1,49 +1,48 @@
 package com.xseec.eds.model.tags;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
-
-import org.litepal.crud.LitePalSupport;
 
 /**
  * Created by Administrator on 2018/7/25.
  */
 
-public class OverviewTag extends LitePalSupport {
+public class OverviewTag implements Parcelable {
 
-    private int index;
     private int tagResId;
     private String tagName;
     private String tagValue;
     private String tagUnit;
-    private String mapTagName;
-    private boolean isDefault;
+    private String aliasTagName;
 
-    public OverviewTag(@NonNull int index, @NonNull int tagResId,@NonNull String tagName, String tagValue, String tagUnit, String
-            mapTagName,boolean isDefault) {
-        this.index=index;
+    public OverviewTag(@NonNull int tagResId,@NonNull String tagName, String tagValue, String mapTagName, String tagUnit) {
         this.tagResId = tagResId;
         this.tagName = tagName;
         this.tagValue = tagValue;
         this.tagUnit = tagUnit;
-        this.mapTagName = mapTagName;
-        this.isDefault=isDefault;
+        this.aliasTagName = mapTagName;
     }
 
-    public boolean isDefault() {
-        return isDefault;
+    protected OverviewTag(Parcel in) {
+        tagResId = in.readInt();
+        tagName = in.readString();
+        tagValue = in.readString();
+        tagUnit = in.readString();
+        aliasTagName = in.readString();
     }
 
-    public void setDefault(boolean aDefault) {
-        isDefault = aDefault;
-    }
+    public static final Creator<OverviewTag> CREATOR = new Creator<OverviewTag>() {
+        @Override
+        public OverviewTag createFromParcel(Parcel in) {
+            return new OverviewTag(in);
+        }
 
-    public int getIndex() {
-        return index;
-    }
-
-    public void setIndex(int index) {
-        this.index = index;
-    }
+        @Override
+        public OverviewTag[] newArray(int size) {
+            return new OverviewTag[size];
+        }
+    };
 
     public int getTagResId() {
         return tagResId;
@@ -77,11 +76,25 @@ public class OverviewTag extends LitePalSupport {
         this.tagUnit = tagUnit;
     }
 
-    public String getMapTagName() {
-        return mapTagName;
+    public String getAliasTagName() {
+        return aliasTagName;
     }
 
-    public void setMapTagName(String mapTagName) {
-        this.mapTagName = mapTagName;
+    public void setAliasTagName(String aliasTagName) {
+        this.aliasTagName = aliasTagName;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(tagResId);
+        dest.writeString(tagName);
+        dest.writeString(tagValue);
+        dest.writeString(tagUnit);
+        dest.writeString(aliasTagName);
     }
 }

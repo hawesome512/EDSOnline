@@ -11,7 +11,7 @@
         android:layout_height="@dimen/image_size"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/view_margin_normal"
-        tools:src="@drawable/circle_water" />
+        tools:src="@drawable/overviewtag_12" />
 
     <TextView
         android:id="@+id/text_name"

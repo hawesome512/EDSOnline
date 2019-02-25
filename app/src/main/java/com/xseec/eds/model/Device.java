@@ -43,7 +43,11 @@ public enum Device {
         return deviceResId;
     }
 
-    public static Device initWithTagName(String tagName) {
+    public void setDeviceResId(int deviceResId) {
+        this.deviceResId = deviceResId;
+    }
+
+    public static Device initWith(String tagName) {
         infos = tagName.split(":")[0].split("_");
         if (infos.length != 3) {
             return null;

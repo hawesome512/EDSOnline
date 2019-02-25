@@ -1,13 +1,11 @@
 package com.xseec.eds.fragment;
 
 import android.app.Activity;
-import android.app.Instrumentation;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Pair;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -23,7 +21,6 @@ import com.xseec.eds.util.RecordHelper;
 import com.xseec.eds.util.TagsFilter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -168,16 +165,17 @@ public class TabProtectFragment extends TabBaseFragment {
             return;
         }
         modifyProgress = view.findViewById(R.id.progress_modify);
-        //传递副本，对其修改不会影响原tag
-        modifyTag = new Tag(tag.getTagName(), tag.getTagValue());
 
         //nj--记录设备名称、参数名称与参数旧值
         String DeviceName = tag.getTagName();
-        Device device = Device.initWithTagName(DeviceName);
+        Device device = Device.initWith(DeviceName);
         actionDevic = device.getDeviceAlias();
         oldActionValue = tag.getTagValue();
 
-        checkCtrlAuthority(REQUEST_PROTECT_AUTHORITY);
+        if(checkCtrlAuthority(REQUEST_PROTECT_AUTHORITY)){
+            //传递副本，对其修改不会影响原tag
+            modifyTag = new Tag(tag.getTagName(), tag.getTagValue());
+        }
         if (hasCode) {
             selectItems();
         }

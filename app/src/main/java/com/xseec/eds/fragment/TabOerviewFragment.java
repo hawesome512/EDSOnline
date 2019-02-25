@@ -114,7 +114,7 @@ public class TabOerviewFragment extends ComFragment {
             public void onResponse(Response response) throws IOException {
                 List<Alarm> alarms= WAJsonHelper.getAlarmList(response);
                 Collections.sort(alarms,Collections.<Alarm>reverseOrder());
-                Device device=Device.initWithTagName(tagList.get(0).getTagName());
+                Device device=Device.initWith(tagList.get(0).getTagName());
                 List<Alarm> deviceAlarms=new ArrayList<>();
                 for(Alarm alarm:alarms){
                     if(alarm.getDevice().equals(device.getDeviceName())){

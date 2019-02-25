@@ -18,6 +18,7 @@ import com.xseec.eds.fragment.TabOerviewFragment;
 import com.xseec.eds.fragment.TabProtectFragment;
 import com.xseec.eds.model.Device;
 import com.xseec.eds.model.deviceconfig.DeviceConfig;
+import com.xseec.eds.util.Device.DeviceConverterCenter;
 import com.xseec.eds.util.ViewHelper;
 
 import butterknife.ButterKnife;
@@ -58,7 +59,8 @@ public class DeviceActivity extends BaseActivity implements ViewPager.OnPageChan
         //故，在设备页面锁定屏幕方向
         ViewHelper.lockOrientation(this);
         String tagName = getIntent().getStringExtra(KEY_DEVICE_NAME);
-        Device device = Device.initWithTagName(tagName);
+//        Device device = Device.initWith(tagName);
+        Device device = DeviceConverterCenter.initWith(tagName);
         DeviceConfig deviceConfig = device.getDeviceConfig();
         setTitle(device.getDeviceAlias());
         imageDevice.setImageResource(device.getDeviceResId());

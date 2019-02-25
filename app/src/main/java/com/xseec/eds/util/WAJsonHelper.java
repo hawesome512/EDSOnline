@@ -9,8 +9,10 @@ import com.xseec.eds.model.servlet.Account;
 import com.xseec.eds.model.servlet.Action;
 import com.xseec.eds.model.servlet.Alarm;
 import com.xseec.eds.model.servlet.Basic;
+import com.xseec.eds.model.servlet.Overviewtag;
 import com.xseec.eds.model.servlet.ResponseResult;
 import com.xseec.eds.model.servlet.Workorder;
+import com.xseec.eds.model.tags.OverviewTag;
 import com.xseec.eds.model.tags.Tag;
 
 import org.json.JSONArray;
@@ -137,6 +139,19 @@ public class WAJsonHelper {
         try {
             String json=response.body().string();
             return getServletDateFormatGson().fromJson(filterServletJson(json),new TypeToken<List<Action>>(){}.getType());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static List<OverviewTag> getOverviewTagList(Response response){
+        try {
+            String json=response.body().string();
+            List<Overviewtag> overviewtags= getServletDateFormatGson().fromJson(filterServletJson(json),new TypeToken<List<Overviewtag>>(){}.getType());
+            if(overviewtags!=null&&overviewtags.size()>0){
+                return overviewtags.get(0).getOverviewTagList();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

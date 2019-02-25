@@ -35,6 +35,7 @@ public class TimeXAxisValueFormatter implements IAxisValueFormatter{
         this.startTime=startTime;
         this.interval=interval;
     }
+
     List<Float> nums=new ArrayList<>();
     @Override
     public String getFormattedValue(float value, AxisBase axis) {

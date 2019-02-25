@@ -191,7 +191,7 @@ public class WorkorderActivity extends BaseActivity implements UploadListener,
 
     private void initViews() {
         setTitle(workorder.getTitle());
-        imageArea.setImageResource(Generator.getWorkorderImageResWithType(workorder.getType()));
+        imageArea.setImageResource(Generator.getImageRes("schedule_"+workorder.getType()));
         imageState.setImageResource(workorder.getStateImgRes());
         textState.setText(workorder.getStateTextRes());
         textTask.setText(Workorder.getShowString(workorder.getTask()));

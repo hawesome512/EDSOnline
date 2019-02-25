@@ -133,17 +133,19 @@ public class DataLogSettingActivity extends AppCompatActivity {
                     startTime.set(Calendar.MINUTE, minute);
                     startTime.set(Calendar.SECOND, 0);
                     factor.setStartTime(startTime);
-                    if(radioMonth.isChecked()){
+                    if (radioMonth.isChecked()) {
                         factor.setRecords(startTime.getActualMaximum(Calendar.DAY_OF_MONTH));
                     }
                     editStart.setText(DateHelper.getString(startTime.getTime()));
-                    endTime=factor.getEndTime();
-                    editEnd.setText(DateHelper.getString(endTime.getTime()));
+                    if (!radioNull.isChecked()) {
+                        endTime = factor.getEndTime();
+                        editEnd.setText(DateHelper.getString(endTime.getTime()));
+                    }
                 } else {
                     endTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
                     endTime.set(Calendar.MINUTE, minute);
                     endTime.set(Calendar.SECOND, 0);
-                    factor.setEndTime(endTime);
+                    //factor.setEndTime(endTime);
                     editEnd.setText(DateHelper.getString(endTime.getTime()));
                 }
             }
@@ -152,17 +154,23 @@ public class DataLogSettingActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_setting)
     public void onBtnSettingClicked() {
-        if (radioNull.isChecked()&&startTime.after(endTime)) {
-            Toast.makeText(this,R.string.workorder_range_error,Toast.LENGTH_SHORT).show();
-        } else {
-            StoredTag.DataType dataType = StoredTag.DataType.values()[spinnerDataType
-                    .getSelectedItemPosition()];
-            factor.setDataType(dataType);
-            Intent intent = new Intent();
-            intent.putExtra(DataLogFragment.KEY_FACOTR, factor);
-            setResult(RESULT_OK, intent);
-            finish();
+
+        //需加上异常处理情况：从其他模式切换至默认模式，只选起始时间后直接设置
+        if (radioNull.isChecked()) {
+            endTime = DateHelper.getCalendar(editEnd.getText().toString());
+            if (startTime.after(endTime)) {
+                Toast.makeText(this, R.string.workorder_range_error, Toast.LENGTH_SHORT).show();
+                return;
+            }
+            factor.setEndTime(endTime);
         }
+        StoredTag.DataType dataType = StoredTag.DataType.values()[spinnerDataType
+                .getSelectedItemPosition()];
+        factor.setDataType(dataType);
+        Intent intent = new Intent();
+        intent.putExtra(DataLogFragment.KEY_FACOTR, factor);
+        setResult(RESULT_OK, intent);
+        finish();
     }
 
     @OnClick({R.id.radio_null, R.id.radio_min, R.id.radio_hour, R.id.radio_day, R.id.radio_month})

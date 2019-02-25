@@ -16,7 +16,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.SpinnerAdapter;
 import android.widget.Toast;
 
 import com.squareup.okhttp.Callback;
@@ -39,7 +38,6 @@ import com.xseec.eds.util.WAServiceHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -47,7 +45,6 @@ import java.util.List;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import io.reactivex.internal.schedulers.NewThreadWorker;
 
 public class WorkorderCreatorActivity extends BaseActivity {
 
@@ -113,7 +110,7 @@ public class WorkorderCreatorActivity extends BaseActivity {
     private void initIfAlarm() {
         alarm = getIntent().getParcelableExtra(EXT_ALARM);
         if (alarm != null) {
-            Device device=Device.initWithTagName(alarm.getDevice());
+            Device device=Device.initWith(alarm.getDevice());
             String status= Generator.getAlarmStateText(alarm.getAlarmCode(),device.getStatusItems());
             //异常工单：后期可优化，不直接用1，用枚举
             spinnerType.setSelection(1);

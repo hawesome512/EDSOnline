@@ -52,7 +52,7 @@ public class WAServicer {
     public static void initWAServicer(){
         context= EDSApplication.getContext();
         SharedPreferences preferences=PreferenceManager.getDefaultSharedPreferences(context);
-        //hostUrl=preferences.getString(PREF_HOST,"47.97.189.229");
+        //hostUrl=preferences.getString(PREF_HOST,"172.16.65.87");
         hostUrl=preferences.getString(PREF_HOST,"www.eds.ink");
         projectName=preferences.getString(PREF_PROJECT,"EDS");
         nodeName=preferences.getString(PREF_NODE,"XS");
@@ -180,6 +180,14 @@ public class WAServicer {
 
     public static String getBasicUpdateUrl(@NonNull Basic basic){
         return context.getString(R.string.svl_basic_update,hostUrl);
+    }
+
+    public static String getOverviewtagQueryUrl(@NonNull String deviceName){
+        return context.getString(R.string.svl_overviewtag_query,hostUrl)+"id="+deviceName;
+    }
+
+    public static String getOverviewtagUpdateUrl(){
+        return context.getString(R.string.svl_overviewtag_update,hostUrl);
     }
 
     public static String getAccountQueryUrl(@NonNull String deviceName){

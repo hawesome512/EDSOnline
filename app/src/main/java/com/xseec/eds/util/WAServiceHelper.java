@@ -16,9 +16,11 @@ import com.xseec.eds.model.servlet.Account;
 import com.xseec.eds.model.servlet.Action;
 import com.xseec.eds.model.servlet.Alarm;
 import com.xseec.eds.model.servlet.Basic;
+import com.xseec.eds.model.servlet.Overviewtag;
 import com.xseec.eds.model.servlet.Phone;
 import com.xseec.eds.model.servlet.UploadListener;
 import com.xseec.eds.model.servlet.Workorder;
+import com.xseec.eds.model.tags.OverviewTag;
 import com.xseec.eds.model.tags.StoredTag;
 import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.model.tags.ValidTag;
@@ -187,6 +189,17 @@ public class WAServiceHelper {
     public static void sendBasicUpdateRequest(Basic basic,Callback callback){
         String url=WAServicer.getBasicUpdateUrl(basic);
         String content=basic.toJson();
+        sendRequest(url,null,content,callback);
+    }
+
+    public static Response getOverviewtagQueryRequest(String deviceName){
+        String url=WAServicer.getOverviewtagQueryUrl(deviceName);
+        return executeRequest(url,null,null);
+    }
+
+    public static void sendOverviewtagUpdateRequest(Overviewtag overviewtag,Callback callback){
+        String url=WAServicer.getOverviewtagUpdateUrl();
+        String content=overviewtag.toJson();
         sendRequest(url,null,content,callback);
     }
 

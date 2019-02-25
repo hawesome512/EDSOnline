@@ -3,6 +3,7 @@ package com.xseec.eds.fragment;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
+import android.widget.Toast;
 
 import com.xseec.eds.R;
 import com.xseec.eds.activity.ChartActivity;
@@ -13,6 +14,7 @@ import com.xseec.eds.util.Generator;
 import com.xseec.eds.util.TagsFilter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -106,6 +108,11 @@ public class TabMonitorFragment extends TabBaseFragment {
 
     @Override
     public void onTagClick(Tag tag, View view) {
+        List<String> calItems= Arrays.asList("Iavg","Ip","Uavg","Up","Phase");
+        if(calItems.contains(tag.getTagShortName())){
+            Toast.makeText(getContext(), R.string.device_log_null, Toast.LENGTH_SHORT).show();
+            return;
+        }
         ArrayList<String> tags = new ArrayList<>();
         tags.add(tag.getTagName());
         ChartActivity.start(getContext(), tags, new DataLogFactor(tag.getTagName()));

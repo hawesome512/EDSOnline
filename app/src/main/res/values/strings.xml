@@ -113,8 +113,8 @@
     <string name="detail_yesterday">昨日能耗</string>
     <string name="detail_yesterday_same">昨日同期</string>
     <string name="detail_link_ratio">环比</string>
-    <string name="detail_THD">THD(vs基波)</string>
-    <string name="detail_thd">thd(vs有效值)</string>
+    <string name="detail_thd_v">电压谐波失真(%基波)</string>
+    <string name="detail_thd_c">电流谐波失真(%基波)</string>
     <!--Device List-->
     <string name="detail_title">设备列表</string>
     <string name="detail_title_error">异常设备</string>
@@ -140,6 +140,7 @@
     <string name="device_off">OFF</string>
     <string name="device_protect_on">开启</string>
     <string name="device_protect_off">关闭</string>
+    <string name="device_log_null">无运行趋势数据</string>
     <string name="device_modify">修改</string>
     <string name="device_modify_success">修改成功，等待刷新(10s)</string>
     <string name="device_modify_timeout">修改请求超时，请重试</string>
@@ -234,7 +235,7 @@
     <string name="tag_P">有功(kW)</string>
     <string name="tag_Q">无功(kVar)</string>
     <string name="tag_S">视在(kVA)</string>
-    <string name="tag_COS">功率因素</string>
+    <string name="tag_COS">功率因素(%)</string>
     <string name="tag_EP">有功(kW·h)</string>
     <string name="tag_EQ">无功(kVar·h)</string>
     <string name="tag_ES">视在(kVA·h)</string>
@@ -299,6 +300,9 @@
     <string name="svl_account_query">http://%1$s:8080/EDSServlet/QueryAccountServlet?</string>
     <string name="svl_account_update">http://%1$s:8080/EDSServlet/UpdateAccountServlet</string>
     <string name="svl_account_request">{\"id\":\"%1$s\",\"authority\":\"%2$s\",\"number\":%3$d,\"phone\":\"%4$s\"}</string>
+    <string name="svl_overviewtag_query">http://%1$s:8080/EDSServlet/QueryOverviewtagServlet?</string>
+    <string name="svl_overviewtag_update">http://%1$s:8080/EDSServlet/UpdateOverviewtagServlet</string>
+    <string name="svl_overviewtag_request">{\"id\":\"%1$s\",\"item1\":\"%2$s\",\"item2\":\"%3$s\",\"item3\":\"%4$s\",\"item4\":\"%5$s\",\"item5\":\"%6$s\",\"item6\":\"%7$s\"}</string>
     <string name="svl_phone_query">http://%1$s:8080/EDSServlet/QueryPhoneServlet</string>
     <string name="svl_phone_update">http://%1$s:8080/EDSServlet/UpdatePhoneServlet</string>
     <string name="svl_phone_request">{\"id\":\"%1$s\",\"code\":\"%2$s\",\"time\":\"%3$s\",\"level\":%4$d,\"account\":\"%5$s\"}</string>

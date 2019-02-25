@@ -18,8 +18,8 @@ import java.util.Map;
 
 public class Basic extends BaseModel implements Parcelable {
 
-    private static final String SPIT=";";
-    private static final String ALIAS_SPIT="-";
+    private static final String SPIT = ";";
+    private static final String ALIAS_SPIT = "-";
 
     private String user;
     private String banner;
@@ -28,11 +28,11 @@ public class Basic extends BaseModel implements Parcelable {
     private String image;
     private String alias;
 
-    public Basic(){
-        Context context=EDSApplication.getContext();
-        this.id= WAServicer.getUser().getDeviceName();
-        this.user=context.getString(R.string.app_name);
-        this.banner="xs.jpg";
+    public Basic() {
+        Context context = EDSApplication.getContext();
+        this.id = WAServicer.getUser().getDeviceName();
+        this.user = context.getString(R.string.app_name);
+        this.banner = "xs.jpg";
     }
 
     public Basic(String id) {
@@ -46,8 +46,9 @@ public class Basic extends BaseModel implements Parcelable {
         pricipal = in.readString();
         location = in.readString();
         image = in.readString();
-        alias=in.readString();
+        alias = in.readString();
     }
+
     public static final Creator<Basic> CREATOR = new Creator<Basic>() {
         @Override
         public Basic createFromParcel(Parcel in) {
@@ -72,8 +73,8 @@ public class Basic extends BaseModel implements Parcelable {
         return banner;
     }
 
-    public String getBannerUrl(){
-        return WAServicer.getDownloadImageUrl()+banner;
+    public String getBannerUrl() {
+        return WAServicer.getDownloadImageUrl() + banner;
     }
 
     public void setBanner(String banner) {
@@ -113,26 +114,29 @@ public class Basic extends BaseModel implements Parcelable {
     }
 
     @Override
-    public String toJson(){
-        return EDSApplication.getContext().getString(R.string.svl_basic_request,id,user,banner,pricipal,location,image,alias);
+    public String toJson() {
+        return EDSApplication.getContext().getString(R.string.svl_basic_request, id, user,
+                banner, pricipal, location, image, alias);
     }
 
-    public LinkedHashMap<String,String> getAliasMap(){
-        String[] items=alias.split(SPIT);
-        LinkedHashMap map=new LinkedHashMap();
-        for(String item:items){
-            String[] kv=item.split(ALIAS_SPIT);
-            if(kv.length==2){
-                map.put(kv[0],kv[1]);
+    public LinkedHashMap<String, String> getAliasMap() {
+        LinkedHashMap map = new LinkedHashMap();
+        if (alias != null) {
+            String[] items = alias.split(SPIT);
+            for (String item : items) {
+                String[] kv = item.split(ALIAS_SPIT);
+                if (kv.length == 2) {
+                    map.put(kv[0], kv[1]);
+                }
             }
         }
         return map;
     }
 
-    public void setAlias(LinkedHashMap<String,String> map){
-        StringBuilder builder=new StringBuilder();
-        for(Map.Entry<String,String> entry:map.entrySet()){
-            builder.append(entry.getKey()+ALIAS_SPIT+entry.getValue()+SPIT);
+    public void setAlias(LinkedHashMap<String, String> map) {
+        StringBuilder builder = new StringBuilder();
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            builder.append(entry.getKey() + ALIAS_SPIT + entry.getValue() + SPIT);
         }
         setAlias(builder.toString());
     }

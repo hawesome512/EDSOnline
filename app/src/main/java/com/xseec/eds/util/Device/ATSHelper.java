@@ -23,17 +23,23 @@ import java.util.Map;
 public class ATSHelper {
 
     public static void convert(List<Tag> validTagList) {
-        List<Tag> newTags=new ArrayList<>();
         for(Tag tag:validTagList){
             switch (tag.getTagShortName()){
                 case "Phase":
                     tag.setTagValue(covPhase(tag));
                     break;
+                case "CtrlMode":
+                    tag.setTagValue(covCtrlMode(tag));
                 default:
                     break;
             }
         }
-        validTagList.addAll(newTags);
+    }
+
+    private static String covCtrlMode(Tag tag) {
+        String tagValue = tag.getTagValue();
+        tagValue = Generator.checkIsOne(tagValue, 6) ? Protect.REMOTE : Protect.LOCAL;
+        return tagValue;
     }
 
     private static String covPhase(Tag source){
@@ -44,14 +50,6 @@ public class ATSHelper {
             value="1";
         }
         return value;
-    }
-
-    public static Tag covCtrlMode(List<Tag> tagList){
-        Tag source= TagsFilter.filterDeviceTagList(tagList, "Sw1").get(0);
-        String tagValue=source.getTagValue();
-        tagValue=Generator.checkIsOne(tagValue,6)?Protect.REMOTE:Protect.LOCAL;
-        String tagName=source.getDeviceID()+Tag.SPIT_NAME+Protect.CTRL_MODE;
-        return new Tag(tagName,tagValue);
     }
 
     public static Map<Integer,List<String>> genProtectCardMaps() {

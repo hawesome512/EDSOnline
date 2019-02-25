@@ -12,12 +12,9 @@ import com.xseec.eds.R;
 import com.xseec.eds.activity.ChartActivity;
 import com.xseec.eds.model.DataLogFactor;
 import com.xseec.eds.model.tags.OverviewTag;
-import com.xseec.eds.model.tags.StoredTag;
-import com.xseec.eds.util.DateHelper;
 import com.xseec.eds.util.EDSApplication;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -25,6 +22,8 @@ import java.util.List;
  */
 
 public class OverviewAdapter extends RecyclerView.Adapter<OverviewAdapter.ViewHolder> {
+
+    private static final String NULL_TAG_VALUE="-2";
 
     private List<OverviewTag> tagList;
 
@@ -35,8 +34,7 @@ public class OverviewAdapter extends RecyclerView.Adapter<OverviewAdapter.ViewHo
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_overview,
-                parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_overview,parent, false);
         ViewHolder holder = new ViewHolder(view);
         return holder;
     }
@@ -45,8 +43,12 @@ public class OverviewAdapter extends RecyclerView.Adapter<OverviewAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         OverviewTag tag = tagList.get(position);
         holder.imageItem.setImageResource(tag.getTagResId());
-        holder.textName.setText(tag.getTagName());
-        holder.textValue.setText(tag.getTagValue());
+        holder.textName.setText(tag.getAliasTagName());
+        String value=tag.getTagValue();
+        if(value!=null&&value.equals(NULL_TAG_VALUE)){
+            value=EDSApplication.getContext().getString(R.string.overview_item_detail);
+        }
+        holder.textValue.setText(value);
         holder.textUnit.setText(tag.getTagUnit());
     }
 
@@ -71,7 +73,7 @@ public class OverviewAdapter extends RecyclerView.Adapter<OverviewAdapter.ViewHo
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String tagName = tagList.get(getAdapterPosition()).getMapTagName();
+                    String tagName = tagList.get(getAdapterPosition()).getTagName();
                     DataLogFactor factor=new DataLogFactor(tagName);
                     ArrayList<String> tags = new ArrayList<>();
                     tags.add(tagName);

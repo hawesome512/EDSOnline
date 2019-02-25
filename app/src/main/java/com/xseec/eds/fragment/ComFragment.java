@@ -91,9 +91,20 @@ public abstract class ComFragment extends Fragment implements ComListener {
 //        onBindService();
     }
 
+    /*
+     * 解除绑定放在onStop中存在问题
+     * 初始→Com1 onBind→调用Com2→Com2 onBind→Com1被Com2覆盖触发onStop
+     * 此时执行的是Com2 的onUnbind,相对于Com1继续运行，Com2被停止
+     */
     @Override
     public void onStop() {
         super.onStop();
+//        onUnbindService();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
         onUnbindService();
     }
 
@@ -147,16 +158,17 @@ public abstract class ComFragment extends Fragment implements ComListener {
         }
     }
 
-    protected void checkCtrlAuthority(int authorityCode) {
+    protected boolean checkCtrlAuthority(int authorityCode) {
         List<Tag> ctrlTags = DeviceConverterCenter.getCtrlList(tagList);
         if (ctrlTags.size() == 2) {
             String mode = ctrlTags.get(0).getTagValue();
-            if(mode==null){
-                Toast.makeText(getContext(), R.string.device_modify_null, Toast.LENGTH_SHORT).show();
-                return;
-            }else if (mode.equals(CTRL_LOCAL)) {
+            if (mode == null) {
+                Toast.makeText(getContext(), R.string.device_modify_null, Toast.LENGTH_SHORT)
+                        .show();
+                return false;
+            } else if (mode.equals(CTRL_LOCAL)) {
                 //极小概率触发：初始远程模式，已有密码，切换本地模式，仍能遥调
-                hasCode=false;
+                hasCode = false;
                 final AlertDialog.Builder builder = new AlertDialog.Builder(getContext())
                         .setTitle(R.string.device_modify_refuse)
                         .setMessage(R.string.device_modify_local)
@@ -166,18 +178,19 @@ public abstract class ComFragment extends Fragment implements ComListener {
                             }
                         });
                 builder.show();
-                return;
+                return false;
             }
             if (!hasCode) {
                 int code = Integer.valueOf(ctrlTags.get(1).getTagValue());
-                String BCDCode=String.format("%04x",code);
+                String BCDCode = String.format("%04x", code);
                 //需分别参数修改和远程操作的请求码，若相同同时出发其onActivityResult
                 VerificationCodeActivity.start(getActivity(), authorityCode, BCDCode);
             }
         }
+        return true;
     }
 
-    protected void onModifyTags(List<ValidTag> targets, final View view){
+    protected void onModifyTags(List<ValidTag> targets, final View view) {
         WAServiceHelper.sendSetValueRequest(targets, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {

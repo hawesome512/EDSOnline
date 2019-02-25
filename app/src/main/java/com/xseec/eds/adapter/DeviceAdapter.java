@@ -82,7 +82,8 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Context context = EDSApplication.getContext();
         String item = showItems.get(position);
-        Device device = Device.initWithTagName(item);
+//        Device device = Device.initWith(item);
+        Device device = DeviceConverterCenter.initWith(item);
         if (device == null) {
             //区域标签
             String alias=Device.getAliasMap().containsKey(item)?Device.getAliasMap().get(item):item;
@@ -104,7 +105,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
             holder.imageState.setImageResource(state.getStateColorRes());
             //state.setUnusualAnimator(holder.imageState);
             //最后一个设备标签不显示分割线，美化效果
-            if(position==showItems.size()-1||Device.initWithTagName(showItems.get(position+1))==null){
+            if(position==showItems.size()-1||Device.initWith(showItems.get(position+1))==null){
                 holder.viewDivider.setVisibility(View.GONE);
             }else {
                 holder.viewDivider.setVisibility(View.VISIBLE);
@@ -114,7 +115,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
 
     @Override
     public int getItemViewType(int position) {
-        Device device = Device.initWithTagName(showItems.get(position));
+        Device device = Device.initWith(showItems.get(position));
         return device == null ? TYPE_ZONE : TYPE_DEVICE;
         //return super.getItemViewType(position);
     }
@@ -143,7 +144,7 @@ public class DeviceAdapter extends RecyclerView.Adapter<DeviceAdapter.ViewHolder
                 @Override
                 public void onClick(View v) {
                     String item = showItems.get(getAdapterPosition());
-                    Device device = Device.initWithTagName(item);
+                    Device device = Device.initWith(item);
                     if (device == null) {
                         boolean collaps=collapsState.get(item);
                         collapsState.put(item,!collaps);

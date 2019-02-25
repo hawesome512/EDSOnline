@@ -1,8 +1,6 @@
 package com.xseec.eds.util;
 
 import android.content.Context;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
 
 import com.github.mikephil.charting.data.Entry;
 import com.xseec.eds.R;
@@ -10,7 +8,6 @@ import com.xseec.eds.fragment.ActionListFragment;
 import com.xseec.eds.fragment.AlarmListFragment;
 import com.xseec.eds.fragment.EnergyFragment;
 import com.xseec.eds.fragment.ReportFragment;
-import com.xseec.eds.fragment.ReportListFragment;
 import com.xseec.eds.fragment.SettingFragment;
 import com.xseec.eds.fragment.WorkorderListFragment;
 import com.xseec.eds.model.Device;
@@ -23,8 +20,6 @@ import com.xseec.eds.model.tags.EnergyTag;
 import com.xseec.eds.model.tags.OverviewTag;
 import com.xseec.eds.model.tags.Tag;
 
-import org.litepal.LitePal;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -32,7 +27,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 /**
  * Created by Administrator on 2018/7/25.
@@ -43,74 +37,7 @@ public class Generator {
     //因版本变更较大，此处临时处理，后续关于Overview的配置模块处理
     public static List<OverviewTag> genOverviewTags(){
         List<OverviewTag> overviewTags=new ArrayList<>();
-
-        Context context = EDSApplication.getContext();
-        String name = context.getString(R.string.overview_item_tempreture);
-        OverviewTag tag0 = new OverviewTag(0, R.drawable.circle_tempreture, name, null, "℃",
-                "XRD:T", true);
-        overviewTags.add(tag0);
-
-        name = context.getString(R.string.overview_item_energy);
-        OverviewTag tag1 = new OverviewTag(1, R.drawable.circle_light, name, null, "kW·h",
-                "XRD:EP", true);
-        overviewTags.add(tag1);
-
-        name = context.getString(R.string.overview_item_harmonic);
-        String valueText = context.getString(R.string.overview_item_detail);
-        OverviewTag tag2 = new OverviewTag(2, R.drawable.circle_bar_hor, name, valueText, null,
-                "RD_A3_6:THD", true);
-        overviewTags.add(tag2);
-
-        name = context.getString(R.string.overview_item_apparent_power);
-        OverviewTag tag3 = new OverviewTag(3, R.drawable.circle_line_3, name, null, "kVA",
-                "XRD:S", true);
-        overviewTags.add(tag3);
-
-        name = context.getString(R.string.overview_item_activie_power);
-        OverviewTag tag4 = new OverviewTag(4, R.drawable.circle_line_2, name, null, "kW",
-                "XRD:P", true);
-        overviewTags.add(tag4);
-
-        name = context.getString(R.string.overview_item_reactive_power);
-        OverviewTag tag5 = new OverviewTag(5, R.drawable.circle_line_4, name, null, "kVar",
-                "XRD:Q", true);
-        overviewTags.add(tag5);
         return overviewTags;
-    }
-
-    public static void initOverviewTagStore() {
-        LitePal.getDatabase();
-        Context context = EDSApplication.getContext();
-        String name = context.getString(R.string.overview_item_tempreture);
-        OverviewTag tag0 = new OverviewTag(0, R.drawable.circle_tempreture, name, null, "℃",
-                "XRD:T", true);
-        tag0.save();
-
-        name = context.getString(R.string.overview_item_energy);
-        OverviewTag tag1 = new OverviewTag(1, R.drawable.circle_light, name, null, "kW·h",
-                "XRD:EP", true);
-        tag1.save();
-
-        name = context.getString(R.string.overview_item_harmonic);
-        String valueText = context.getString(R.string.overview_item_detail);
-        OverviewTag tag2 = new OverviewTag(2, R.drawable.circle_bar_hor, name, valueText, null,
-                "RD_A3_6:THD", true);
-        tag2.save();
-
-        name = context.getString(R.string.overview_item_apparent_power);
-        OverviewTag tag3 = new OverviewTag(3, R.drawable.circle_line_3, name, null, "kVA",
-                "XRD:S", true);
-        tag3.save();
-
-        name = context.getString(R.string.overview_item_activie_power);
-        OverviewTag tag4 = new OverviewTag(4, R.drawable.circle_line_2, name, null, "kW",
-                "XRD:P", true);
-        tag4.save();
-
-        name = context.getString(R.string.overview_item_reactive_power);
-        OverviewTag tag5 = new OverviewTag(5, R.drawable.circle_line_4, name, null, "kVar",
-                "XRD:Q", true);
-        tag5.save();
     }
 
     public static List<Function> genFunctions() {
@@ -153,17 +80,9 @@ public class Generator {
         return DateHelper.getString(calendar.getTime());
     }
 
-    public static int getScheduleImageRes() {
-        Random random = new Random();
-        int index = random.nextInt(8);
+    public static int getImageRes(String imageName) {
         Context context = EDSApplication.getContext();
-        return context.getResources().getIdentifier("schedule_" + String.valueOf(index),
-                "drawable", context.getPackageName());
-    }
-
-    public static int getWorkorderImageResWithType(int type) {
-        Context context = EDSApplication.getContext();
-        return context.getResources().getIdentifier("schedule_" + String.valueOf(type),
+        return context.getResources().getIdentifier(imageName,
                 "drawable", context.getPackageName());
     }
 
@@ -258,7 +177,7 @@ public class Generator {
     }
 
     public static String getAlarmStateTextWithTag(Tag tag) {
-        Device device = Device.initWithTagName(tag.getTagName());
+        Device device = Device.initWith(tag.getTagName());
         return getAlarmStateText(tag.getTagValue(), device.getStatusItems());
     }
 
@@ -469,7 +388,7 @@ public class Generator {
     }
 
     //nj--异常管理信息筛选 2018/11/19
-    public static List<Alarm> filterAlarmConfim(List<Alarm> sources, int confirm){
+    public static List<Alarm> filterAlarmConfirm(List<Alarm> sources, int confirm){
         List<Alarm> alarmList=new ArrayList<>(  );
         if (confirm==-1){
              alarmList.addAll( sources );

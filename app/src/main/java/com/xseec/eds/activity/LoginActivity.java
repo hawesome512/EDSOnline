@@ -26,6 +26,7 @@ import com.xseec.eds.model.servlet.Account;
 import com.xseec.eds.model.servlet.Basic;
 import com.xseec.eds.model.servlet.Phone;
 import com.xseec.eds.model.servlet.ResponseResult;
+import com.xseec.eds.model.tags.OverviewTag;
 import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.util.CodeHelper;
 import com.xseec.eds.util.RecordHelper;
@@ -37,6 +38,7 @@ import com.xseec.eds.util.WAServiceHelper;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -95,8 +97,7 @@ public class LoginActivity extends AppCompatActivity {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                String deviceName = WAJsonHelper.getUserProjectInfo(WAServiceHelper
-                        .getLoginRequest(authority));
+                String deviceName = WAJsonHelper.getUserProjectInfo(WAServiceHelper.getLoginRequest(authority));
                 if (!TextUtils.isEmpty(deviceName)) {
                     setLoginInfo();
                     final User user = new User(authority, deviceName);
@@ -104,9 +105,14 @@ public class LoginActivity extends AppCompatActivity {
                     final Basic basic = WAJsonHelper.getBasicList(WAServiceHelper
                             .getBaiscQueryRequest(deviceName));
                     WAServicer.setBasic(basic);
-                    final ArrayList<Tag> tagList = (ArrayList<Tag>) WAJsonHelper.getTagList
-                            (WAServiceHelper.getTagListRequest(deviceName));
+
+                    final ArrayList<Tag> tagList = (ArrayList<Tag>) WAJsonHelper.getTagList(WAServiceHelper.getTagListRequest(deviceName));
                     TagsFilter.setAllTagList(tagList);
+                    //Ie数据只需要采集一次
+                    List<Tag> IeList= WAJsonHelper.refreshTagValue(WAServiceHelper.getValueRequest(TagsFilter.filterDeviceTagList(tagList,"Ie")));
+                    TagsFilter.refreshTagValue(IeList);
+
+                    final ArrayList<OverviewTag> overviewTagList= (ArrayList<OverviewTag>) WAJsonHelper.getOverviewTagList(WAServiceHelper.getOverviewtagQueryRequest(deviceName));
                     //nj--添加登录操作信息
                     String actionInfo = getString(R.string.action_login);
                     RecordHelper.actionLog(actionInfo);
@@ -114,7 +120,7 @@ public class LoginActivity extends AppCompatActivity {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            MainActivity.start(LoginActivity.this, tagList, basic);
+                            MainActivity.start(LoginActivity.this, tagList,overviewTagList, basic);
                             finish();
                         }
                     });

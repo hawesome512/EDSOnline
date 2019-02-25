@@ -37,7 +37,7 @@ public class AliasAdapter extends RecyclerView.Adapter<AliasAdapter.ViewHolder> 
             if (map.containsKey(name)) {
                 alias = map.get(name);
             } else {
-                Device device = Device.initWithTagName(name);
+                Device device = Device.initWith(name);
                 alias = device == null ? name : device.getDeviceAlias();
             }
             this.aliasMap.put(name, alias);
@@ -62,7 +62,7 @@ public class AliasAdapter extends RecyclerView.Adapter<AliasAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String name = dvNames.get(position);
-        Device device = Device.initWithTagName(name);
+        Device device = Device.initWith(name);
         holder.textName.setText(name);
         if (device == null) {
             holder.textName.setBackgroundResource(R.color.colorDivider);

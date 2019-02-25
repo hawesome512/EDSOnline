@@ -144,12 +144,12 @@ public class HorBarChartFragment extends BaseFragment {
         }
 
         BarDataSet set1;
-        set1 = new BarDataSet(yVals.subList(0, tagList.size() / 2), getString(R.string.detail_thd));
+        set1 = new BarDataSet(yVals.subList(0, tagList.size() / 2), getString(R.string
+                .detail_thd_v));
         set1.setColors(ContextCompat.getColor(getContext(), R.color.colorAccentLight));
 
         BarDataSet set2;
-        set2 = new BarDataSet(yVals.subList(tagList.size() / 2, tagList.size()), getString(R
-                .string.detail_THD));
+        set2 = new BarDataSet(yVals.subList(tagList.size() / 2, tagList.size()), getString(R.string.detail_thd_c));
         set2.setColors(ContextCompat.getColor(getContext(), R.color.colorPrimaryLight));
 
         BarData data = new BarData(set1, set2);

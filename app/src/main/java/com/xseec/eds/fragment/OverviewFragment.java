@@ -51,7 +51,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 
 //public class OverviewFragment extends ComFragment implements View.OnClickListener {
-public class OverviewFragment extends BaseFragment {
+public class OverviewFragment extends ComFragment {
 
     @InjectView(R.id.image_area)
     ImageView imageArea;
@@ -86,10 +86,9 @@ public class OverviewFragment extends BaseFragment {
     @InjectView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
 
-    private static final String KEY_TAGS = "tag_list";
     private static final String KEY_BASIC = "basic";
+    private static final String KEY_OVERVIEW_TAG="overview_tag";
     Basic basic;
-    List<Tag> tagList;
     List<Tag> basicTagList;
     List<OverviewTag> overviewTagList;
 
@@ -115,10 +114,10 @@ public class OverviewFragment extends BaseFragment {
     }
 
     public static OverviewFragment newInstance(ArrayList<Tag>
-            tagList, Basic basic) {
+            tagList,ArrayList<OverviewTag> overviewTagList, Basic basic) {
         OverviewFragment fragment = new OverviewFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList(KEY_TAGS, tagList);
+        Bundle bundle =getBundle(TagsFilter.getBasicTagList(tagList,overviewTagList));
+        bundle.putParcelableArrayList(KEY_OVERVIEW_TAG,overviewTagList);
         bundle.putParcelable(KEY_BASIC, basic);
         fragment.setArguments(bundle);
         return fragment;
@@ -128,15 +127,14 @@ public class OverviewFragment extends BaseFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = getArguments();
-        tagList = bundle.getParcelableArrayList(KEY_TAGS);
         basic = bundle.getParcelable(KEY_BASIC);
-        overviewTagList=Generator.genOverviewTags();
-//        overviewTagList = LitePal.findAll(OverviewTag.class);
-//        if (overviewTagList == null || overviewTagList.size() == 0) {
-//            Generator.initOverviewTagStore();
-//            overviewTagList = LitePal.findAll(OverviewTag.class);
-//        }
-        basicTagList = TagsFilter.getBasicTagList(tagList);
+        overviewTagList=bundle.getParcelableArrayList(KEY_OVERVIEW_TAG);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        onBindService();
     }
 
     @Override
@@ -156,8 +154,8 @@ public class OverviewFragment extends BaseFragment {
         Glide.with(this).load(basic.getBannerUrl()).into(imageArea);
         int deviceCount = TagsFilter.getDeviceList(tagList).size();
         textDevice.setText(getResources().getString(R.string.overview_device_value, deviceCount));
-        textEngineer.setText(basic.getPricipal());
-        textLocation.setText(basic.getLocation().split(",")[0]);
+        textEngineer.setText(basic.getPricipal());textLocation.setText(basic.getLocation());
+        //textLocation.setText(basic.getLocation().split(",")[0]);
         //init Overview Recycler
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 3);
         recyclerOverview.setLayoutManager(layoutManager);
@@ -168,29 +166,7 @@ public class OverviewFragment extends BaseFragment {
         recyclerFunction.setLayoutManager(layoutManager1);
         functionAdapter=new FunctionAdapter(getContext(),Generator.genFunctions(),functionListener);
         recyclerFunction.setAdapter(functionAdapter);
-        //init SwipeRefreshLayout
-        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent);
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshData();
-            }
-        });
-        refreshData();
-    }
-
-    private void refreshData() {
-        WAServiceHelper.sendGetValueRequest(basicTagList, new Callback() {
-            @Override
-            public void onFailure(Request request, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Response response) throws IOException {
-                refreshViewsInThread(response);
-            }
-        });
+        swipeRefreshLayout.setEnabled(false);
     }
 
     @Override
@@ -203,18 +179,6 @@ public class OverviewFragment extends BaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
-    }
-
-    @Override
-    protected void onRefreshViews(String jsonData) {
-        basicTagList = WAJsonHelper.refreshTagValue(jsonData);
-        TagsFilter.refreshOverviewTagsByTags(basicTagList, overviewTagList);
-        final State state = TagsFilter.getStateByTagList(basicTagList);
-        overviewAdapter.notifyDataSetChanged();
-        imageStatus.setImageResource(state.getStateColorRes());
-        state.setUnusualAnimator(imageStatus);
-        textStatus.setText(state.getStateText());
-        swipeRefreshLayout.setRefreshing(false);
     }
 
     @OnClick(R.id.layout_status)
@@ -254,5 +218,24 @@ public class OverviewFragment extends BaseFragment {
 
     public void setFunctionListener(FunctionAdapter.FunctionListener functionListener) {
         this.functionListener=functionListener;
+    }
+
+    @Override
+    public void onRefreshed(final List<Tag> validTagList) {
+        super.onRefreshed(validTagList);
+        basicTagList=validTagList;
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                TagsFilter.refreshOverviewTagsByTags(validTagList, overviewTagList);
+                final State state = TagsFilter.getStateByTagList(validTagList);
+                overviewAdapter.notifyDataSetChanged();
+                imageStatus.setImageResource(state.getStateColorRes());
+                state.setUnusualAnimator(imageStatus);
+                textStatus.setText(state.getStateText());
+                swipeRefreshLayout.setRefreshing(false);
+
+            }
+        });
     }
 }

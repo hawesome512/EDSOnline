@@ -65,7 +65,7 @@
     "Overview":["Status","Ir","IdA","IdB","IdC"],
     "Real":{
       "Current":["Ia","Ib","Ic","In","Igf"],
-      "Voltage":["Ua","Ub","Uc","Uab","Ubc","Uca"],
+      "Voltage":["Ua","Ub","Uc"],
       "Grid":["Iavg","Ip","Uavg","Up","T","F","Phase"],
       "Power":["P","Q","S","COS"],
       "Energy":["EP","EQ","ES","EPin","EPout","EQin","EQout"],
@@ -135,7 +135,7 @@
     },
     "Protect":[
       {"Name":"CtrlCode","Items":[]},
-      {"Name":"Sw1","Items":[]},
+      {"Name":"CtrlMode","Items":[]},
       {"Name":"Switch","Items":[]},
       {"Name":"Ul","Items":["*",75,1,95],"Unit":"%Un"},
       {"Name":"UlR","Items":["*",78,1,98],"Unit":"%Un"},
@@ -153,7 +153,7 @@
       {"Name":"T4","Items":["*",0,1,60],"Unit":"s"},
       {"Name":"T5","Items":["*",0,1,1800],"Unit":"s"}
     ],
-    "Control":["Status","Sw1","CtrlCode","FarCtrl"],
+    "Control":["Status","CtrlMode","CtrlCode","FarCtrl"],
     "Alarm":["Ia","Ib","Ic","Ir"]
   }
 ]

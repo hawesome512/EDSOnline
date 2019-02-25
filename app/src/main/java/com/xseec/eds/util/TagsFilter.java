@@ -1,8 +1,6 @@
 package com.xseec.eds.util;
 
 import com.xseec.eds.model.State;
-import com.xseec.eds.model.User;
-import com.xseec.eds.model.WAServicer;
 import com.xseec.eds.model.tags.OverviewTag;
 import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.util.Device.DeviceConverterCenter;
@@ -26,8 +24,6 @@ import java.util.List;
 
 public class TagsFilter {
 
-    //private static final String FILTER_AREA = WAServicer.getUser().getGatewayName();
-    //private static final String FILTER_STATE = "State";
     private static final String FILTER_STATUS="Status";
 
     private static List<Tag> allTagList;
@@ -92,10 +88,12 @@ public class TagsFilter {
         return filterTagList(source, FILTER_STATUS);
     }
 
-    public static List<Tag> getBasicTagList(List<Tag> source) {
+    public static List<Tag> getBasicTagList(List<Tag> source,List<OverviewTag> overviewTags) {
         List<Tag> target = new ArrayList<>();
-        target.addAll(filterTagList(source, getFilterArea()));
         target.addAll(filterTagList(source, FILTER_STATUS));
+        for (OverviewTag overviewTag : overviewTags) {
+            target.add(new Tag(overviewTag.getTagName()));
+        }
         return target;
     }
 
@@ -107,17 +105,11 @@ public class TagsFilter {
         for (int i = 0; i < source.size(); i++) {
             String tagName = source.get(i).getTagName();
             String deviceName = tagName.split(":")[0];
-            //排除自定义点
-            if (!deviceList.contains(deviceName)&&!deviceName.equals(getFilterArea())) {
+            if (!deviceList.contains(deviceName)) {
                 deviceList.add(deviceName);
             }
         }
         return deviceList;
-    }
-
-    private static String getFilterArea(){
-        User user=WAServicer.getUser();
-        return user!=null?user.getGatewayName():"";
     }
 
     public static List<String> getZoneAndDeviceList(List<String> devices) {
@@ -132,21 +124,27 @@ public class TagsFilter {
         return list;
     }
 
-//    public static int getDeviceCount(List<Tag> source) {
-//        List<String> deviceList = getDeviceList(source);
-//        if (deviceList.contains(FILTER_AREA)) {
-//            return deviceList.size() - 1;
-//        } else {
-//            return deviceList.size();
-//        }
-//    }
-
     public static void refreshOverviewTagsByTags(List<Tag> source, List<OverviewTag> target) {
         for (OverviewTag overviewTag : target) {
             for (int i = 0; i < source.size(); i++) {
                 Tag tag = source.get(i);
-                if (overviewTag.getMapTagName().equals(tag.getTagName())) {
+                if (overviewTag.getTagName().equals(tag.getTagName())) {
                     overviewTag.setTagValue(tag.getTagValue());
+                    break;
+                }
+            }
+        }
+    }
+
+    public static void refreshTagValue(List<Tag> validTags) {
+        if(allTagList==null||validTags==null){
+            return;
+        }
+        for (Tag valid : validTags) {
+            for (int i = 0; i < allTagList.size(); i++) {
+                Tag tag = allTagList.get(i);
+                if (valid.getTagName().equals(tag.getTagName())) {
+                    tag.setTagValue(valid.getTagValue());
                     break;
                 }
             }

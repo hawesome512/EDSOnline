@@ -31,6 +31,7 @@ import com.xseec.eds.model.Function;
 import com.xseec.eds.model.User;
 import com.xseec.eds.model.WAServicer;
 import com.xseec.eds.model.servlet.Basic;
+import com.xseec.eds.model.tags.OverviewTag;
 import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.util.ApiLevelHelper;
 
@@ -44,11 +45,13 @@ public class MainActivity extends BaseActivity implements NavigationView
         .OnNavigationItemSelectedListener, FunctionAdapter.FunctionListener {
 
     private static final String EXT_TAGS = "tag_list";
+    private static final String EXT_OVERVEIW_TAGS = "overview_tag_list";
     private static final String EXT_BASIC = "basic";
     private static final String KEY_MENU_ITEM = "menu_item";
     private static final int NULL_SELECTED = -1;
     private int selectedId;
     private ArrayList<Tag> tagList;
+    private ArrayList<OverviewTag> overviewTagList;
     private FragmentManager fragmentManager;
     private Basic basic;
 
@@ -60,10 +63,11 @@ public class MainActivity extends BaseActivity implements NavigationView
     DrawerLayout drawerLayout;
 
     public static void start(Context context, ArrayList<Tag>
-            tagList, Basic basic) {
+            tagList, ArrayList<OverviewTag> overviewTagList, Basic basic) {
         Intent intent = new Intent(context, MainActivity.class);
         //传递到Intent里时，参数类型必须为ArrayList,而非List
         intent.putParcelableArrayListExtra(EXT_TAGS, tagList);
+        intent.putParcelableArrayListExtra(EXT_OVERVEIW_TAGS, overviewTagList);
         intent.putExtra(EXT_BASIC, basic);
         context.startActivity(intent);
     }
@@ -76,13 +80,13 @@ public class MainActivity extends BaseActivity implements NavigationView
         fragmentManager = getSupportFragmentManager();
         navView.setNavigationItemSelectedListener(this);
         tagList = getIntent().getParcelableArrayListExtra(EXT_TAGS);
+        overviewTagList = getIntent().getParcelableArrayListExtra(EXT_OVERVEIW_TAGS);
         basic = getIntent().getParcelableExtra(EXT_BASIC);
         if (basic != null && tagList != null) {
             User user = WAServicer.getUser();
             if (user != null) {
                 TextView textUser = navView.getHeaderView(0).findViewById(R.id.text_account);
-                textUser.setText(getString(R.string.nav_account, user.getUsername
-                        ()));
+                textUser.setText(getString(R.string.nav_account, user.getUsername()));
             }
             if (savedInstanceState != null) {
                 selectedId = savedInstanceState.getInt(KEY_MENU_ITEM);
@@ -144,7 +148,7 @@ public class MainActivity extends BaseActivity implements NavigationView
                 fragment = ReportFragment.newInstance();
                 break;
             default:
-                fragment = OverviewFragment.newInstance(tagList, basic);
+                fragment = OverviewFragment.newInstance(tagList,overviewTagList, basic);
                 break;
         }
         replaceFragment(fragment);
