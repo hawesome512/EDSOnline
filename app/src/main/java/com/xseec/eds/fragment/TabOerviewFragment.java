@@ -174,6 +174,7 @@ public class TabOerviewFragment extends ComFragment {
         if (barData != null && barData.getDataSetCount() > 0) {
             dataSet = (BarDataSet) barData.getDataSetByIndex(0);
             dataSet.setValues(entries);
+            dataSet.setColors(currentColors);
             barData.notifyDataChanged();
             barChart.notifyDataSetChanged();
         } else {

@@ -13,16 +13,18 @@ import com.xseec.eds.util.EDSApplication;
  */
 
 public enum State {
-    OFF, OFFLINE, ALARM, ON;
+    OFF, OFFLINE, ALARM, ON,TRIP;
 
     private static final String STATE_OFF = "0";
     private static final String STATE_OFFLINE = "-1";
+    private static final String STATE_TRIP = "5";
     private static final String STATE_ALARM = "6";
     private static final String STATE_ON = "7";
 
     public int getStateColorRes() {
         switch (this) {
             case ALARM:
+            case TRIP:
                 return R.color.colorAlarm;
             case OFFLINE:
                 return R.color.colorOffline;
@@ -39,6 +41,7 @@ public enum State {
         switch (this) {
             case ALARM:
             case OFFLINE:
+            case TRIP:
                 AnimatorSet animatorSet = (AnimatorSet) AnimatorInflater.loadAnimator(EDSApplication
                         .getContext(), R.animator.alpha_animator);
                 animatorSet.setTarget(view);
@@ -74,6 +77,8 @@ public enum State {
                 return context.getString(R.string.overview_state_on);
             case OFF:
                 return context.getString(R.string.overview_state_off);
+            case TRIP:
+                return context.getString(R.string.overview_state_trip);
             default:
                 return null;
         }

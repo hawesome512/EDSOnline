@@ -42,18 +42,12 @@ public class Generator {
 
     public static List<Function> genFunctions() {
         List<Function> functions = new ArrayList<>();
-        functions.add(new Function(R.drawable.ic_workorder, R.string.nav_workorder,R.id.nav_schedule,
-                WorkorderListFragment.newInstance()));
-        functions.add(new Function(R.drawable.ic_report, R.string.nav_report,R.id.nav_trend, ReportFragment
-                .newInstance()));
-        functions.add(new Function(R.drawable.ic_alarm, R.string.nav_alarm,R.id.nav_alarm, AlarmListFragment
-                .newInstance()));
-        functions.add(new Function(R.drawable.ic_meter, R.string.nav_energy,R.id.nav_energy, EnergyFragment
-                .newInstance()));
-        functions.add(new Function(R.drawable.ic_action, R.string.nav_action,R.id.nav_action, ActionListFragment
-                .newInstance()));
-        functions.add(new Function(R.drawable.ic_setting, R.string.nav_setting,R.id.nav_setting, SettingFragment
-                .newInstance()));
+        functions.add(new Function(R.drawable.ic_workorder, R.string.nav_workorder,R.id.nav_schedule,WorkorderListFragment.newInstance()));
+        functions.add(new Function(R.drawable.ic_report, R.string.nav_report,R.id.nav_trend, ReportFragment.newInstance()));
+        functions.add(new Function(R.drawable.ic_alarm, R.string.nav_alarm,R.id.nav_alarm, AlarmListFragment.newInstance()));
+        functions.add(new Function(R.drawable.ic_meter, R.string.nav_energy,R.id.nav_energy, EnergyFragment.newInstance()));
+        functions.add(new Function(R.drawable.ic_action, R.string.nav_action,R.id.nav_action, ActionListFragment.newInstance()));
+        functions.add(new Function(R.drawable.ic_setting, R.string.nav_setting,R.id.nav_setting, SettingFragment.newInstance()));
         return functions;
     }
 

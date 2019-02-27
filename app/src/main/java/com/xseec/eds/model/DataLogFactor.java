@@ -1,10 +1,13 @@
 package com.xseec.eds.model;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.widget.Toast;
 
 import com.xseec.eds.model.tags.StoredTag;
 import com.xseec.eds.util.DateHelper;
+import com.xseec.eds.util.EDSApplication;
 
 import java.util.Calendar;
 import java.util.regex.Pattern;
@@ -174,7 +177,9 @@ public class DataLogFactor implements Parcelable {
         }else {
             intervalType= StoredTag.IntervalType.D;
             interval=1;
-            records=(int)(intervalSecend/60/60/24);
+            records=startTime.getActualMaximum(Calendar.DAY_OF_MONTH);
+            startTime.set(Calendar.DAY_OF_MONTH,1);
+            startTime=DateHelper.getDayStartTime(startTime);
         }
     }
 

@@ -102,6 +102,10 @@ public class TabControlFragment extends ComFragment {
                             bgColorRes = R.drawable.state_alarm_gradient;
                             openable = true;
                             break;
+                        case TRIP:
+                            bgColorRes = R.drawable.state_alarm_gradient;
+                            openable = false;
+                            break;
                         default:
                             bgColorRes = R.drawable.state_offline_gradient;
                             openable = false;

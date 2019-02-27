@@ -53,8 +53,8 @@ public class DeviceListFragment extends ComFragment {
         View view = inflater.inflate(R.layout.item_recycler, container, false);
         ButterKnife.inject(this, view);
         adapter=new DeviceAdapter(getContext(),tagList);
-        GridLayoutManager layoutManager=new GridLayoutManager(getContext(),1);
         recycler.setAdapter(adapter);
+        GridLayoutManager layoutManager=new GridLayoutManager(getContext(),1);
         recycler.setLayoutManager(layoutManager);
         return view;
     }
@@ -74,11 +74,11 @@ public class DeviceListFragment extends ComFragment {
     @Override
     public void onRefreshed(final List<Tag> validTagList) {
         super.onRefreshed(validTagList);
+        TagsFilter.refreshTagsByTags(validTagList,tagList);
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                adapter=new DeviceAdapter(getContext(),validTagList);
-                recycler.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
             }
         });
     }

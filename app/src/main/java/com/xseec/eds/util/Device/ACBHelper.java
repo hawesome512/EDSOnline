@@ -18,6 +18,8 @@ public class ACBHelper {
                 return State.ON;
             case 64:
                 return State.OFF;
+            case 128:
+                return State.TRIP;
             default:
                 return State.ALARM;
         }

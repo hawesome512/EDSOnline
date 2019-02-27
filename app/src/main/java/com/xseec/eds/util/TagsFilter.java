@@ -24,7 +24,7 @@ import java.util.List;
 
 public class TagsFilter {
 
-    private static final String FILTER_STATUS="Status";
+    private static final String FILTER_STATUS = "Status";
 
     private static List<Tag> allTagList;
 
@@ -88,7 +88,7 @@ public class TagsFilter {
         return filterTagList(source, FILTER_STATUS);
     }
 
-    public static List<Tag> getBasicTagList(List<Tag> source,List<OverviewTag> overviewTags) {
+    public static List<Tag> getBasicTagList(List<Tag> source, List<OverviewTag> overviewTags) {
         List<Tag> target = new ArrayList<>();
         target.addAll(filterTagList(source, FILTER_STATUS));
         for (OverviewTag overviewTag : overviewTags) {
@@ -98,8 +98,8 @@ public class TagsFilter {
     }
 
     public static List<String> getDeviceList(List<Tag> source) {
-        if(source==null){
-            source=allTagList;
+        if (source == null) {
+            source = allTagList;
         }
         List<String> deviceList = new ArrayList<>();
         for (int i = 0; i < source.size(); i++) {
@@ -113,10 +113,10 @@ public class TagsFilter {
     }
 
     public static List<String> getZoneAndDeviceList(List<String> devices) {
-        List<String> list=new ArrayList<>();
-        for(String dv:devices){
-            String zone=dv.split("_")[0];
-            if(!list.contains(zone)){
+        List<String> list = new ArrayList<>();
+        for (String dv : devices) {
+            String zone = dv.split("_")[0];
+            if (!list.contains(zone)) {
                 list.add(zone);
             }
             list.add(dv);
@@ -136,8 +136,20 @@ public class TagsFilter {
         }
     }
 
+    public static void refreshTagsByTags(List<Tag> valid, List<Tag> target) {
+        for (int i = 0; i < valid.size(); i++) {
+            for (Tag tg : target) {
+                Tag tag = valid.get(i);
+                if (tg.getTagName().equals(tag.getTagName())) {
+                    tg.setTagValue(tag.getTagValue());
+                    break;
+                }
+            }
+        }
+    }
+
     public static void refreshTagValue(List<Tag> validTags) {
-        if(allTagList==null||validTags==null){
+        if (allTagList == null || validTags == null) {
             return;
         }
         for (Tag valid : validTags) {
@@ -157,7 +169,9 @@ public class TagsFilter {
         for (Tag tag : filter) {
             stateList.add(DeviceConverterCenter.getState(tag));
         }
-        if (stateList.contains(State.ALARM)) {
+        if (stateList.contains(State.TRIP)) {
+            return State.TRIP;
+        } else if (stateList.contains(State.ALARM)) {
             return State.ALARM;
         } else if (stateList.contains(State.OFFLINE)) {
             return State.OFFLINE;

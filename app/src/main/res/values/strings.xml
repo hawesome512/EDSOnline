@@ -8,6 +8,7 @@
     <string name="exit_confirm">确认要退出%1$s？/退出/取消</string>
     <string name="delete_confirm">删除此条记录？/删除/取消</string>
     <string name="record_null">记录不存在</string>
+    <string name="function_null">功能待完善</string>
 
     <!--Login-->
     <string name="login_title">EDS</string>
@@ -69,6 +70,7 @@
     <string name="overview_state_on">运行</string>
     <string name="overview_state_off">切断</string>
     <string name="overview_state_alarm">异常</string>
+    <string name="overview_state_trip">脱扣</string>
     <string name="overview_state_offline">离线</string>
     <string-array name="overview_status">
         <item>正常</item>
@@ -119,6 +121,9 @@
     <string name="detail_title">设备列表</string>
     <string name="detail_title_error">异常设备</string>
     <string name="detail_state">状态: %1$s</string>
+    <string name="detail_range_error">起始时间不能晚于截止时间</string>
+    <string name="detail_endtime_error">自动校正超出的截止时间</string>
+    <string name="detail_range_month">自动配对月查询模式</string>
 
     <!--Device Activity-->
     <string name="device_state">状态</string>

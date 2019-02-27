@@ -158,14 +158,22 @@ public class DataLogSettingActivity extends AppCompatActivity {
         //需加上异常处理情况：从其他模式切换至默认模式，只选起始时间后直接设置
         if (radioNull.isChecked()) {
             endTime = DateHelper.getCalendar(editEnd.getText().toString());
+            Calendar now=Calendar.getInstance();
+            if(endTime.after(now)){
+                endTime=now;
+                editEnd.setText(DateHelper.getString(endTime.getTime()));
+                Toast.makeText(this, R.string.detail_endtime_error, Toast.LENGTH_LONG).show();
+            }
             if (startTime.after(endTime)) {
-                Toast.makeText(this, R.string.workorder_range_error, Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.detail_range_error, Toast.LENGTH_SHORT).show();
                 return;
             }
             factor.setEndTime(endTime);
+            if(factor.getIntervalType()==StoredTag.IntervalType.D){
+                Toast.makeText(this, R.string.detail_range_month, Toast.LENGTH_SHORT).show();
+            }
         }
-        StoredTag.DataType dataType = StoredTag.DataType.values()[spinnerDataType
-                .getSelectedItemPosition()];
+        StoredTag.DataType dataType = StoredTag.DataType.values()[spinnerDataType.getSelectedItemPosition()];
         factor.setDataType(dataType);
         Intent intent = new Intent();
         intent.putExtra(DataLogFragment.KEY_FACOTR, factor);
