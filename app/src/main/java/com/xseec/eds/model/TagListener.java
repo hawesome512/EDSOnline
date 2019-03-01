@@ -9,6 +9,7 @@ import com.xseec.eds.model.tags.Tag;
  */
 
 public interface TagListener {
+    //nj--判断tag能被点击
     boolean tagClickEnable(Tag tag,View view);
     void onTagClick(Tag tag,View view);
 }
