@@ -3,6 +3,7 @@ package com.xseec.eds.fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,10 +15,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
@@ -32,7 +33,6 @@ import com.xseec.eds.model.servlet.Action;
 import com.xseec.eds.model.servlet.Alarm;
 import com.xseec.eds.model.servlet.Workorder;
 import com.xseec.eds.model.tags.EnergyTag;
-import com.xseec.eds.model.tags.OverviewTag;
 import com.xseec.eds.model.tags.StoredTag;
 import com.xseec.eds.util.DateHelper;
 import com.xseec.eds.util.Generator;
@@ -42,8 +42,6 @@ import com.xseec.eds.util.ViewHelper;
 import com.xseec.eds.util.WAJsonHelper;
 import com.xseec.eds.util.WAServiceHelper;
 import com.xseec.eds.widget.MySpinner;
-
-import org.litepal.LitePal;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -84,7 +82,9 @@ public class ReportFragment extends BaseFragment {
     @InjectView(R.id.linear_layout)
     LinearLayout linearLayout;
     @InjectView(R.id.recycler)
-    RecyclerView recycler;
+    RecyclerView recyclerView;
+    @InjectView(R.id.layout_container)
+    FrameLayout layoutContainer;
 
     //nj-报表数据类型 2018/11/21
     private Report<Workorder> workorder;
@@ -92,7 +92,6 @@ public class ReportFragment extends BaseFragment {
     private Report<Action> action;
     private Report<String> energy;
     private Report<String> temperature;
-    private Report<String> humidity;
     private List<Report> reportList;
     //nj--报表查询时间 2018/12/11
     private String startTime;
@@ -109,80 +108,86 @@ public class ReportFragment extends BaseFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
-            savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // nj--Inflater the layout for this fragment 2018/11/17
-        setHasOptionsMenu(true);
-        View view = inflater.inflate(R.layout.fragment_report, container, false);
-        ButterKnife.inject(this, view);
-        getActivity().setTitle(R.string.nav_report);
-        ViewHelper.initToolbar((AppCompatActivity) getActivity(), toolbar, R.drawable.menu);
+        setHasOptionsMenu( true );
+        View view = inflater.inflate( R.layout.fragment_report, container, false );
+        ButterKnife.inject( this, view );
+        getActivity().setTitle( R.string.nav_report );
+        ViewHelper.initToolbar( (AppCompatActivity) getActivity(), toolbar, R.drawable.menu );
+
+        final Snackbar snackbar = Snackbar.make( layoutContainer, R.string.function_null, Snackbar.LENGTH_INDEFINITE );
+        snackbar.setAction( R.string.ok, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                snackbar.dismiss();
+            }
+        } );
+        snackbar.show();
+
         initView();
         return view;
     }
 
     private void initView() {
         initReportTitle();
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-        recycler.setLayoutManager(layoutManager);
-        barrier = new CyclicBarrier(5);
-        spinner.setReSelectionItem(DEF_TIME);
+        LinearLayoutManager layoutManager = new LinearLayoutManager( getContext() );
+        recyclerView.setLayoutManager( layoutManager );
+        barrier = new CyclicBarrier( 4 );
+        spinner.setReSelectionItem( DEF_TIME );
         onSpinnerClicked();
     }
 
     //nj--加载item标题数据 2018/12/6
     private void initReportTitle() {
-        String[] workorders = getResources().getStringArray(R.array.report_workorder);
-        workorder = new Report<>(workorders, 0);
-        String[] alarms = getResources().getStringArray(R.array.report_alarm);
-        alarm = new Report<>(alarms, 0);
-        String[] actions = getResources().getStringArray(R.array.report_action);
-        action = new Report<>(actions, 0);
-        String[] temperatures = getResources().getStringArray(R.array.report_temperture);
-        temperature = new Report<>(temperatures, 2);
-        String[] humiditys = getResources().getStringArray(R.array.report_humidity);
-        humidity = new Report<>(humiditys, 2);
-        String[] energys = getResources().getStringArray(R.array.report_energy);
-        energy = new Report<>(energys, 1);
+        String[] workorders = getResources().getStringArray( R.array.report_workorder );
+        workorder = new Report<>( workorders, 0 );
+        String[] alarms = getResources().getStringArray( R.array.report_alarm );
+        alarm = new Report<>( alarms, 0 );
+        String[] actions = getResources().getStringArray( R.array.report_action );
+        action = new Report<>( actions, 0 );
+        String[] temperatures = getResources().getStringArray( R.array.report_temperture );
+        temperature = new Report<>( temperatures, 2 );
+        String[] energys = getResources().getStringArray( R.array.report_energy );
+        energy = new Report<>( energys, 1 );
     }
 
     //nj--发送网络请求 2018/11/19
     private void queryReportInfo() {
-        progress.setVisibility(View.VISIBLE);
-        queryWorkorders(startTime, endTime);
-        queryAlarms(startTime, endTime);
-        queryActions(startTime, endTime);
-        queryEnergy(startTime, endTime);
-        queryEnvironment(startTime, endTime);
+        progress.setVisibility( View.VISIBLE );
+        queryWorkorders( startTime, endTime );
+        queryAlarms( startTime, endTime );
+        queryActions( startTime, endTime );
+        queryEnergy( startTime, endTime );
+        //NJ--暂时取消环境报表内容
+//        queryEnvironment( startTime, endTime );
     }
 
     @Override
     protected void onRefreshViews(String jsonData) {
-        String timeTitle = Generator.getReportTime(startTime, endTime);
-        textTime.setText(timeTitle);
+        String timeTitle = Generator.getReportTime( startTime, endTime );
+        textTime.setText( timeTitle );
         addReportList();
-        adapter = new ReportAdapter(getContext(), reportList, factor);
-        recycler.setAdapter(adapter);
-        progress.setVisibility(View.GONE);
+        adapter = new ReportAdapter( getContext(), reportList, factor );
+        recyclerView.setAdapter( adapter );
+        progress.setVisibility( View.GONE );
         barrier.reset();
     }
 
     //nj--加载列表数据 2018/11/19
     private void addReportList() {
         reportList = new ArrayList<>();
-        reportList.add(workorder);
-        reportList.add(alarm);
-        reportList.add(action);
-        reportList.add(energy);
-        reportList.add(temperature);
-        reportList.add(humidity);
+        reportList.add( workorder );
+        reportList.add( alarm );
+        reportList.add( action );
+        reportList.add( energy );
+//        reportList.add( temperature );
     }
 
     //==========nj--网络数据请求 2018/11/19=================================================
     private void queryWorkorders(String startTime, String endTime) {
-        Workorder RequestWorkorder = new Workorder(WAServicer.getUser().getDeviceName());
-        WAServiceHelper.sendWorkorderQueryRequest(RequestWorkorder, startTime, endTime, new
-                Callback() {
+        Workorder RequestWorkorder = new Workorder( WAServicer.getUser().getDeviceName() );
+        WAServiceHelper.sendWorkorderQueryRequest( RequestWorkorder, startTime, endTime, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
 
@@ -190,23 +195,23 @@ public class ReportFragment extends BaseFragment {
 
             @Override
             public void onResponse(Response response) throws IOException {
-                List<Workorder> workorderList = WAJsonHelper.getWorkorderList(response);
+                List<Workorder> workorderList = WAJsonHelper.getWorkorderList( response );
                 List<Workorder> itemList;
-                workorder.setLeftList(workorderList);
-                itemList = Generator.filterWorkorderListOfState(workorderList, DUE);
-                workorder.setCenterList(itemList);
-                itemList = Generator.filterWorkorderListOfState(workorderList, DONE);
-                workorder.setRightList(itemList);
+                workorder.setLeftList( workorderList );
+                itemList = Generator.filterWorkorderListOfState( workorderList, DUE );
+                workorder.setCenterList( itemList );
+                itemList = Generator.filterWorkorderListOfState( workorderList, DONE );
+                workorder.setRightList( itemList );
                 //nj--阻挡线程 2018//12/5
-                setBarrierAwait(barrier);
-                refreshViewsInThread(response);
+                setBarrierAwait( barrier );
+                refreshViewsInThread( response );
             }
-        });
+        } );
     }
 
     private void queryAlarms(String starTime, String endTime) {
-        Alarm RequestAlarm = new Alarm(WAServicer.getUser().getDeviceName());
-        WAServiceHelper.sendAlarmQueryRequest(RequestAlarm, starTime, endTime, new Callback() {
+        Alarm RequestAlarm = new Alarm( WAServicer.getUser().getDeviceName() );
+        WAServiceHelper.sendAlarmQueryRequest( RequestAlarm, starTime, endTime, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
 
@@ -214,23 +219,23 @@ public class ReportFragment extends BaseFragment {
 
             @Override
             public void onResponse(Response response) throws IOException {
-                List<Alarm> alarmList = WAJsonHelper.getAlarmList(response);
+                List<Alarm> alarmList = WAJsonHelper.getAlarmList( response );
                 List<Alarm> itemList;
-                alarm.setLeftList(alarmList);
-                itemList = Generator.filterAlarmConfirm(alarmList, DONE);
-                alarm.setCenterList(itemList);
-                itemList = Generator.filterAlarmConfirm(alarmList, DUE);
-                alarm.setRightList(itemList);
+                alarm.setLeftList( alarmList );
+                itemList = Generator.filterAlarmConfirm( alarmList, DONE );
+                alarm.setCenterList( itemList );
+                itemList = Generator.filterAlarmConfirm( alarmList, DUE );
+                alarm.setRightList( itemList );
                 //nj--阻挡线程 2018//12/5
-                setBarrierAwait(barrier);
-                refreshViewsInThread(response);
+                setBarrierAwait( barrier );
+                refreshViewsInThread( response );
             }
-        });
+        } );
     }
 
     private void queryActions(String starTime, String endTime) {
-        Action RequestAction = new Action(WAServicer.getUser().getDeviceName());
-        WAServiceHelper.sendActionQueryRequest(RequestAction, starTime, endTime, new Callback() {
+        Action RequestAction = new Action( WAServicer.getUser().getDeviceName() );
+        WAServiceHelper.sendActionQueryRequest( RequestAction, starTime, endTime, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
 
@@ -238,31 +243,25 @@ public class ReportFragment extends BaseFragment {
 
             @Override
             public void onResponse(Response response) throws IOException {
-                List<Action> actionList = WAJsonHelper.getActionList(response);
+                List<Action> actionList = WAJsonHelper.getActionList( response );
                 List<Action> itemList;
-                itemList = Generator.filterActionsType(actionList, Action.ActionType.DEVICE
-                        .ordinal());
-                action.setLeftList(itemList);
-                itemList = Generator.filterActionsType(actionList, Action.ActionType.WORKORDER
-                        .ordinal());
-                action.setCenterList(itemList);
-                itemList = Generator.filterActionsType(actionList, Action.ActionType.LOGIN
-                        .ordinal());
-                action.setRightList(itemList);
+                itemList = Generator.filterActionsType( actionList, Action.ActionType.DEVICE.ordinal() );
+                action.setLeftList( itemList );
+                itemList = Generator.filterActionsType( actionList, Action.ActionType.WORKORDER.ordinal() );
+                action.setCenterList( itemList );
+                itemList = Generator.filterActionsType( actionList, Action.ActionType.LOGIN.ordinal() );
+                action.setRightList( itemList );
                 //nj--阻挡线程 2018//12/5
-                setBarrierAwait(barrier);
-                refreshViewsInThread(response);
+                setBarrierAwait( barrier );
+                refreshViewsInThread( response );
             }
-        });
+        } );
     }
 
     private void queryEnvironment(String startTime, String endTime) {
-        factor = getDataLogFactor(startTime, endTime);
-        List<OverviewTag> tagList = LitePal.limit(2).find(OverviewTag.class);
-        List<StoredTag> storedTags = new ArrayList<>();
-        storedTags.add(new StoredTag(tagList.get(0).getAliasTagName(), StoredTag.DataType.MAX));
-        storedTags.add(new StoredTag(tagList.get(1).getAliasTagName(), StoredTag.DataType.MAX));
-        WAServiceHelper.sendTagLogRequest(factor, storedTags, new Callback() {
+        factor = getDataLogFactor( startTime, endTime );
+        List<StoredTag> storedTags = Generator.genStoredTags();
+        WAServiceHelper.sendTagLogRequest( factor, storedTags, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
 
@@ -270,45 +269,44 @@ public class ReportFragment extends BaseFragment {
 
             @Override
             public void onResponse(Response response) throws IOException {
-                List<String>[] tagList = WAJsonHelper.getTagLog(response.body().string());
-                temperature.setEnvironmentList(tagList[0]);
-                humidity.setEnvironmentList(tagList[1]);
+                List<String>[] tagList = WAJsonHelper.getTagLog( response.body().string() );
+                temperature.setEnvironmentList( tagList[0] );
                 //nj--阻挡线程 2018//12/5
-                setBarrierAwait(barrier);
-                refreshViewsInThread(response);
+                setBarrierAwait( barrier );
+                refreshViewsInThread( response );
             }
-        });
+        } );
     }
 
     //nj--暂时生成能耗模拟值 2018/12/18
     private void queryEnergy(final String startTime, final String endTime) {
-        new Thread(new Runnable() {
+        new Thread( new Runnable() {
             @Override
             public void run() {
-                int interval = DateHelper.getBetweenOfDay(startTime, endTime);
+                int interval = (int) (DateHelper.getBetweenOfSecond( startTime, endTime ) / (3600 * 24));
                 List<EnergyTag> energyList = Generator.genEnergyTagList();
-                String value = energyList.get(0).getTagValue();
+                String value = energyList.get( 0 ).getTagValue();
                 List<String> realEnergyList = new ArrayList<>();
                 List<String> expectEnergyList = new ArrayList<>();
-                int baseValue = Integer.valueOf(value) * 24;
+                int baseValue = Integer.valueOf( value ) * 24;
                 Random random = new Random();
                 for (int i = 0; i < interval; i++) {
-                    realEnergyList.add((80 + random.nextInt(40)) * baseValue / 100 + "");
-                    expectEnergyList.add(baseValue + "");
+                    realEnergyList.add( (80 + random.nextInt( 40 )) * baseValue / 100 + "" );
+                    expectEnergyList.add( baseValue + "" );
                 }
-                energy.setLeftList(realEnergyList);
-                energy.setCenterList(expectEnergyList);
+                energy.setLeftList( realEnergyList );
+                energy.setCenterList( expectEnergyList );
                 Response response = null;
-                setBarrierAwait(barrier);
-                refreshViewsInThread(response);
+                setBarrierAwait( barrier );
+                refreshViewsInThread( response );
             }
-        }).start();
+        } ).start();
     }
     //=====================================================================================
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.share_menu, menu);
+        inflater.inflate( R.menu.share_menu, menu );
     }
 
     @Override
@@ -316,23 +314,23 @@ public class ReportFragment extends BaseFragment {
         switch (item.getItemId()) {
             case R.id.menu_share:
                 //nj--分享报表数据 2018/11/27
-                PermissionHelper.checkPermission(getActivity(), WRITE_EXTERNAL_STORAGE,
-                        PermissionHelper.CODE_READ_CONTACTS);
-                Bitmap bitmap = ShareHelper.getBitmap(linearLayout, recycler);
-                ShareHelper.shareCapture(getContext(), bitmap);
+                PermissionHelper.checkPermission( getActivity(), WRITE_EXTERNAL_STORAGE,
+                        PermissionHelper.CODE_READ_CONTACTS );
+                Bitmap bitmap = ShareHelper.getBitmap( linearLayout, recyclerView );
+                ShareHelper.shareCapture( getContext(), bitmap );
                 break;
         }
-        return super.onOptionsItemSelected(item);
+        return super.onOptionsItemSelected( item );
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.reset(this);
+        ButterKnife.reset( this );
     }
 
     private void onSpinnerClicked() {
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinner.setOnItemSelectedListener( new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
@@ -347,7 +345,7 @@ public class ReportFragment extends BaseFragment {
                         queryReportInfo();
                         break;
                     case DEF_TIME:
-                        ReportTimeSettingActivity.start(getActivity(), SETTING_TIME);
+                        ReportTimeSettingActivity.start( getActivity(), SETTING_TIME );
                         break;
                 }
             }
@@ -355,7 +353,7 @@ public class ReportFragment extends BaseFragment {
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
             }
-        });
+        } );
     }
 
     @Override
@@ -363,8 +361,8 @@ public class ReportFragment extends BaseFragment {
         switch (requestCode) {
             case SETTING_TIME:
                 if (resultCode == RESULT_OK) {
-                    startTime = data.getStringExtra(KEY_START_TIME);
-                    endTime = data.getStringExtra(KEY_END_TIME);
+                    startTime = data.getStringExtra( KEY_START_TIME );
+                    endTime = data.getStringExtra( KEY_END_TIME );
                     queryReportInfo();
                 }
                 break;
@@ -385,12 +383,12 @@ public class ReportFragment extends BaseFragment {
     }
 
     //nj--产生字符串List 2018/11/25
-    public static List<String> randomList(int lenght, int min, int max) {
+    public static List<String> randomList(int length, int min, int max) {
         Random rand = new Random();
         List<String> valueList = new ArrayList<>();
-        for (int i = 0; i < lenght; i++) {
-            float value = (rand.nextInt(max - min) + min) * 10 / 10f;
-            valueList.add(String.valueOf(value));
+        for (int i = 0; i < length; i++) {
+            float value = (rand.nextInt( max - min ) + min) * 10 / 10f;
+            valueList.add( String.valueOf( value ) );
         }
         return valueList;
     }
@@ -398,16 +396,15 @@ public class ReportFragment extends BaseFragment {
     //nj--环境报表查询请求信息 2018/11/23
     private static DataLogFactor getDataLogFactor(String startTime, String endTime) {
         DataLogFactor factor = new DataLogFactor();
-        Date start = DateHelper.getServletDate(startTime);
+        Date start = DateHelper.getServletDate( startTime );
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(start);
-        factor.setStartTime(calendar);
-        factor.setDataType(StoredTag.DataType.MAX);
-        factor.setIntervalType(StoredTag.IntervalType.D);
-        factor.setInterval(1);
-        int records = DateHelper.getBetweenOfDay(startTime, endTime);
-        factor.setRecords(records);
+        calendar.setTime( start );
+        factor.setStartTime( calendar );
+        factor.setDataType( StoredTag.DataType.MAX );
+        factor.setIntervalType( StoredTag.IntervalType.D );
+        factor.setInterval( 1 );
+        int records = (int) (DateHelper.getBetweenOfSecond( startTime, endTime ) / (3600 * 24));
+        factor.setRecords( records );
         return factor;
     }
-
 }

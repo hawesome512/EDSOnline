@@ -62,5 +62,4 @@ public class ContentHelper {
             context.startActivity( intent );
         }
     }
-
 }

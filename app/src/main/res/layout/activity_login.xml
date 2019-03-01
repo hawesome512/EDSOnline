@@ -17,11 +17,10 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/view_header_hei" />
 
-        <include
-            layout="@layout/login_content"
+        <FrameLayout
+            android:id="@+id/login_content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/view_margin_normal" />
+            android:layout_height="wrap_content" />
 
         <include
             layout="@layout/login_bottom"

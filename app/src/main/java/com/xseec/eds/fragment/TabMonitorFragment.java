@@ -107,6 +107,11 @@ public class TabMonitorFragment extends TabBaseFragment {
     }
 
     @Override
+    public boolean tagClickEnable(Tag tag,View view) {
+        return true;
+    }
+
+    @Override
     public void onTagClick(Tag tag, View view) {
         List<String> calItems= Arrays.asList("Iavg","Ip","Uavg","Up","Phase");
         if(calItems.contains(tag.getTagShortName())){

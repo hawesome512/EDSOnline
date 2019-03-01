@@ -11,10 +11,9 @@ import com.xseec.eds.R;
 import com.xseec.eds.activity.ReportActivity;
 import com.xseec.eds.model.DataLogFactor;
 import com.xseec.eds.model.Report;
-import com.xseec.eds.model.tags.OverviewTag;
+import com.xseec.eds.model.tags.StoredTag;
+import com.xseec.eds.util.Generator;
 import com.xseec.eds.widget.ReportItemView;
-
-import org.litepal.LitePal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,11 +96,11 @@ public class ReportAdapter extends  RecyclerView.Adapter<ReportAdapter.ViewHolde
 
     private void onEnverimentItemClicked(View v,int position) {
         ArrayList<String> tagName = new ArrayList<>();
-        List<OverviewTag> tagList= LitePal.limit( 2 ).find( OverviewTag.class );
+        List<StoredTag> storedTags=Generator.genStoredTags();
         if (position==4) {
-            tagName.add( tagList.get( 0 ).getAliasTagName());
+            tagName.add( storedTags.get( 0 ).getTagName());
         } else {
-            tagName.add( tagList.get( 1 ).getAliasTagName());
+            tagName.add( storedTags.get( 1 ).getTagName() );
         }
         ReportActivity.start( context, factor, tagName);
     }

@@ -16,11 +16,14 @@ import android.widget.TextView;
 import com.xseec.eds.R;
 import com.xseec.eds.model.Device;
 import com.xseec.eds.model.State;
+import com.xseec.eds.model.User;
+import com.xseec.eds.model.WAServicer;
 import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.model.tags.ValidTag;
 import com.xseec.eds.util.Device.DeviceConverterCenter;
 import com.xseec.eds.util.RecordHelper;
 import com.xseec.eds.util.TagsFilter;
+import com.xseec.eds.util.UserLevelHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -133,6 +136,14 @@ public class TabControlFragment extends ComFragment {
 
     @OnClick({R.id.btn_on, R.id.btn_off})
     public void onViewClicked(View view) {
+        //nj--远程合分闸用户权限检查
+        boolean Usability=UserLevelHelper.checkTabFragment();
+        if (!Usability){
+            User user= WAServicer.getUser();
+            String info=getString( R.string.device_modify_control,user.getLevelState());
+            hintUserLevel( info );
+            return;
+        }
         checkCtrlAuthority(REQUEST_CONTROL_AUTHORITY);
         switch (view.getId()) {
             case R.id.btn_on:

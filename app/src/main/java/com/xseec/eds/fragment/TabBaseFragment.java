@@ -15,6 +15,8 @@ import android.widget.TextView;
 import com.xseec.eds.R;
 import com.xseec.eds.databinding.ItemCardSubBinding;
 import com.xseec.eds.model.TagListener;
+import com.xseec.eds.model.User;
+import com.xseec.eds.model.WAServicer;
 import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.util.TagsFilter;
 
@@ -94,7 +96,13 @@ public abstract class TabBaseFragment extends ComFragment implements TagListener
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onTagClick(tag,v);
+                if (tagClickEnable( tag ,v)){
+                    onTagClick(tag,v);
+                }else {
+                    User user= WAServicer.getUser();
+                    String hintInfo=getString( R.string.device_modify_level,user.getLevelState() );
+                    hintUserLevel( hintInfo );
+                }
             }
         });
         ItemCardSubBinding binding = DataBindingUtil.bind(view);

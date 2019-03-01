@@ -32,7 +32,6 @@ import com.xseec.eds.R;
 import com.xseec.eds.activity.DataLogSettingActivity;
 import com.xseec.eds.model.DataLogFactor;
 import com.xseec.eds.model.tags.StoredTag;
-import com.xseec.eds.util.ApiLevelHelper;
 import com.xseec.eds.util.Generator;
 import com.xseec.eds.util.ViewHelper;
 import com.xseec.eds.util.WAJsonHelper;
@@ -79,7 +78,7 @@ public class DataLogFragment extends BaseFragment {
 
     private static final String EXT_TAG = "tags";
     private static final String EXT_FACTOR = "default_factor";
-    public static final String KEY_FACOTR = "factor";
+    public static final String KEY_FACTOR = "factor";
     private static final int REQUEST_CODE_TIME = 1;
 
     public static DataLogFragment newInstance(List<String> tagNames, DataLogFactor factor) {
@@ -210,7 +209,7 @@ public class DataLogFragment extends BaseFragment {
         switch (requestCode) {
             case REQUEST_CODE_TIME:
                 if (resultCode == RESULT_OK) {
-                    defaultFactor = data.getParcelableExtra(KEY_FACOTR);
+                    defaultFactor = data.getParcelableExtra(KEY_FACTOR);
                     setData();
                 }
                 break;

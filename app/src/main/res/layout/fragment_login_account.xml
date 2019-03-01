@@ -49,8 +49,8 @@
             android:textColor="@color/colorSecondaryText"
             android:layout_gravity="right|end"
             android:text="@string/login_remember"/>
-
     </LinearLayout>
+
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -64,4 +64,13 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"/>
     </FrameLayout>
+    <TextView
+        android:id="@+id/tv_change_phone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/view_padding_normal"
+        android:layout_marginTop="@dimen/view_margin_small"
+        android:layout_gravity="center"
+        android:textAlignment="center"
+        android:text="@string/login_phone" />
 </LinearLayout>

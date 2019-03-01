@@ -38,9 +38,10 @@ import com.xseec.eds.model.servlet.UploadListener;
 import com.xseec.eds.model.servlet.Workorder;
 import com.xseec.eds.util.ContentHelper;
 import com.xseec.eds.util.DateHelper;
-import com.xseec.eds.util.RecordHelper;
 import com.xseec.eds.util.Generator;
 import com.xseec.eds.util.PhotoPicker;
+import com.xseec.eds.util.RecordHelper;
+import com.xseec.eds.util.UserLevelHelper;
 import com.xseec.eds.util.ViewHelper;
 import com.xseec.eds.util.WAJsonHelper;
 import com.xseec.eds.util.WAServiceHelper;
@@ -336,6 +337,9 @@ public class WorkorderActivity extends BaseActivity implements UploadListener,
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.workorder_menu, menu);
+        //nj--检查用户功能权限
+        MenuItem deleteItem=menu.findItem( R.id.menu_delete );
+        UserLevelHelper.checkWorkorderActivity( fabExecute,deleteItem );
         return super.onCreateOptionsMenu(menu);
     }
 

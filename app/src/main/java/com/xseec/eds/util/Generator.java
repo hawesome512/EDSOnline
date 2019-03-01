@@ -9,6 +9,7 @@ import com.xseec.eds.fragment.AlarmListFragment;
 import com.xseec.eds.fragment.EnergyFragment;
 import com.xseec.eds.fragment.ReportFragment;
 import com.xseec.eds.fragment.SettingFragment;
+import com.xseec.eds.fragment.UserListFragment;
 import com.xseec.eds.fragment.WorkorderListFragment;
 import com.xseec.eds.model.Device;
 import com.xseec.eds.model.Function;
@@ -18,6 +19,7 @@ import com.xseec.eds.model.servlet.Alarm;
 import com.xseec.eds.model.servlet.Workorder;
 import com.xseec.eds.model.tags.EnergyTag;
 import com.xseec.eds.model.tags.OverviewTag;
+import com.xseec.eds.model.tags.StoredTag;
 import com.xseec.eds.model.tags.Tag;
 
 import java.math.BigDecimal;
@@ -42,12 +44,20 @@ public class Generator {
 
     public static List<Function> genFunctions() {
         List<Function> functions = new ArrayList<>();
-        functions.add(new Function(R.drawable.ic_workorder, R.string.nav_workorder,R.id.nav_schedule,WorkorderListFragment.newInstance()));
-        functions.add(new Function(R.drawable.ic_report, R.string.nav_report,R.id.nav_trend, ReportFragment.newInstance()));
-        functions.add(new Function(R.drawable.ic_alarm, R.string.nav_alarm,R.id.nav_alarm, AlarmListFragment.newInstance()));
-        functions.add(new Function(R.drawable.ic_meter, R.string.nav_energy,R.id.nav_energy, EnergyFragment.newInstance()));
-        functions.add(new Function(R.drawable.ic_action, R.string.nav_action,R.id.nav_action, ActionListFragment.newInstance()));
-        functions.add(new Function(R.drawable.ic_setting, R.string.nav_setting,R.id.nav_setting, SettingFragment.newInstance()));
+        functions.add(new Function(R.drawable.ic_workorder, R.string.nav_workorder,R.id.nav_schedule,
+                WorkorderListFragment.newInstance()));
+        functions.add(new Function(R.drawable.ic_report, R.string.nav_report,R.id.nav_trend, ReportFragment
+                .newInstance()));
+        functions.add(new Function(R.drawable.ic_alarm, R.string.nav_alarm,R.id.nav_alarm, AlarmListFragment
+                .newInstance()));
+        functions.add(new Function(R.drawable.ic_meter, R.string.nav_energy,R.id.nav_energy, EnergyFragment
+                .newInstance()));
+        functions.add(new Function(R.drawable.ic_action, R.string.nav_action,R.id.nav_action, ActionListFragment
+                .newInstance()));
+        functions.add( new Function( R.drawable.ic_account_manage_64dp,R.string.nav_user,R.id.nav_users, UserListFragment
+                .newInstance()) );
+        functions.add(new Function(R.drawable.ic_setting, R.string.nav_setting,R.id.nav_setting, SettingFragment
+                .newInstance()));
         return functions;
     }
 
@@ -335,6 +345,14 @@ public class Generator {
             default:
                 return null;
         }
+    }
+
+    //nj--报表分析温度、湿度查询点列表 2019/2/14
+    public static List<StoredTag> genStoredTags(){
+        List<StoredTag> storedTags=new ArrayList<>(  );
+        storedTags.add( new StoredTag( "XS_A3_1:T",StoredTag.DataType.MAX ) );
+        storedTags.add( new StoredTag( "XRD:EP",StoredTag.DataType.MAX ) );
+        return storedTags;
     }
 
     //nj--统计list的尺寸 2018/11/19

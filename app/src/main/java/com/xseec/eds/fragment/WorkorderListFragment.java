@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
-import com.github.mikephil.charting.formatter.IFillFormatter;
 import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
@@ -28,14 +27,13 @@ import com.xseec.eds.adapter.WorkorderAdapter;
 import com.xseec.eds.model.FilterLabel;
 import com.xseec.eds.model.WAServicer;
 import com.xseec.eds.model.servlet.Workorder;
-import com.xseec.eds.util.DateHelper;
 import com.xseec.eds.util.Generator;
+import com.xseec.eds.util.UserLevelHelper;
 import com.xseec.eds.util.ViewHelper;
 import com.xseec.eds.util.WAJsonHelper;
 import com.xseec.eds.util.WAServiceHelper;
 
 import java.io.IOException;
-import java.net.IDN;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -84,6 +82,9 @@ public class WorkorderListFragment extends BaseFragment {
         setHasOptionsMenu(true);
         View view = inflater.inflate(R.layout.fragment_workorder_list, container, false);
         ButterKnife.inject(this, view);
+        //nj--检查工单列表的权限设置.
+        UserLevelHelper.checkWorkorderListFragment( fabAdd );
+
         getActivity().setTitle(R.string.nav_workorder);
         ViewHelper.initToolbar((AppCompatActivity) getActivity(), toolbar, R.drawable.menu);
         initRecyclerView();

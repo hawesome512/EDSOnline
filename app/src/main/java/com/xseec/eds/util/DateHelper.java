@@ -204,11 +204,11 @@ public class DateHelper {
     }
 
     //nj--计算两日期的间隔 2018/11/23
-    public static int getBetweenOfDay(String startTime, String endTime) {
+    public static long getBetweenOfSecond(String startTime, String endTime) {
         Date start = getServletDate(startTime);
         Date end = getServletDate(endTime);
-        int days = (int) ((end.getTime() - start.getTime()) / (1000 * 3600 * 24));
-        return days;
+        long seconds =  (end.getTime() - start.getTime()) / 1000 ;
+        return seconds;
     }
 
     //nj-计算当前时间往前往后的一段时间 2018/12/19

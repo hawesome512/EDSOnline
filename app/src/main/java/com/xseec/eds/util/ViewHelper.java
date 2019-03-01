@@ -61,6 +61,24 @@ public class ViewHelper {
         dialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTextColor(gray);
     }
 
+    //nj--添加单按钮对话框
+    public static void singleAlertDialog(final Activity activity,String info,DialogInterface.OnClickListener listener){
+        String[] infos=info.split( "/" );
+        AlertDialog.Builder builder=new AlertDialog.Builder( activity )
+                .setTitle( infos[0])
+                .setMessage(infos[1])
+                .setNegativeButton( infos[2], listener);
+        if (listener==null){
+            listener=new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            };
+        }
+        builder.show();
+    }
+
     public static void lockOrientation(Activity activity){
         int orientation=activity.getResources().getConfiguration().orientation;
         if(orientation==Configuration.ORIENTATION_PORTRAIT){

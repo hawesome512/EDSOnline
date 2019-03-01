@@ -20,12 +20,10 @@ import com.xseec.eds.model.servlet.Overviewtag;
 import com.xseec.eds.model.servlet.Phone;
 import com.xseec.eds.model.servlet.UploadListener;
 import com.xseec.eds.model.servlet.Workorder;
-import com.xseec.eds.model.tags.OverviewTag;
 import com.xseec.eds.model.tags.StoredTag;
 import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.model.tags.ValidTag;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 

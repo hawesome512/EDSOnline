@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.xseec.eds.R;
+import com.xseec.eds.model.User;
+import com.xseec.eds.util.DateHelper;
 import com.xseec.eds.util.EDSApplication;
 
 /**
@@ -17,10 +19,13 @@ public class Phone extends BaseModel implements Parcelable {
     private String account;
 
     public Phone(String id){
-        setId(id);
+        this.id=id;
+        //nj--暂时设置手机用户登录时，用户权限为普通访客
+        this.level=1;
     }
 
     protected Phone(Parcel in) {
+        id=in.readString();
         code = in.readString();
         time = in.readString();
         level = in.readInt();
@@ -71,6 +76,30 @@ public class Phone extends BaseModel implements Parcelable {
         this.account = account;
     }
 
+    //nj--用户权限等级名称
+    public String getLevelState(){
+        switch (level) {
+            case 0:
+                return  EDSApplication.getContext().getResources().getString( R.string.user_admin ) ;
+            case 1:
+                return  EDSApplication.getContext().getResources().getString( R.string.user_normal  );
+            default:
+                return  EDSApplication.getContext().getResources().getString( R.string.user_operator ) ;
+        }
+    }
+
+    //NJ--用户权限等级图标
+    public int getLevelImgRes(){
+        switch (level){
+            case User.LEVEL_ADMIN:
+                return R.drawable.ic_account_admin;
+            case User.LEVEL_NORMAL:
+                return R.drawable.ic_user_normal;
+            default:
+                return R.drawable.ic_user_operator;
+        }
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -78,6 +107,7 @@ public class Phone extends BaseModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString( id );
         dest.writeString(code);
         dest.writeString(time);
         dest.writeInt(level);

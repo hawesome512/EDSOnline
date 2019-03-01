@@ -13,7 +13,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -27,7 +26,7 @@ import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.model.tags.ValidTag;
 import com.xseec.eds.service.ComService;
 import com.xseec.eds.util.Device.DeviceConverterCenter;
-import com.xseec.eds.util.TagsFilter;
+import com.xseec.eds.util.ViewHelper;
 import com.xseec.eds.util.WAServiceHelper;
 
 import java.io.IOException;
@@ -190,7 +189,12 @@ public abstract class ComFragment extends Fragment implements ComListener {
         return true;
     }
 
-    protected void onModifyTags(List<ValidTag> targets, final View view) {
+    //nj--提示当前用户身份
+    protected void hintUserLevel(String info){
+        ViewHelper.singleAlertDialog( getActivity(),info,null );
+    }
+
+    protected void onModifyTags(List<ValidTag> targets, final View view){
         WAServiceHelper.sendSetValueRequest(targets, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {

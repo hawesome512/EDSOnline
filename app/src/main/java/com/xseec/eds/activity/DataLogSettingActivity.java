@@ -176,7 +176,7 @@ public class DataLogSettingActivity extends AppCompatActivity {
         StoredTag.DataType dataType = StoredTag.DataType.values()[spinnerDataType.getSelectedItemPosition()];
         factor.setDataType(dataType);
         Intent intent = new Intent();
-        intent.putExtra(DataLogFragment.KEY_FACOTR, factor);
+        intent.putExtra(DataLogFragment.KEY_FACTOR, factor);
         setResult(RESULT_OK, intent);
         finish();
     }

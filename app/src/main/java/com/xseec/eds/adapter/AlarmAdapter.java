@@ -22,6 +22,7 @@ import com.xseec.eds.model.servlet.Alarm;
 import com.xseec.eds.util.DateHelper;
 import com.xseec.eds.util.Device.DeviceConverterCenter;
 import com.xseec.eds.util.Generator;
+import com.xseec.eds.util.UserLevelHelper;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -63,6 +64,8 @@ public class AlarmAdapter extends RecyclerView.Adapter<AlarmAdapter.ViewHolder> 
                 ()));
         String time = DateHelper.getString(alarm.getTime());
         holder.textTime.setText(context.getString(R.string.alarm_time, time));
+        //NJ--用户权限设置,普通用户无法创建异常管理工单
+        UserLevelHelper.checkAlarmAdapter( holder.imageWorkorder );
     }
 
     @Override

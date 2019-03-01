@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.xseec.eds.R;
 import com.xseec.eds.activity.ProtectSettingActivity;
@@ -19,6 +20,7 @@ import com.xseec.eds.util.Device.DeviceConverterCenter;
 import com.xseec.eds.util.Generator;
 import com.xseec.eds.util.RecordHelper;
 import com.xseec.eds.util.TagsFilter;
+import com.xseec.eds.util.UserLevelHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +50,7 @@ public class TabProtectFragment extends TabBaseFragment {
     private String strSwitchOff;
     private Tag modifyTag;
     private ProgressBar modifyProgress;
+    private TextView textValue;
     private static final int REPEAT_LIMIT = 20;
     private int modifyRepeat;
 
@@ -156,6 +159,13 @@ public class TabProtectFragment extends TabBaseFragment {
         } else {
             return tags.get(0).getTagValue();
         }
+    }
+
+    @Override
+    public boolean tagClickEnable(Tag tag,View view) {
+        //nj--根据权限设置
+        boolean usability=UserLevelHelper.checkTabFragment();
+        return usability;
     }
 
     @Override

@@ -18,13 +18,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.squareup.okhttp.Callback;
-import com.squareup.okhttp.Request;
-import com.squareup.okhttp.Response;
 import com.xseec.eds.R;
 import com.xseec.eds.activity.ListActivity;
 import com.xseec.eds.adapter.FunctionAdapter;
 import com.xseec.eds.adapter.OverviewAdapter;
+import com.xseec.eds.model.Function;
 import com.xseec.eds.model.State;
 import com.xseec.eds.model.servlet.Basic;
 import com.xseec.eds.model.tags.OverviewTag;
@@ -34,13 +32,9 @@ import com.xseec.eds.util.Generator;
 import com.xseec.eds.util.OpenMapHelper;
 import com.xseec.eds.util.PhotoPicker;
 import com.xseec.eds.util.TagsFilter;
+import com.xseec.eds.util.UserLevelHelper;
 import com.xseec.eds.util.ViewHelper;
-import com.xseec.eds.util.WAJsonHelper;
-import com.xseec.eds.util.WAServiceHelper;
 
-import org.litepal.LitePal;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -164,7 +158,10 @@ public class OverviewFragment extends ComFragment {
         GridLayoutManager layoutManager1 = new GridLayoutManager(getContext(), 3);
         recyclerOverview.setAdapter(overviewAdapter);
         recyclerFunction.setLayoutManager(layoutManager1);
-        functionAdapter=new FunctionAdapter(getContext(),Generator.genFunctions(),functionListener);
+        //nj--检查用户权限功能
+        List<Function> functionList=Generator.genFunctions();
+        UserLevelHelper.checkOverviewFragment( functionList );
+        functionAdapter=new FunctionAdapter(getContext(),functionList,functionListener);
         recyclerFunction.setAdapter(functionAdapter);
         swipeRefreshLayout.setEnabled(false);
     }

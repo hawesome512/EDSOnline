@@ -9,5 +9,6 @@ import com.xseec.eds.model.tags.Tag;
  */
 
 public interface TagListener {
+    boolean tagClickEnable(Tag tag,View view);
     void onTagClick(Tag tag,View view);
 }
