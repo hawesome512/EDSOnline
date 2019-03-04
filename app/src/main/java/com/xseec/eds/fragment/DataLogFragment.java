@@ -230,7 +230,7 @@ public class DataLogFragment extends BaseFragment {
     @Override
     protected void onRefreshViews(String jsonData) {
         //查询时间可能包含尚未发生的"未来时间区段"数据
-        jsonData = jsonData.replaceAll("(,\"#\")+]", "]");
+        jsonData = Generator.removeFuture(jsonData);
         List<String>[] values = WAJsonHelper.getTagLog(jsonData);
         if (values == null || values.length == 0) {
             return;

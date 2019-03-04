@@ -3,13 +3,15 @@ package com.xseec.eds.model.servlet;
 import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.ArrayMap;
 
 import com.xseec.eds.R;
 import com.xseec.eds.model.WAServicer;
+import com.xseec.eds.model.tags.EnergyTag;
 import com.xseec.eds.util.EDSApplication;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,8 +20,8 @@ import java.util.Map;
 
 public class Basic extends BaseModel implements Parcelable {
 
-    private static final String SPIT = ";";
-    private static final String ALIAS_SPIT = "-";
+    private static final String SPLIT = ";";
+    private static final String ALIAS_SPLIT = "-";
 
     private String user;
     private String banner;
@@ -27,6 +29,7 @@ public class Basic extends BaseModel implements Parcelable {
     private String location;
     private String image;
     private String alias;
+    private String energy;
 
     public Basic() {
         Context context = EDSApplication.getContext();
@@ -47,6 +50,7 @@ public class Basic extends BaseModel implements Parcelable {
         location = in.readString();
         image = in.readString();
         alias = in.readString();
+        energy=in.readString();
     }
 
     public static final Creator<Basic> CREATOR = new Creator<Basic>() {
@@ -113,18 +117,39 @@ public class Basic extends BaseModel implements Parcelable {
         this.alias = alias;
     }
 
+    public String getEnergy() {
+        return energy;
+    }
+
+    public void setEnergy(String energy) {
+        this.energy = energy;
+    }
+
+    public static List<EnergyTag> getEnergyTagList(String energy){
+        String[] energies=energy.split(SPLIT);
+        List<EnergyTag> tags=new ArrayList<>();
+        if(energies!=null){
+            for(String info:energies){
+                String[] infos=EnergyTag.getInfos(info);
+                if(infos.length==EnergyTag.VALID_INFOS_LENGTH){
+                    tags.add(new EnergyTag(infos));
+                }
+            }
+        }
+        return tags;
+    }
+
     @Override
     public String toJson() {
-        return EDSApplication.getContext().getString(R.string.svl_basic_request, id, user,
-                banner, pricipal, location, image, alias);
+        return EDSApplication.getContext().getString(R.string.svl_basic_request, id, user, banner, pricipal, location, image, alias,energy);
     }
 
     public LinkedHashMap<String, String> getAliasMap() {
         LinkedHashMap map = new LinkedHashMap();
         if (alias != null) {
-            String[] items = alias.split(SPIT);
+            String[] items = alias.split(SPLIT);
             for (String item : items) {
-                String[] kv = item.split(ALIAS_SPIT);
+                String[] kv = item.split(ALIAS_SPLIT);
                 if (kv.length == 2) {
                     map.put(kv[0], kv[1]);
                 }
@@ -136,7 +161,7 @@ public class Basic extends BaseModel implements Parcelable {
     public void setAlias(LinkedHashMap<String, String> map) {
         StringBuilder builder = new StringBuilder();
         for (Map.Entry<String, String> entry : map.entrySet()) {
-            builder.append(entry.getKey() + ALIAS_SPIT + entry.getValue() + SPIT);
+            builder.append(entry.getKey() + ALIAS_SPLIT + entry.getValue() + SPLIT);
         }
         setAlias(builder.toString());
     }
@@ -155,5 +180,6 @@ public class Basic extends BaseModel implements Parcelable {
         dest.writeString(location);
         dest.writeString(image);
         dest.writeString(alias);
+        dest.writeString(energy);
     }
 }

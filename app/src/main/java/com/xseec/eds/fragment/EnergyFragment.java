@@ -37,10 +37,13 @@ public class EnergyFragment extends BaseFragment implements ViewPager.OnPageChan
 
     Fragment[] fragments=new Fragment[3];
     String[] tabs;
+    public static final String KEY_ENERGY_INFO="info";
 
-    public static Fragment newInstance() {
+    public static Fragment newInstance(String info) {
         Fragment fragment = new EnergyFragment();
-
+        Bundle bundle=new Bundle();
+        bundle.putString(KEY_ENERGY_INFO,info);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -58,9 +61,10 @@ public class EnergyFragment extends BaseFragment implements ViewPager.OnPageChan
         ButterKnife.inject(this, view);
         ViewHelper.initToolbar((AppCompatActivity) getActivity(),toolbar,R.drawable.menu);
         toolbar.setTitle(R.string.nav_energy);
-        fragments[0]=EnergyTabItemFragment.newInstance(Calendar.DATE);
-        fragments[1]=EnergyTabItemFragment.newInstance(Calendar.MONTH);
-        fragments[2]=EnergyTabItemFragment.newInstance(Calendar.YEAR);
+        String info=getArguments().getString(KEY_ENERGY_INFO);
+        fragments[0]=EnergyTabItemFragment.newInstance(Calendar.DATE,info);
+        fragments[1]=EnergyTabItemFragment.newInstance(Calendar.MONTH,info);
+        fragments[2]=EnergyTabItemFragment.newInstance(Calendar.YEAR,info);
         viewPager.addOnPageChangeListener(this);
         viewPager.setAdapter(new MyFragmentPagerAdapter(getActivity().getSupportFragmentManager(),fragments));
         tab.setupWithViewPager(viewPager);

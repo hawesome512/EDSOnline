@@ -155,7 +155,7 @@ public class MainActivity extends BaseActivity implements NavigationView
                 fragment = WorkorderListFragment.newInstance();
                 break;
             case R.id.nav_energy:
-                fragment = EnergyFragment.newInstance();
+                fragment = EnergyFragment.newInstance(basic.getEnergy());
                 break;
             case R.id.nav_alarm:
                 fragment = AlarmListFragment.newInstance();

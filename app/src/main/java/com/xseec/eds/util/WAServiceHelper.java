@@ -87,12 +87,12 @@ public class WAServiceHelper {
         sendRequest(url, authority, content, callback);
     }
 
-    public static void sendTagLogRequest(DataLogFactor factor,List<StoredTag> tagList,Callback callback){
+    public static void sendTagLogRequest(DataLogFactor factor,List<? extends StoredTag> tagList,Callback callback){
         sendTagLogRequest(factor.getStartTimeString(),factor.getIntervalType(),factor.getInterval(),factor.getRecords(),tagList,callback);
     }
 
     public static void sendTagLogRequest( String startTime, StoredTag
-            .IntervalType intervalType, int interval, int records, List<StoredTag> tagList,
+            .IntervalType intervalType, int interval, int records, List<? extends StoredTag> tagList,
             Callback callback) {
         Context context = EDSApplication.getContext();
         String content = context.getString(R.string.was_tag_log_request, startTime, intervalType

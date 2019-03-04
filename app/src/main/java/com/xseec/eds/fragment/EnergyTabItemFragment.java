@@ -40,17 +40,25 @@ import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
 import com.xseec.eds.R;
 import com.xseec.eds.adapter.EnergyLevelAdapter;
+import com.xseec.eds.model.DataLogFactor;
+import com.xseec.eds.model.servlet.Basic;
 import com.xseec.eds.model.tags.EnergyTag;
-import com.xseec.eds.util.ApiLevelHelper;
+import com.xseec.eds.model.tags.StoredTag;
 import com.xseec.eds.util.DateHelper;
 import com.xseec.eds.util.Generator;
 import com.xseec.eds.util.ViewHelper;
+import com.xseec.eds.util.WAJsonHelper;
+import com.xseec.eds.util.WAServiceHelper;
 import com.xseec.eds.widget.ItemXAxisValueFormatter;
 import com.xseec.eds.widget.MonthYearPickerDialog;
 import com.xseec.eds.widget.MyMarkerView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -100,7 +108,6 @@ public class EnergyTabItemFragment extends BaseFragment implements OnChartValueS
     TextView textTip;
 
     private EnergyLevelAdapter levelAdapter;
-    private List<EnergyTag> energyList;
     private List<EnergyTag> parents;
     private List<EnergyTag> children;
     private int currentIndex;
@@ -108,6 +115,7 @@ public class EnergyTabItemFragment extends BaseFragment implements OnChartValueS
     //模拟值临时方案，实际使用删除此变量，一次性查询所有能耗数据的（环比值+当前值）
     //countOfLast:环比值个数
     private List<String>[] tagLogs;
+    private List<EnergyTag> energyTagList;
     private int countOfLast;
     private Map<String, Integer> childrenValues;
     private Calendar startTime;
@@ -116,10 +124,11 @@ public class EnergyTabItemFragment extends BaseFragment implements OnChartValueS
     private int field;
     private static final String KEY_FIELD = "field";
 
-    public static Fragment newInstance(int field) {
+    public static Fragment newInstance(int field, String info) {
         Fragment fragment = new EnergyTabItemFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(KEY_FIELD, field);
+        bundle.putString(EnergyFragment.KEY_ENERGY_INFO, info);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -141,16 +150,16 @@ public class EnergyTabItemFragment extends BaseFragment implements OnChartValueS
 
     private void initViews() {
         field = getArguments().getInt(KEY_FIELD);
+        String info = getArguments().getString(EnergyFragment.KEY_ENERGY_INFO);
+        energyTagList = Basic.getEnergyTagList(info);
 
         showNames = getResources().getStringArray(R.array.energy_analysis);
         textItemFirst.setText(showNames[0]);
         textItemSecend.setText(showNames[1]);
         textItemLast.setText(showNames[2]);
 
-        //使用模拟值，待正式运行后修正
-        energyList = Generator.genEnergyTagList();
         currentIndex = 0;
-        startTime = Calendar.getInstance();
+        startTime = DateHelper.getDayStartTime(Calendar.getInstance());
         initLineChart();
         initPieChart();
         initBarCart();
@@ -160,7 +169,7 @@ public class EnergyTabItemFragment extends BaseFragment implements OnChartValueS
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(),
                 LinearLayoutManager.HORIZONTAL, false);
         recyclerViewTag.setLayoutManager(layoutManager);
-        parents = energyList.get(currentIndex).getEnergyParents(energyList);
+        parents = energyTagList.get(currentIndex).getParent(energyTagList);
         levelAdapter = new EnergyLevelAdapter(getContext(), parents, this);
         recyclerViewTag.setAdapter(levelAdapter);
     }
@@ -175,16 +184,16 @@ public class EnergyTabItemFragment extends BaseFragment implements OnChartValueS
     }
 
     private void setLineData() {
-        LineData lineData = lineChart.getData();
-        if (lineData != null) {
-            lineData.clearValues();
-        } else {
-            lineData = new LineData();
-        }
+        lineChart.clear();
+        LineData lineData = new LineData();
 
         List<String> yValues = tagLogs[currentIndex];
-        List<String> current = yValues.subList(countOfLast, yValues.size());
-        List<String> last = yValues.subList(0, countOfLast);
+        List<String> current = new ArrayList<>();
+        List<String> last = new ArrayList<>();
+        if (countOfLast < yValues.size()) {
+            current = yValues.subList(countOfLast, yValues.size());
+            last = yValues.subList(0, countOfLast);
+        }
         //日期<时>0:00开始，月份<日期>从1号、年份<月>从1月开始
         int minXValue = field == Calendar.DATE ? 0 : 1;
 
@@ -236,10 +245,10 @@ public class EnergyTabItemFragment extends BaseFragment implements OnChartValueS
     }
 
     private void setPieData() {
-        String current = energyList.get(currentIndex).getTagShortName();
+        String current = energyTagList.get(currentIndex).getAlias();
         pieChart.setCenterText(generateCenterSpannableText(getString(R.string.energy_pie_title,
                 current)));
-
+        pieChart.clear();
         PieData pieData = pieChart.getData();
         if (pieData != null) {
             pieData.clearValues();
@@ -274,8 +283,7 @@ public class EnergyTabItemFragment extends BaseFragment implements OnChartValueS
         s.setSpan(new ForegroundColorSpan(Color.GRAY), index1, index2, 0);
         s.setSpan(new RelativeSizeSpan(.65f), index1, index2, 0);
         s.setSpan(new StyleSpan(Typeface.ITALIC), index2, s.length(), 0);
-        s.setSpan(new ForegroundColorSpan(ColorTemplate.getHoloBlue()), index2, s.length
-                (), 0);
+        s.setSpan(new ForegroundColorSpan(ColorTemplate.getHoloBlue()), index2, s.length(), 0);
         return s;
     }
 
@@ -283,19 +291,16 @@ public class EnergyTabItemFragment extends BaseFragment implements OnChartValueS
         barChart.getDescription().setEnabled(false);
         barChart.getAxisRight().setEnabled(false);
         barChart.getAxisLeft().setAxisMinimum(0);
+        //非常容易误触发
         barChart.setTouchEnabled(false);
+        barChart.setOnChartValueSelectedListener(this);
         XAxis xAxis = barChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
     }
 
     private void setBarData() {
-
-        BarData barData = barChart.getBarData();
-        if (barData != null) {
-            barData.clearValues();
-        } else {
-            barData = new BarData();
-        }
+        barChart.clear();
+        BarData barData = new BarData();
 
         XAxis xAxis = barChart.getXAxis();
         xAxis.setLabelCount(childrenValues.size());
@@ -324,50 +329,67 @@ public class EnergyTabItemFragment extends BaseFragment implements OnChartValueS
     private void requestDatalog() {
         progress.setVisibility(View.VISIBLE);
         textTime.setText(DateHelper.getStringByField(startTime, field));
+        StoredTag.IntervalType intervalType = StoredTag.IntervalType.H;
+        Calendar lastTime = (Calendar) startTime.clone();
+        lastTime.add(field, -1);
+        int countOfNow = 24;
         switch (field) {
             case Calendar.YEAR:
-                countOfLast = 12;
+                countOfLast = lastTime.getActualMaximum(Calendar.DAY_OF_YEAR);
+                countOfNow = startTime.getActualMaximum(Calendar.DAY_OF_YEAR);
+                //后台接口缺少月模式
+                intervalType = StoredTag.IntervalType.D;
+                startTime.set(Calendar.MONTH, 0);//月份从0开始计数
+                startTime.set(Calendar.DAY_OF_MONTH, 1);
                 break;
             case Calendar.MONTH:
-                Calendar lastTime = (Calendar) startTime.clone();
-                lastTime.add(field, -1);
                 countOfLast = lastTime.getActualMaximum(Calendar.DAY_OF_MONTH);
+                countOfNow = startTime.getActualMaximum(Calendar.DAY_OF_MONTH);
+                intervalType = StoredTag.IntervalType.D;
+                startTime.set(Calendar.DAY_OF_MONTH, 1);
                 break;
             case Calendar.DATE:
+                //如用上述模式，一天中最大Hour为23
                 countOfLast = 24;
+                countOfNow = 24;
+                intervalType = StoredTag.IntervalType.H;
                 break;
             default:
                 break;
         }
-        //使用模拟值
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(3000);
-                    updateChildren();
-                    refreshViewsInThread(null);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-    }
-
-    private int calSum(List<String> yValues) {
-        int sum = 0;
-        for (String value : yValues) {
-            sum += Integer.parseInt(value);
+        startTime.add(field, -1);
+        //能耗属于累加值，多取1点
+        DataLogFactor factor = new DataLogFactor(startTime, intervalType, 1, countOfLast +
+                countOfNow + 1);
+        if(field==Calendar.YEAR){
+            countOfLast=12;
         }
-        return sum;
+        WAServiceHelper.sendTagLogRequest(factor, energyTagList, new Callback() {
+            @Override
+            public void onFailure(Request request, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Response response) throws IOException {
+                refreshViewsInThread(response);
+            }
+        });
     }
 
     @Override
     public void onValueSelected(Entry e, Highlight h) {
         scrollView.scrollTo(0, 0);
-        PieEntry pieEntry = (PieEntry) e;
+        String label = null;
+        if (e instanceof BarEntry) {
+            BarEntry barEntry = (BarEntry) e;
+            label = barChart.getXAxis().getFormattedLabel((int) (barEntry.getX()));
+        } else {
+            PieEntry pieEntry = (PieEntry) e;
+            label = pieEntry.getLabel();
+        }
         for (EnergyTag tag : children) {
-            if (tag.getTagShortName().equals(pieEntry.getLabel())) {
+            if (tag.getAlias().equals(label)) {
                 onParentSelected(tag);
                 break;
             }
@@ -400,6 +422,35 @@ public class EnergyTabItemFragment extends BaseFragment implements OnChartValueS
     @Override
     protected void onRefreshViews(String jsonData) {
         progress.setVisibility(View.GONE);
+        jsonData = Generator.removeFuture(jsonData);
+        tagLogs = WAJsonHelper.getTagLog(jsonData);
+        for (int i = 0; i < tagLogs.length; i++) {
+            tagLogs[i] = Generator.genPerEnergyEntryList(tagLogs[i]);
+        }
+        covertTagLogs();
+        refreshCharts();
+    }
+
+    private void covertTagLogs() {
+        for (int i = 0; i < energyTagList.size(); i++) {
+            //累加点
+            if (energyTagList.get(i).isNull()) {
+                List<EnergyTag> children = energyTagList.get(i).getChildren(energyTagList);
+                for (EnergyTag child : children) {
+                    int index = energyTagList.indexOf(child);
+                    tagLogs[i] = Generator.addTwoTagLogs(tagLogs[i], tagLogs[index]);
+                }
+            }
+            //年模式：日值→月值
+            if (field==Calendar.YEAR) {
+                tagLogs[i] = Generator.getMonthList(tagLogs[i], (Calendar) startTime.clone());
+            }
+        }
+
+    }
+
+    private void refreshCharts() {
+        updateChildren();
         setLineData();
         int visibility = children.size() > 0 ? View.VISIBLE : View.GONE;
         barChart.setVisibility(visibility);
@@ -414,32 +465,28 @@ public class EnergyTabItemFragment extends BaseFragment implements OnChartValueS
     @Override
     public void onParentSelected(EnergyTag currentLevel) {
         parents.clear();
-        parents.addAll(currentLevel.getEnergyParents(energyList));
+        parents.addAll(currentLevel.getParent(energyTagList));
         levelAdapter.notifyDataSetChanged();
-        currentIndex = energyList.indexOf(currentLevel);
-        updateChildren();
-        onRefreshViews(null);
+        currentIndex = energyTagList.indexOf(currentLevel);
+        refreshCharts();
     }
 
     private void updateChildren() {
-        tagLogs = new List[energyList.size()];
         childrenValues = new ArrayMap<>();
-        children = energyList.get(currentIndex).getEnergyChildren(energyList);
-        for (int i = 0; i < energyList.size(); i++) {
-            EnergyTag tag = energyList.get(i);
-            String baseValue = tag.getTagValue();
-            tagLogs[i] = Generator.genLastNowEntryList(startTime, field, baseValue);
-            if (children.contains(tag)) {
-                List<String> yValues = tagLogs[i].subList(countOfLast, tagLogs[i]
-                        .size());
-                childrenValues.put(tag.getTagShortName(), calSum(yValues));
+        children = energyTagList.get(currentIndex).getChildren(energyTagList);
+        for (EnergyTag child : children) {
+            int index = energyTagList.indexOf(child);
+            List<String> yValues = new ArrayList<>();
+            if (countOfLast < tagLogs[index].size()) {
+                yValues = tagLogs[index].subList(countOfLast, tagLogs[index].size());
             }
+            childrenValues.put(child.getAlias(), Generator.calSum(yValues));
         }
     }
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        startTime.set(year, month, dayOfMonth);
+        startTime.set(year, month, dayOfMonth, 0, 0, 0);
         requestDatalog();
     }
 }

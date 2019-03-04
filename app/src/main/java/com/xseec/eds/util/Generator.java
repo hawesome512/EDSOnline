@@ -16,6 +16,7 @@ import com.xseec.eds.model.Function;
 import com.xseec.eds.model.deviceconfig.Protect;
 import com.xseec.eds.model.servlet.Action;
 import com.xseec.eds.model.servlet.Alarm;
+import com.xseec.eds.model.servlet.Basic;
 import com.xseec.eds.model.servlet.Workorder;
 import com.xseec.eds.model.tags.EnergyTag;
 import com.xseec.eds.model.tags.OverviewTag;
@@ -36,13 +37,7 @@ import java.util.Random;
 
 public class Generator {
 
-    //因版本变更较大，此处临时处理，后续关于Overview的配置模块处理
-    public static List<OverviewTag> genOverviewTags(){
-        List<OverviewTag> overviewTags=new ArrayList<>();
-        return overviewTags;
-    }
-
-    public static List<Function> genFunctions() {
+    public static List<Function> genFunctions(Basic basic) {
         List<Function> functions = new ArrayList<>();
         functions.add(new Function(R.drawable.ic_workorder, R.string.nav_workorder,R.id.nav_schedule,
                 WorkorderListFragment.newInstance()));
@@ -51,7 +46,7 @@ public class Generator {
         functions.add(new Function(R.drawable.ic_alarm, R.string.nav_alarm,R.id.nav_alarm, AlarmListFragment
                 .newInstance()));
         functions.add(new Function(R.drawable.ic_meter, R.string.nav_energy,R.id.nav_energy, EnergyFragment
-                .newInstance()));
+                .newInstance(basic.getEnergy())));
         functions.add(new Function(R.drawable.ic_action, R.string.nav_action,R.id.nav_action, ActionListFragment
                 .newInstance()));
         functions.add( new Function( R.drawable.ic_account_manage_64dp,R.string.nav_user,R.id.nav_users, UserListFragment
@@ -59,14 +54,6 @@ public class Generator {
         functions.add(new Function(R.drawable.ic_setting, R.string.nav_setting,R.id.nav_setting, SettingFragment
                 .newInstance()));
         return functions;
-    }
-
-    public static String genString(String source, int repeat) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (int i = 0; i < repeat; i++) {
-            stringBuilder.append(source);
-        }
-        return stringBuilder.toString();
     }
 
     public static String getResourceString(String name) {
@@ -79,24 +66,10 @@ public class Generator {
         }
     }
 
-    public static String genTime() {
-        Calendar calendar = Calendar.getInstance();
-        return DateHelper.getString(calendar.getTime());
-    }
-
     public static int getImageRes(String imageName) {
         Context context = EDSApplication.getContext();
         return context.getResources().getIdentifier(imageName,
                 "drawable", context.getPackageName());
-    }
-
-    public static List<Entry> getEntryList(int size) {
-        Random random = new Random();
-        List<Entry> entryList = new ArrayList<>();
-        for (int i = 0; i < size; i++) {
-            entryList.add(new Entry(i, random.nextInt(3000) + 5000));
-        }
-        return entryList;
     }
 
     public static List<Entry> convertEntryList(List<String> source, float minValue) {
@@ -131,9 +104,9 @@ public class Generator {
         }
     }
 
-    public static boolean checkIsOne(String switchValue,int index){
-        int value=(int)floatTryParse(switchValue);
-        return (value&(int)Math.pow(2,index))>0;
+    public static boolean checkIsOne(String switchValue, int index) {
+        int value = (int) floatTryParse(switchValue);
+        return (value & (int) Math.pow(2, index)) > 0;
     }
 
     public static boolean checkProtectStateZero(String switchValue, List<String> items, String
@@ -203,98 +176,47 @@ public class Generator {
         return Math.round(max * 10) / 10f;
     }
 
-    public static List<EnergyTag> genEnergyTagList() {
-        List<EnergyTag> tagList = new ArrayList<>();
-        tagList.add(new EnergyTag("E_0_厦门士林电机", "100"));
-
-        tagList.add(new EnergyTag("E_00_车间1", "40"));
-        tagList.add(new EnergyTag("E_000_空调", "10"));
-        tagList.add(new EnergyTag("E_001_照明", "5"));
-        tagList.add(new EnergyTag("E_002_动力", "20"));
-        tagList.add(new EnergyTag("E_003_插座", "5"));
-
-        tagList.add(new EnergyTag("E_01_车间2", "35"));
-        tagList.add(new EnergyTag("E_010_空调", "10"));
-        tagList.add(new EnergyTag("E_011_照明", "5"));
-        tagList.add(new EnergyTag("E_012_动力", "15"));
-        tagList.add(new EnergyTag("E_013_插座", "5"));
-
-        tagList.add(new EnergyTag("E_02_办公楼", "25"));
-        tagList.add(new EnergyTag("E_020_空调", "5"));
-        tagList.add(new EnergyTag("E_021_照明", "10"));
-        tagList.add(new EnergyTag("E_022_动力", "5"));
-        tagList.add(new EnergyTag("E_023_插座", "5"));
-
-        return tagList;
-    }
-
-    public static List<String> genLastNowEntryList(Calendar start, int field, String value) {
-        int baseValue;
-        int fieldItem;
-        int nValue = Integer.valueOf(value);
-        Calendar time = (Calendar) start.clone();
-        time.add(field, -1);
-        switch (field) {
-            case Calendar.YEAR:
-                baseValue = 24 * 30 * nValue;
-                fieldItem = Calendar.MONTH;
-                time.set(Calendar.MONTH, 0);
-                break;
-            case Calendar.MONTH:
-                baseValue = 24 * nValue;
-                fieldItem = Calendar.DATE;
-                time.set(Calendar.DAY_OF_MONTH, 1);
-                break;
-            default:
-                baseValue = nValue;
-                fieldItem = Calendar.HOUR;
-                break;
-        }
-        time.set(Calendar.HOUR_OF_DAY, 0);
-        time.set(Calendar.MINUTE, 0);
-        time.set(Calendar.SECOND, 0);
-        Calendar end = (Calendar) time.clone();
-        end.add(field, 2);
-        Calendar now = Calendar.getInstance();
-        List<String> values = new ArrayList<>();
-        int first = time.get(field);
-        Random random = new Random();
-        while (time.before(end) && time.before(now)) {
-            values.add((80 + random.nextInt(40)) * baseValue / 100 + "");
-            time.add(fieldItem, 1);
-        }
-        return values;
-    }
-
-    public static List<String> genYesTodayEntryList(Calendar startTime) {
-        Random random = new Random();
-        Calendar now = Calendar.getInstance();
-        Calendar target = (Calendar) startTime.clone();
-        List<String> values = new ArrayList<>();
-        for (int i = 0; i < 48 && target.before(now); i++) {
-            int hour = target.get(Calendar.HOUR_OF_DAY);
-            int value;
-            if (hour >= 8 && hour <= 20) {
-                value = (160 + random.nextInt(40));
-            } else {
-                value = (80 + random.nextInt(40));
-            }
-            values.add(String.valueOf(value));
-            target.add(Calendar.HOUR, 1);
-        }
-        return values;
-    }
-
-    public static List<String> genPerEnergyEntryList(List<String> totals){
-        List<String> pers=new ArrayList<>();
-        for (int i = 1; i <totals.size() ; i++) {
-            float now=floatTryParse(totals.get(i));
-            float pre=floatTryParse(totals.get(i-1));
+    public static List<String> genPerEnergyEntryList(List<String> totals) {
+        List<String> pers = new ArrayList<>();
+        for (int i = 1; i < totals.size(); i++) {
+            float now = floatTryParse(totals.get(i));
+            float pre = floatTryParse(totals.get(i - 1));
             //暂时方案，数据清零等操作造成累加值突变or通信异常造成pre为0
-            now=(pre==0||now==0)?0:now-pre;
+            now = (pre == 0 || now == 0) ? 0 : now - pre;
             pers.add(String.valueOf(now));
         }
         return pers;
+    }
+
+    public static String removeFuture(String jsonData) {
+        return jsonData.replaceAll("(,\"#\")+]", "]");
+    }
+
+    public static List<String> getMonthList(List<String> dayList,Calendar start){
+        int index=0;
+        int toIndex;
+        List<String> result=new ArrayList<>();
+        List<String> tmps=null;
+        while (index<dayList.size()){
+            toIndex=index+start.getActualMaximum(Calendar.DAY_OF_MONTH);
+            toIndex=toIndex>dayList.size()?dayList.size():toIndex;
+            tmps=dayList.subList(index,toIndex);
+            result.add(String.valueOf(calSum(tmps)));
+            index=toIndex;
+            start.add(Calendar.MONTH,1);
+        }
+        return result;
+    }
+
+    public static int calSum(List<String> yValues) {
+        int sum = 0;
+        for (String value : yValues) {
+            if (value.equals(StoredTag.NULL_VALUE)) {
+                continue;
+            }
+            sum += Generator.floatTryParse(value);
+        }
+        return sum;
     }
 
     /*
@@ -319,6 +241,27 @@ public class Generator {
             }
             return index;
         }
+    }
+
+    public static List<String> addTwoTagLogs(List<String> first, List<String> secend) {
+        int length = Math.max(first.size(), secend.size());
+        List<String> result = new ArrayList<>();
+        String str1,str2;
+        for (int i = 0; i < length; i++) {
+            str1=getListItem(first,i);
+            str2=getListItem(secend,i);
+            if (str1.equals(StoredTag.NULL_VALUE) && str2.equals(StoredTag.NULL_VALUE)) {
+                result.add(StoredTag.NULL_VALUE);
+            } else {
+                float value = floatTryParse(str1) + floatTryParse(str2);
+                result.add(String.valueOf(value));
+            }
+        }
+        return result;
+    }
+
+    private static String getListItem(List<String> list,int index){
+        return index>=list.size()?StoredTag.NULL_VALUE:list.get(index);
     }
 
     /*
@@ -356,43 +299,43 @@ public class Generator {
     }
 
     //nj--统计list的尺寸 2018/11/19
-    public static String countList(List sources){
-            return sources!=null?String.valueOf( sources.size() ):"0";
+    public static String countList(List sources) {
+        return sources != null ? String.valueOf(sources.size()) : "0";
     }
 
     //nj--获取报表时间段信息 2018/11/19
-    public static String getReportTime(String startTime,String endTime){
-        Date start=DateHelper.getServletDate( startTime );
-        Date end=DateHelper.getServletDate( endTime );
-        Context context=EDSApplication.getContext();
-        String time=context.getString( R.string.workorder_time,DateHelper.getYMDString( start ),
-                DateHelper.getYMDString( end ));
+    public static String getReportTime(String startTime, String endTime) {
+        Date start = DateHelper.getServletDate(startTime);
+        Date end = DateHelper.getServletDate(endTime);
+        Context context = EDSApplication.getContext();
+        String time = context.getString(R.string.workorder_time, DateHelper.getYMDString(start),
+                DateHelper.getYMDString(end));
         return time;
     }
 
     //nj--工单信息筛选 2018/11/19
-    public static List<Workorder> filterWorkorderListOfState(List<Workorder> sources, int state){
-        List<Workorder> workorderList=new ArrayList<Workorder>(  );
-        if (state==-1){
-            workorderList.addAll( sources );
-        }else{
-            for(Workorder workorder:sources){
-                if (workorder.getWorkorderState().ordinal()==state){
-                    workorderList.add( workorder);
+    public static List<Workorder> filterWorkorderListOfState(List<Workorder> sources, int state) {
+        List<Workorder> workorderList = new ArrayList<Workorder>();
+        if (state == -1) {
+            workorderList.addAll(sources);
+        } else {
+            for (Workorder workorder : sources) {
+                if (workorder.getWorkorderState().ordinal() == state) {
+                    workorderList.add(workorder);
                 }
             }
         }
         return workorderList;
     }
 
-    public static List<Workorder> filterWorkorderListOfType(List<Workorder> sources, int type){
-        List<Workorder> workorderList=new ArrayList<>(  );
-        if (type==-1){
-            workorderList.addAll( sources );
-        }else{
-            for(Workorder workorder:sources){
-                if (workorder.getType()==type){
-                    workorderList.add( workorder);
+    public static List<Workorder> filterWorkorderListOfType(List<Workorder> sources, int type) {
+        List<Workorder> workorderList = new ArrayList<>();
+        if (type == -1) {
+            workorderList.addAll(sources);
+        } else {
+            for (Workorder workorder : sources) {
+                if (workorder.getType() == type) {
+                    workorderList.add(workorder);
                 }
             }
         }
@@ -400,92 +343,94 @@ public class Generator {
     }
 
     //nj--异常管理信息筛选 2018/11/19
-    public static List<Alarm> filterAlarmConfirm(List<Alarm> sources, int confirm){
-        List<Alarm> alarmList=new ArrayList<>(  );
-        if (confirm==-1){
-             alarmList.addAll( sources );
-        }else {
-            for (Alarm alarm:sources){
-                if (alarm.getConfirm()==confirm){
-                    alarmList.add( alarm );
+    public static List<Alarm> filterAlarmConfirm(List<Alarm> sources, int confirm) {
+        List<Alarm> alarmList = new ArrayList<>();
+        if (confirm == -1) {
+            alarmList.addAll(sources);
+        } else {
+            for (Alarm alarm : sources) {
+                if (alarm.getConfirm() == confirm) {
+                    alarmList.add(alarm);
                 }
             }
         }
         return alarmList;
     }
 
-    public static List<Alarm> filterAlarmDevice(List<Alarm> sources, String device){
-        List<Alarm> alarmList=new ArrayList<>(  );
-        for (Alarm alarm:sources){
-            if (alarm.getDevice().equals( device )){
-                alarmList.add( alarm );
+    public static List<Alarm> filterAlarmDevice(List<Alarm> sources, String device) {
+        List<Alarm> alarmList = new ArrayList<>();
+        for (Alarm alarm : sources) {
+            if (alarm.getDevice().equals(device)) {
+                alarmList.add(alarm);
             }
         }
         return alarmList;
     }
 
     //nj--操作信息筛选 2018/11/19
-    public static List<Action> filterActionsType(List<Action> sources,int type){
-        List<Action> actionList=new ArrayList<>(  );
-        if (type==-1){
-            actionList.addAll( sources );
-        }else {
-            for (Action action:sources){
-                if (action.getActionType().ordinal()==type)
-                    actionList.add( action );
+    public static List<Action> filterActionsType(List<Action> sources, int type) {
+        List<Action> actionList = new ArrayList<>();
+        if (type == -1) {
+            actionList.addAll(sources);
+        } else {
+            for (Action action : sources) {
+                if (action.getActionType().ordinal() == type)
+                    actionList.add(action);
             }
         }
         return actionList;
     }
 
-    public static List<Action> filterActionsMethod(List<Action> sources,int method){
-        List<Action> actionList=new ArrayList<>(  );
-        for (Action action:sources){
-            if (action.getActionMethod().ordinal()==method)
-                actionList.add( action );
+    public static List<Action> filterActionsMethod(List<Action> sources, int method) {
+        List<Action> actionList = new ArrayList<>();
+        for (Action action : sources) {
+            if (action.getActionMethod().ordinal() == method)
+                actionList.add(action);
         }
         return actionList;
     }
 
     //nj--环境报表数据总数、平均值2018/11/25
-    public static String getReportMax(List<String> sources){
-        String value=Collections.max( sources );;
-        if (!value.equals( "#" )){
-            float max=Math.round( Float.valueOf( value )*100 )/100f;
-            return String.valueOf( max );
-        }else {
-            return String.valueOf( 0.0 );
+    public static String getReportMax(List<String> sources) {
+        String value = Collections.max(sources);
+        ;
+        if (!value.equals("#")) {
+            float max = Math.round(Float.valueOf(value) * 100) / 100f;
+            return String.valueOf(max);
+        } else {
+            return String.valueOf(0.0);
         }
     }
 
-    public static String getReportMin(List<String> sources){
-        String value=Collections.min( sources );;
-        if (!value.equals( "#" )){
-            float min=Math.round( Float.valueOf( value )*100 )/100f;
-            return String.valueOf( min );
-        }else {
-            return String.valueOf( 0.0 );
+    public static String getReportMin(List<String> sources) {
+        String value = Collections.min(sources);
+        ;
+        if (!value.equals("#")) {
+            float min = Math.round(Float.valueOf(value) * 100) / 100f;
+            return String.valueOf(min);
+        } else {
+            return String.valueOf(0.0);
         }
     }
 
-    public static String getReportSum(List<String> sources){
-        float sum=0;
-        for (int i=0;i<sources.size();i++){
+    public static String getReportSum(List<String> sources) {
+        float sum = 0;
+        for (int i = 0; i < sources.size(); i++) {
             float value;
-            String itemValue=sources.get( i );
-            if (itemValue.equals( "#" )){
-                value=0;
-            }else {
-                value=Float.valueOf( sources.get( i ) );
+            String itemValue = sources.get(i);
+            if (itemValue.equals("#")) {
+                value = 0;
+            } else {
+                value = Float.valueOf(sources.get(i));
             }
-            sum+=value;
+            sum += value;
         }
-        return String.valueOf( sum );
+        return String.valueOf(sum);
     }
 
-    public static String getReportAve(List<String> sources){
-        String sum=getReportSum( sources );
-        float ave=Math.round(Float.valueOf( sum )/sources.size()*100)/100f;
-        return String.valueOf( ave );
+    public static String getReportAve(List<String> sources) {
+        String sum = getReportSum(sources);
+        float ave = Math.round(Float.valueOf(sum) / sources.size() * 100) / 100f;
+        return String.valueOf(ave);
     }
 }

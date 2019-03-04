@@ -284,8 +284,8 @@ public class ReportFragment extends BaseFragment {
             @Override
             public void run() {
                 int interval = (int) (DateHelper.getBetweenOfSecond( startTime, endTime ) / (3600 * 24));
-                List<EnergyTag> energyList = Generator.genEnergyTagList();
-                String value = energyList.get( 0 ).getTagValue();
+                //hs--临时设置模拟值，后期处理
+                String value = "100";
                 List<String> realEnergyList = new ArrayList<>();
                 List<String> expectEnergyList = new ArrayList<>();
                 int baseValue = Integer.valueOf( value ) * 24;

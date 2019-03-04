@@ -337,7 +337,7 @@
     <string name="svl_workorder_request">{\"id\":\"%1$s\",\"state\":%2$d,\"type\":%3$d,\"title\":\"%4$s\",\"task\":\"%5$s\",\"start\":\"%6$s\",\"end\":\"%7$s\",\"location\":\"%8$s\",\"worker\":\"%9$s\",\"log\":\"%10$s\",\"image\":\"%11$s\",\"creator\":\"%12$s\"}</string>
     <string name="svl_basic_query">http://%1$s:8080/EDSServlet/QueryBasicServlet?</string>
     <string name="svl_basic_update">http://%1$s:8080/EDSServlet/UpdateBasicServlet</string>
-    <string name="svl_basic_request">{\"id\":\"%1$s\",\"user\":\"%2$s\",\"banner\":\"%3$s\",\"pricipal\":\"%4$s\",\"location\":\"%5$s\",\"image\":\"%6$s\",\"alias\":\"%7$s\"}</string>
+    <string name="svl_basic_request">{\"id\":\"%1$s\",\"user\":\"%2$s\",\"banner\":\"%3$s\",\"pricipal\":\"%4$s\",\"location\":\"%5$s\",\"image\":\"%6$s\",\"alias\":\"%7$s\",\"energy\":\"%8$s\"}</string>
     <string name="svl_action_query">http://%1$s:8080/EDSServlet/QueryActionServlet?</string>
     <string name="svl_action_update">http://%1$s:8080/EDSServlet/UpdateActionServlet</string>
     <string name="svl_action_request">{\"id\":\"%1$s\",\"user\":\"%2$s\",\"action\":\"%3$s\",\"time\":\"%4$s\"}</string>

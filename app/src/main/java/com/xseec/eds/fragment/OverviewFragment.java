@@ -159,7 +159,7 @@ public class OverviewFragment extends ComFragment {
         recyclerOverview.setAdapter(overviewAdapter);
         recyclerFunction.setLayoutManager(layoutManager1);
         //nj--检查用户权限功能
-        List<Function> functionList=Generator.genFunctions();
+        List<Function> functionList=Generator.genFunctions(basic);
         UserLevelHelper.checkOverviewFragment( functionList );
         functionAdapter=new FunctionAdapter(getContext(),functionList,functionListener);
         recyclerFunction.setAdapter(functionAdapter);

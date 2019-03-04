@@ -1,69 +1,80 @@
 package com.xseec.eds.model.tags;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-/**
- * Created by Administrator on 2018/12/3.
- * TagName→XRD:E_0_xxx           第一级
- *               E_00_xxx        第二级
- *                 E_000_xxx     第三级
- */
 
-public class EnergyTag extends Tag {
-    private static final String SPIT = "_";
+public class EnergyTag extends StoredTag{
+    private static final String NULL_TAG="*";
+    private static final String SPLIT="/";
+    public static final int VALID_INFOS_LENGTH=3;
+
+    private String alias;
+    private String level;
 
     public EnergyTag(String tagName) {
-        super(tagName);
+        super(tagName,DataType.MAX);
     }
 
-    public EnergyTag(String tagName, String tagValue) {
-        super(tagName, tagValue);
+    public EnergyTag(String[] infos){
+        super(infos[1],DataType.MAX);
+        level=infos[0];
+        alias=infos[2];
     }
 
-    protected EnergyTag(Parcel in) {
-        super(in);
+    public boolean isNull(){
+        return getTagName().equals(NULL_TAG);
     }
 
-    @Override
-    public String getTagShortName() {
-        String[] items = getTagName().split(SPIT);
-        return items[2];
+    public String getAlias() {
+        return alias;
     }
 
-    public String getSerial() {
-        String[] items = getTagName().split(SPIT);
-        return items[1];
+    public String getLevel() {
+        return level;
     }
 
-    public List<EnergyTag> getEnergyChildren(List<EnergyTag> source) {
-        List<EnergyTag> target = new ArrayList<>();
-        String regex = SPIT + getSerial() + "\\d" + SPIT;
-        Pattern pattern = Pattern.compile(regex);
-        for (EnergyTag tag : source) {
-            if (pattern.matcher(tag.getTagName()).find()) {
-                target.add(tag);
-            }
-        }
-        return target;
+    public void setAlias(String alias) {
+        this.alias = alias;
     }
 
-    public List<EnergyTag> getEnergyParents(List<EnergyTag> source) {
-        List<EnergyTag> target = new ArrayList<>();
-        String serial = getSerial();
-        Pattern pattern;
-        while (serial.length() > 0) {
-            pattern = Pattern.compile(SPIT + serial + SPIT);
-            for (EnergyTag tag : source) {
-                if (pattern.matcher(tag.getTagName()).find()) {
-                    target.add(0, tag);
+    public void setLevel(String level) {
+        this.level = level;
+    }
+
+    public static String[] getInfos(String information){
+        return information.split(SPLIT);
+    }
+
+    public List<EnergyTag> getParent(List<EnergyTag> energyTags){
+        List<EnergyTag> parent=new ArrayList<>();
+        for(int i=1;i<=level.length()-1;i++){
+            String parentLevel=level.substring(0,i);
+            for(EnergyTag energyTag:energyTags){
+                if (energyTag.getLevel().equals(parentLevel)){
+                    parent.add(energyTag);
+                    break;
                 }
             }
-            serial = serial.substring(0, serial.length() - 1);
         }
-        return target;
+        //自身也包含进父级中
+        parent.add(this);
+        return parent;
+    }
+
+    public List<EnergyTag> getChildren(List<EnergyTag> energyTags){
+        List<EnergyTag> children=new ArrayList<>();
+        String regex=getLevel()+"\\d";
+        Pattern pattern=Pattern.compile(regex);
+        for(EnergyTag energyTag:energyTags){
+            if(pattern.matcher(energyTag.getLevel()).find()){
+                children.add(energyTag);
+            }
+        }
+        return children;
     }
 }

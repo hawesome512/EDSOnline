@@ -39,7 +39,7 @@ public class EnergyLevelAdapter extends RecyclerView.Adapter<EnergyLevelAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.textLevel.setText(parentList.get(position).getTagShortName());
+        holder.textLevel.setText(parentList.get(position).getAlias());
     }
 
     @Override
