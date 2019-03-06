@@ -20,6 +20,8 @@ import com.xseec.eds.model.LoginListener;
 import com.xseec.eds.model.LoginListener.LoginType;
 import com.xseec.eds.model.User;
 import com.xseec.eds.util.CodeHelper;
+import com.xseec.eds.util.ContentHelper;
+import com.xseec.eds.util.EDSApplication;
 import com.xseec.eds.util.ViewHelper;
 import com.xseec.eds.util.WAJsonHelper;
 import com.xseec.eds.util.WAServiceHelper;
@@ -69,7 +71,6 @@ public class AccountLoginFragment extends BaseFragment {
     @OnClick(R.id.btn_login)
     public void onBtnLoginClicked() {
         //============程序调试区==========================//
-
 
         //===============================================//
         String username = editUsername.getText().toString();

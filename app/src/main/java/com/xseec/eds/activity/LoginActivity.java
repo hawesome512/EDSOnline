@@ -21,6 +21,8 @@ import com.xseec.eds.model.WAServicer;
 import com.xseec.eds.model.servlet.Basic;
 import com.xseec.eds.model.tags.OverviewTag;
 import com.xseec.eds.model.tags.Tag;
+import com.xseec.eds.util.ContentHelper;
+import com.xseec.eds.util.EDSApplication;
 import com.xseec.eds.util.RecordHelper;
 import com.xseec.eds.util.TagsFilter;
 import com.xseec.eds.util.Update.UpdateHelper;
