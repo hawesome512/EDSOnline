@@ -24,7 +24,7 @@ public class PhotoAdapter extends RecyclerView.Adapter<PhotoAdapter.ViewHolder> 
 
     private Activity context;
     private List<LocalMedia> localMediaList;
-    private final static int MAX = 12;
+    private final static int MAX = 18;
     private boolean addable = false;
 
     public PhotoAdapter(Activity context, List<LocalMedia> localMediaList) {
