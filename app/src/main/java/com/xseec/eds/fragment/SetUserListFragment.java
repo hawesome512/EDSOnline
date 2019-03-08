@@ -37,10 +37,9 @@ import butterknife.OnClick;
 
 import static android.app.Activity.RESULT_OK;
 
-public class UserListFragment extends BaseFragment {
+public class SetUserListFragment extends BaseFragment {
 
     public static final int REQUEST_CREATE = 1;
-
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
     @InjectView(R.id.text_created_user)
@@ -59,16 +58,16 @@ public class UserListFragment extends BaseFragment {
     private List<Phone> phoneList;
     private Account account;
 
-    public static UserListFragment newInstance() {
-        return new UserListFragment();
+    public static SetUserListFragment newInstance() {
+        return new SetUserListFragment();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate( R.layout.fragment_account_list, container, false );
+        View view = inflater.inflate( R.layout.fragment_set_account_list, container, false );
         ButterKnife.inject( this, view );
-        getActivity().setTitle( R.string.nav_user );
-        ViewHelper.initToolbar( (AppCompatActivity) getActivity(), toolbar, R.drawable.menu );
+        ViewHelper.initToolbar( (AppCompatActivity) getActivity(), toolbar, R.drawable.ic_arrow_back_white_24dp );
+        getActivity().setTitle( R.string.setting_user );
         initRecyclerView();
         return view;
     }
@@ -103,7 +102,7 @@ public class UserListFragment extends BaseFragment {
         } );
     }
 
-    private void updateAccount(Account account){
+    private void updateAccount(Account account) {
         WAServiceHelper.sendAccountUpdateRequest( account, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
@@ -123,7 +122,7 @@ public class UserListFragment extends BaseFragment {
             case REQUEST_CREATE:
                 if (resultCode == RESULT_OK) {
                     progressDataLog.setVisibility( View.VISIBLE );
-                    account=data.getParcelableExtra( UserManageActivity.EXTRA_ACCOUNT );
+                    account = data.getParcelableExtra( UserManageActivity.EXTRA_ACCOUNT );
                     updateAccount( account );
                 }
                 break;
@@ -143,7 +142,7 @@ public class UserListFragment extends BaseFragment {
         adapter.setDeleteClickListener( new UserAdapter.onDeleteClickListener() {
             @Override
             public void onDeleteClick() {
-                account=adapter.getAccount();
+                account = adapter.getAccount();
                 updateAccount( account );
             }
         } );
@@ -159,10 +158,10 @@ public class UserListFragment extends BaseFragment {
     @OnClick(R.id.fab_add)
     public void onFabAddClicked() {
         //NJ--添加用户是判断用户注册量是否已满
-        if(account.getNumber()!=phoneList.size()){
+        if (account.getNumber() != phoneList.size()) {
             UserManageActivity.start( getActivity(), REQUEST_CREATE, account, null );
-        }else {
-            ViewHelper.singleAlertDialog( getActivity(),getString( R.string.user_fill ),null );
+        } else {
+            ViewHelper.singleAlertDialog( getActivity(), getString( R.string.user_fill ), null );
         }
     }
 }

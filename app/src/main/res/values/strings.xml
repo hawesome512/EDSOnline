@@ -54,7 +54,11 @@
     <string name="setting_area">工程站点</string>
     <string name="setting_header">系统头图</string>
     <string name="setting_device">资产编号</string>
-
+    <string name="setting_basic">基本信息</string>
+    <string name="setting_user">用户管理</string>
+    <string name="setting_energy">能耗设置</string>
+    <string name="setting_overview">快捷点</string>
+    <string name="setting_limit">/当前用户身份为：【%1$s】, 无法进行自定义操作/取消</string>
 
     <!--MainActivity-->
     <string name="main_failure">未加载到工程信息</string>
@@ -68,8 +72,6 @@
     <string name="nav_action">操作记录</string>
     <string name="nav_report">报表分析</string>
     <string name="nav_energy">能耗查询</string>
-    <!--nj nav添加用户管理-->
-    <string name="nav_user">用户管理</string>
     <string name="nav_setting">自定义</string>
     <string name="nav_exit">退出</string>
 

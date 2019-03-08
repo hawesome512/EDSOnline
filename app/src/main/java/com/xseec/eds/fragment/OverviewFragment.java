@@ -32,7 +32,6 @@ import com.xseec.eds.util.Generator;
 import com.xseec.eds.util.OpenMapHelper;
 import com.xseec.eds.util.PhotoPicker;
 import com.xseec.eds.util.TagsFilter;
-import com.xseec.eds.util.UserLevelHelper;
 import com.xseec.eds.util.ViewHelper;
 
 import java.util.ArrayList;
@@ -160,7 +159,7 @@ public class OverviewFragment extends ComFragment {
         recyclerFunction.setLayoutManager(layoutManager1);
         //nj--检查用户权限功能
         List<Function> functionList=Generator.genFunctions(basic);
-        UserLevelHelper.checkOverviewFragment( functionList );
+//        UserLevelHelper.checkOverviewFragment( functionList );
         functionAdapter=new FunctionAdapter(getContext(),functionList,functionListener);
         recyclerFunction.setAdapter(functionAdapter);
         swipeRefreshLayout.setEnabled(false);

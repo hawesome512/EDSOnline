@@ -22,7 +22,6 @@ import com.xseec.eds.model.servlet.Basic;
 import com.xseec.eds.model.tags.OverviewTag;
 import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.util.ContentHelper;
-import com.xseec.eds.util.EDSApplication;
 import com.xseec.eds.util.RecordHelper;
 import com.xseec.eds.util.TagsFilter;
 import com.xseec.eds.util.Update.UpdateHelper;
@@ -31,7 +30,6 @@ import com.xseec.eds.util.WAJsonHelper;
 import com.xseec.eds.util.WAServiceHelper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -40,7 +38,7 @@ import butterknife.OnClick;
 
 import static com.xseec.eds.model.LoginListener.LoginType.ACCOUNT;
 
-public class LoginActivity extends AppCompatActivity implements LoginListener {
+public class LoginActivity extends AppCompatActivity implements LoginListener{
 
     private static final String KEY_LOGIN_TYPE="login_type";
 
@@ -59,10 +57,21 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.inject(this);
-        getLoginType();
+        UpdateHelper.checkUpdate( this );
+        UpdateHelper.setUpdateListener( new UpdateHelper.UpdateListener() {
+            @Override
+            public void updateResult(boolean isUpdate) {
+                if (isUpdate){
+                    //nj--更新时取消自动登录
+                    loginTypeChange( ACCOUNT,false );
+                }else {
+                    getLoginType();
+                }
+            }
+        } );
+        checkSimCard();
         int orientation= ViewHelper.isPort()? ActivityInfo.SCREEN_ORIENTATION_PORTRAIT:ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
         setRequestedOrientation( orientation );
-        UpdateHelper.checkUpdate(this);
     }
 
     @Override
@@ -124,6 +133,13 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
             case PHONE:
                 replaceFragment( PhoneLoginFragment.newInstance(isAutoLogin) );
                 break;
+        }
+    }
+
+    //NJ--检查SIM卡
+    private void checkSimCard(){
+        if( !ContentHelper.isChinaSimCard( this ) ){
+            setLoginType( ACCOUNT );
         }
     }
 

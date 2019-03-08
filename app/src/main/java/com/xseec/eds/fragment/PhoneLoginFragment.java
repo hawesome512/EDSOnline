@@ -28,6 +28,7 @@ import com.xseec.eds.model.User;
 import com.xseec.eds.model.servlet.Phone;
 import com.xseec.eds.model.servlet.ResponseResult;
 import com.xseec.eds.util.DateHelper;
+import com.xseec.eds.util.Generator;
 import com.xseec.eds.util.ViewHelper;
 import com.xseec.eds.util.WAJsonHelper;
 import com.xseec.eds.util.WAServiceHelper;
@@ -91,7 +92,7 @@ public class PhoneLoginFragment extends BaseFragment {
         //============程序调试区==========================//
 
         //===============================================//
-        String number = editNumber.getText().toString();
+        String number=Generator.replaceBlank( editNumber.getText().toString() );
         phone = new Phone( number );
         String code = editCode.getText().toString();
         phone.setCode( code );
@@ -134,7 +135,8 @@ public class PhoneLoginFragment extends BaseFragment {
     @OnClick(R.id.btn_code)
     public void onBtnCodeClicked() {
         captchaTimeCount.start();
-        phone = new Phone( editNumber.getText().toString() );
+        String number=Generator.replaceBlank( editNumber.getText().toString() );
+        phone = new Phone( number );
         queryPhone( phone );
     }
 
@@ -199,12 +201,13 @@ public class PhoneLoginFragment extends BaseFragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                Generator.genPhoneInputFormat( s,start,before,editNumber );
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                boolean b=Pattern.matches( "^\\d{11}$", s.toString() );
+                String number=Generator.replaceBlank( s.toString() );
+                boolean b=Pattern.matches( "^\\d{11}$", number );
                 if (b) {
                     btnCode.setEnabled( true );
                 } else {

@@ -16,8 +16,7 @@ public class UserLevelHelper {
 
     /*
        用户权限功能控制
-       checkMainActivity: NavigationView中MenuItem
-       checkOverviewFragment:functions列表
+       checkCustom:用户自定义权限检测
        checkTabFragment:设备参数修改与远程控制
        checkWorkorderListFragment:工单创建功能
        checkWorkorder:工单删除和工单修改
@@ -54,32 +53,13 @@ public class UserLevelHelper {
         setVisibilityForView( view,usability.get( level ) );
     }
 
-    public static void checkMainActivity( MenuItem[] menuItems ){
-        Map<Integer,Boolean> usability=getLevelMap( false );
-        int level=WAServicer.getUser().getLevel();
-        for (int i=0;i<menuItems.length;i++){
-            setVisibilityForMenuItem( menuItems[i],usability.get( level ));
-        }
-    }
-
-    public static void checkOverviewFragment(List<Function> functionList) {
-        Map<Integer,Boolean> usability=getLevelMap( false );
-        int userId= R.id.nav_users;
-        int settingId=R.id.nav_setting;
-        Integer[] menuIds={userId,settingId};
-        int level=WAServicer.getUser().getLevel();
-        if (!usability.get( level )){
-            for (int i=0;i<menuIds.length;i++){
-                for (int j=0;j<functionList.size();j++){
-                    if(functionList.get( j ).getMenuId()==menuIds[i]){
-                        functionList.remove( j );
-                    }
-                }
-            }
-        }
-    }
-
     public static boolean checkTabFragment(){
+        Map<Integer,Boolean> usability=getLevelMap( true );
+        int level=WAServicer.getUser().getLevel();
+        return usability.get( level );
+    }
+
+    public static boolean checkCustom(){
         Map<Integer,Boolean> usability=getLevelMap( false );
         int level=WAServicer.getUser().getLevel();
         return usability.get( level );

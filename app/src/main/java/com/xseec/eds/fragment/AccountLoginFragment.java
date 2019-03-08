@@ -21,7 +21,6 @@ import com.xseec.eds.model.LoginListener.LoginType;
 import com.xseec.eds.model.User;
 import com.xseec.eds.util.CodeHelper;
 import com.xseec.eds.util.ContentHelper;
-import com.xseec.eds.util.EDSApplication;
 import com.xseec.eds.util.ViewHelper;
 import com.xseec.eds.util.WAJsonHelper;
 import com.xseec.eds.util.WAServiceHelper;
@@ -61,6 +60,10 @@ public class AccountLoginFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate( R.layout.fragment_login_account, container, false );
         ButterKnife.inject( this, view );
+        //NJ--检查到不为国内SIM卡时，禁止使用手机登录
+        int visible=ContentHelper.isChinaSimCard( getActivity() )?View.VISIBLE:View.GONE;
+        tvChangePhone.setVisibility( visible );
+
         loginListener= (LoginListener) getActivity();
         getLoginInfo();
         onEditTextInput( editUsername );

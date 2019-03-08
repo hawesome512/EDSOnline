@@ -1,6 +1,8 @@
 package com.xseec.eds.util;
 
 import android.content.Context;
+import android.widget.EditText;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.data.Entry;
 import com.xseec.eds.R;
@@ -9,8 +11,8 @@ import com.xseec.eds.fragment.AlarmListFragment;
 import com.xseec.eds.fragment.EnergyFragment;
 import com.xseec.eds.fragment.ReportFragment;
 import com.xseec.eds.fragment.SettingFragment;
-import com.xseec.eds.fragment.UserListFragment;
 import com.xseec.eds.fragment.WorkorderListFragment;
+import com.xseec.eds.model.Custom;
 import com.xseec.eds.model.Device;
 import com.xseec.eds.model.Function;
 import com.xseec.eds.model.deviceconfig.Protect;
@@ -18,8 +20,6 @@ import com.xseec.eds.model.servlet.Action;
 import com.xseec.eds.model.servlet.Alarm;
 import com.xseec.eds.model.servlet.Basic;
 import com.xseec.eds.model.servlet.Workorder;
-import com.xseec.eds.model.tags.EnergyTag;
-import com.xseec.eds.model.tags.OverviewTag;
 import com.xseec.eds.model.tags.StoredTag;
 import com.xseec.eds.model.tags.Tag;
 
@@ -29,13 +29,16 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Administrator on 2018/7/25.
  */
 
 public class Generator {
+
+    public static final String NULL_VALUE="#";
 
     public static List<Function> genFunctions(Basic basic) {
         List<Function> functions = new ArrayList<>();
@@ -49,11 +52,24 @@ public class Generator {
                 .newInstance(basic.getEnergy())));
         functions.add(new Function(R.drawable.ic_action, R.string.nav_action,R.id.nav_action, ActionListFragment
                 .newInstance()));
-        functions.add( new Function( R.drawable.ic_account_manage_64dp,R.string.nav_user,R.id.nav_users, UserListFragment
-                .newInstance()) );
         functions.add(new Function(R.drawable.ic_setting, R.string.nav_setting,R.id.nav_setting, SettingFragment
                 .newInstance()));
         return functions;
+    }
+
+    public static List<Custom> genSettings(){
+        List<Custom> customList=new ArrayList<>(  );
+        customList.add( new Custom( R.drawable.ic_building_blue_700_24dp,R.string.setting_basic,
+                Custom.CustomType.AREA) );
+        customList.add( new Custom( R.drawable.ic_devices_other_blue_700_24dp,R.string.setting_device,
+                Custom.CustomType.ALIAS) );
+        customList.add( new Custom( R.drawable.ic_users_manage,R.string.setting_user,
+                Custom.CustomType.USER ) );
+        customList.add( new Custom( R.drawable.ic_energy_setting,R.string.setting_energy,
+                Custom.CustomType.ENERGY) );
+        customList.add( new Custom( R.drawable.ic_overview_tag_setting,R.string.setting_overview,
+                Custom.CustomType.OVERVIEWTAG) );
+        return customList;
     }
 
     public static String getResourceString(String name) {
@@ -290,14 +306,6 @@ public class Generator {
         }
     }
 
-    //nj--报表分析温度、湿度查询点列表 2019/2/14
-    public static List<StoredTag> genStoredTags(){
-        List<StoredTag> storedTags=new ArrayList<>(  );
-        storedTags.add( new StoredTag( "XS_A3_1:T",StoredTag.DataType.MAX ) );
-        storedTags.add( new StoredTag( "XRD:EP",StoredTag.DataType.MAX ) );
-        return storedTags;
-    }
-
     //nj--统计list的尺寸 2018/11/19
     public static String countList(List sources) {
         return sources != null ? String.valueOf(sources.size()) : "0";
@@ -392,45 +400,94 @@ public class Generator {
 
     //nj--环境报表数据总数、平均值2018/11/25
     public static String getReportMax(List<String> sources) {
-        String value = Collections.max(sources);
-        ;
-        if (!value.equals("#")) {
-            float max = Math.round(Float.valueOf(value) * 100) / 100f;
-            return String.valueOf(max);
-        } else {
-            return String.valueOf(0.0);
+        float avg=Float.valueOf( getReportAve( sources ) );
+        float max=0;
+        for (String value:sources){
+            float tmp=floatTryParse( value );
+            max=floatTryParse( value )>max ? floatTryParse( value ):max;
         }
+        return String.valueOf( Math.round( max*10 )/10f );
     }
 
     public static String getReportMin(List<String> sources) {
-        String value = Collections.min(sources);
-        ;
-        if (!value.equals("#")) {
-            float min = Math.round(Float.valueOf(value) * 100) / 100f;
-            return String.valueOf(min);
-        } else {
-            return String.valueOf(0.0);
+        float avg=Float.valueOf( getReportAve( sources ) );
+        float min=0;
+        for (String value:sources){
+            float tmp=floatTryParse( value );
+            min=tmp<avg?tmp:avg;
         }
+        return String.valueOf( Math.round(min*10)/10f );
     }
 
     public static String getReportSum(List<String> sources) {
         float sum = 0;
-        for (int i = 0; i < sources.size(); i++) {
-            float value;
-            String itemValue = sources.get(i);
-            if (itemValue.equals("#")) {
-                value = 0;
-            } else {
-                value = Float.valueOf(sources.get(i));
-            }
-            sum += value;
+        for (String value:sources) {
+            sum+=Generator.floatTryParse(value);
         }
         return String.valueOf(sum);
     }
 
     public static String getReportAve(List<String> sources) {
-        String sum = getReportSum(sources);
+        float sum = 0;
+        for (String value : sources) {
+            sum += floatTryParse(value);
+        }
         float ave = Math.round(Float.valueOf(sum) / sources.size() * 100) / 100f;
         return String.valueOf(ave);
+    }
+
+    //nj--editText输入时手机号按344格式化
+    public static void genPhoneInputFormat(CharSequence charSequence, int start, int before, EditText editText) {
+        if (charSequence == null || charSequence.length() == 0){
+            return;
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < charSequence.length(); i++) {
+            if (i != 3 && i != 8 && charSequence.charAt(i) == ' ') {
+                continue;
+            } else {
+                sb.append(charSequence.charAt(i));
+                if ((sb.length() == 4 || sb.length() == 9) && sb.charAt(sb.length() - 1) != ' ') {
+                    sb.insert(sb.length() - 1, ' ');
+                }
+            }
+        }
+        if (!sb.toString().equals(charSequence.toString())) {
+            int index = start + 1;
+            if (sb.charAt(start) == ' ') {
+                if (before == 0) {
+                    index++;
+                } else {
+                    index--;
+                }
+            } else {
+                if (before == 1) {
+                    index--;
+                }
+            }
+            editText.setText(sb.toString());
+            editText.setSelection(index);
+        }
+    }
+
+    public static String phoneFormat(String phone){
+        StringBuffer sb=new StringBuffer( phone );
+        sb.insert( 3," " );
+        sb.insert( 8," " );
+        phone=sb.toString();
+        return phone;
+    }
+
+    //nj--获取不含空格的号码
+    public static String replaceBlank(String str) {
+        String dest = "";
+        if (str != null) {
+            Pattern p = Pattern.compile("\\s*|\t|\r|\n");
+            Matcher m = p.matcher(str);
+            if (m.find()) {
+                dest = m.replaceAll("");
+            }
+        }
+        return dest;
     }
 }

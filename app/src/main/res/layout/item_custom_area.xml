@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
+
+    <LinearLayout style="@style/LinearHorBigSpace">
+
+        <TextView
+            style="@style/TextHorItemName"
+            android:drawableLeft="@drawable/ic_building_blue_700_24dp"
+            android:text="@string/setting_area" />
+
+        <EditText
+            android:id="@+id/edit_area"
+            style="@style/TextHorItemValue" />
+    </LinearLayout>
+
+    <LinearLayout style="@style/LinearHorBigSpace">
+
+        <TextView
+            style="@style/TextHorItemName"
+            android:drawableLeft="@drawable/ic_account_circle_blue_700_24dp"
+            android:text="@string/overview_engineer" />
+
+        <EditText
+            android:id="@+id/edit_engineer"
+            style="@style/TextHorItemValue" />
+    </LinearLayout>
+
+    <LinearLayout style="@style/LinearHorBigSpace">
+
+        <TextView
+            style="@style/TextHorItemName"
+            android:drawableLeft="@drawable/ic_location_on_blue_700_24dp"
+            android:text="@string/overview_location" />
+
+        <EditText
+            android:id="@+id/edit_location"
+            style="@style/TextHorItemValue" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/view_margin_normal"
+        android:layout_marginVertical="@dimen/view_margin_small"
+        android:gravity="center_vertical"
+        android:drawableLeft="@drawable/ic_image_blue_700_24dp"
+        android:text="@string/overview_grid" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/view_margin_normal"
+        android:layout_marginVertical="@dimen/view_margin_small" />
+</LinearLayout>

@@ -16,7 +16,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.xseec.eds.R;
@@ -27,7 +26,6 @@ import com.xseec.eds.fragment.EnergyFragment;
 import com.xseec.eds.fragment.OverviewFragment;
 import com.xseec.eds.fragment.ReportFragment;
 import com.xseec.eds.fragment.SettingFragment;
-import com.xseec.eds.fragment.UserListFragment;
 import com.xseec.eds.fragment.WorkorderListFragment;
 import com.xseec.eds.model.Device;
 import com.xseec.eds.model.Function;
@@ -37,7 +35,6 @@ import com.xseec.eds.model.servlet.Basic;
 import com.xseec.eds.model.tags.OverviewTag;
 import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.util.ApiLevelHelper;
-import com.xseec.eds.util.UserLevelHelper;
 import com.xseec.eds.util.ViewHelper;
 
 import java.util.ArrayList;
@@ -85,8 +82,6 @@ public class MainActivity extends BaseActivity implements NavigationView
         ButterKnife.inject(this);
         fragmentManager = getSupportFragmentManager();
         navView.setNavigationItemSelectedListener(this);
-        //nj--检查用户权限，控制界面UI.
-        checkUserLevelFunction();
         tagList = getIntent().getParcelableArrayListExtra(EXT_TAGS);
         overviewTagList = getIntent().getParcelableArrayListExtra(EXT_OVERVEIW_TAGS);
         basic = getIntent().getParcelableExtra(EXT_BASIC);
@@ -125,13 +120,6 @@ public class MainActivity extends BaseActivity implements NavigationView
             }).show();
         }
         setCheckExit(true, getString(R.string.app_name));
-    }
-
-    private void checkUserLevelFunction() {
-        MenuItem userItem=navView.getMenu().findItem( R.id.nav_users );
-        MenuItem settingItem=navView.getMenu().findItem( R.id.nav_setting );
-        MenuItem[] menuItems={userItem,settingItem};
-        UserLevelHelper.checkMainActivity( menuItems );
     }
 
     @Override
@@ -174,10 +162,6 @@ public class MainActivity extends BaseActivity implements NavigationView
             case R.id.nav_trend:
                 fragment = ReportFragment.newInstance();
                 break;
-            //nj--用户管理界面
-            case R.id.nav_users:
-                fragment= UserListFragment.newInstance();
-                break;
             default:
                 fragment = OverviewFragment.newInstance(tagList,overviewTagList, basic);
                 break;
@@ -196,6 +180,13 @@ public class MainActivity extends BaseActivity implements NavigationView
                 finish();
             }
         } );
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        basic=WAServicer.getBasic();
+        Device.setAliasMap(basic.getAliasMap());
     }
 
     @Override

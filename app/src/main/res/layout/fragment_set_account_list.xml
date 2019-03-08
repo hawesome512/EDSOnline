@@ -17,11 +17,12 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/layout_toolbar"
         android:background="@color/colorDivider"
         android:paddingHorizontal="@dimen/view_padding_normal"
         android:paddingVertical="@dimen/view_padding_small"
-        android:layout_marginBottom="1dp"
-        android:layout_below="@+id/layout_toolbar">
+        android:layout_marginBottom="1dp">
+
         <TextView
             android:id="@+id/text_created_user"
             style="@style/TextHorItemName" />

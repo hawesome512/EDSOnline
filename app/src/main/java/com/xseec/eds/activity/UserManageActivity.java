@@ -6,6 +6,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,6 +19,7 @@ import com.xseec.eds.model.servlet.Account;
 import com.xseec.eds.model.servlet.Phone;
 import com.xseec.eds.util.ApiLevelHelper;
 import com.xseec.eds.util.ContentHelper;
+import com.xseec.eds.util.Generator;
 import com.xseec.eds.util.PermissionHelper;
 import com.xseec.eds.util.ViewHelper;
 
@@ -66,6 +69,23 @@ public class UserManageActivity extends AppCompatActivity {
         ButterKnife.inject( this );
         account = getIntent().getParcelableExtra( EXTRA_ACCOUNT );
         phone = getIntent().getParcelableExtra( EXTRA_PHONE );
+
+        editPhone.addTextChangedListener( new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                Generator.genPhoneInputFormat( s,start,before,editPhone );
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        } );
+
         initView();
     }
 
@@ -90,7 +110,7 @@ public class UserManageActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_setting)
     public void onBtnSettingClicked() {
-        String newPhone = editPhone.getText().toString();
+        String newPhone = Generator.replaceBlank( editPhone.getText().toString() );
         int type=checkEditInput( newPhone );
         String checkInfo;
         switch (type){
@@ -144,7 +164,7 @@ public class UserManageActivity extends AppCompatActivity {
         ViewHelper.checkExit( this, info, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String newPhone = editPhone.getText().toString();
+                String newPhone = Generator.replaceBlank( editPhone.getText().toString() );
                 switch (type){
                     case CHECK_CREATE:
                         account.addPhone( newPhone );
@@ -178,6 +198,7 @@ public class UserManageActivity extends AppCompatActivity {
                     Pattern pattern=Pattern.compile( COMPILE_NUMBER );
                     Matcher matcher=pattern.matcher( result );
                     String phone =matcher.find()?matcher.group():null ;
+                    //nj--手机号码格式化
                     editPhone.setText(phone);
                     break;
                 default:

@@ -11,9 +11,10 @@ import android.widget.TextView;
 
 import com.xseec.eds.R;
 import com.xseec.eds.activity.UserManageActivity;
-import com.xseec.eds.fragment.UserListFragment;
+import com.xseec.eds.fragment.SetUserListFragment;
 import com.xseec.eds.model.servlet.Account;
 import com.xseec.eds.model.servlet.Phone;
+import com.xseec.eds.util.Generator;
 import com.xseec.eds.util.ViewHelper;
 
 import java.util.List;
@@ -42,7 +43,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
     public void onBindViewHolder(final UserAdapter.ViewHolder holder, int position) {
         Phone phone=phoneList.get( position );
         holder.accountImage.setImageResource( phone.getLevelImgRes() );
-        holder.userText.setText( phone.getId() );
+        String number=phone.getId();
+        holder.userText.setText( Generator.phoneFormat( number ) );
         holder.levelText.setText( phone.getLevelState() );
 
         holder.itemView.setOnClickListener( new View.OnClickListener() {
@@ -91,7 +93,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
             modifyImage.setOnClickListener( new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    UserManageActivity.start( context, UserListFragment.REQUEST_CREATE,
+                    UserManageActivity.start( context, SetUserListFragment.REQUEST_CREATE,
                             account,phoneList.get( getAdapterPosition() ) );
                 }
             } );

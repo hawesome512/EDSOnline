@@ -258,26 +258,6 @@ public class ReportFragment extends BaseFragment {
         } );
     }
 
-    private void queryEnvironment(String startTime, String endTime) {
-        factor = getDataLogFactor( startTime, endTime );
-        List<StoredTag> storedTags = Generator.genStoredTags();
-        WAServiceHelper.sendTagLogRequest( factor, storedTags, new Callback() {
-            @Override
-            public void onFailure(Request request, IOException e) {
-
-            }
-
-            @Override
-            public void onResponse(Response response) throws IOException {
-                List<String>[] tagList = WAJsonHelper.getTagLog( response.body().string() );
-                temperature.setEnvironmentList( tagList[0] );
-                //nj--阻挡线程 2018//12/5
-                setBarrierAwait( barrier );
-                refreshViewsInThread( response );
-            }
-        } );
-    }
-
     //nj--暂时生成能耗模拟值 2018/12/18
     private void queryEnergy(final String startTime, final String endTime) {
         new Thread( new Runnable() {

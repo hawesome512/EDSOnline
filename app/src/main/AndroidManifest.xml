@@ -86,6 +86,7 @@
             android:theme="@style/DialogActivity"/>
 
         <activity android:name=".activity.FilterActivity"/>
+        <activity android:name=".activity.SettingActivity"/>
     </application>
 
 </manifest>

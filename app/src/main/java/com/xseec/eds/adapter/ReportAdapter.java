@@ -68,9 +68,6 @@ public class ReportAdapter extends  RecyclerView.Adapter<ReportAdapter.ViewHolde
                     if (reportList.get( position ).getReportType()==0){
                         //nj--执行工单、操作、异常点击事件 2018/12/6
                         onDeviceClick( v,position );
-                    }else if (reportList.get( position ).getReportType()==2){
-                        //nj--执行温度、湿度点击事件 2018/12/6
-                        onEnverimentItemClicked( v,position );
                     }
                 }
             } );
@@ -94,16 +91,6 @@ public class ReportAdapter extends  RecyclerView.Adapter<ReportAdapter.ViewHolde
         }
     }
 
-    private void onEnverimentItemClicked(View v,int position) {
-        ArrayList<String> tagName = new ArrayList<>();
-        List<StoredTag> storedTags=Generator.genStoredTags();
-        if (position==4) {
-            tagName.add( storedTags.get( 0 ).getTagName());
-        } else {
-            tagName.add( storedTags.get( 1 ).getTagName() );
-        }
-        ReportActivity.start( context, factor, tagName);
-    }
 }
 
 

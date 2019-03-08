@@ -228,9 +228,11 @@ public class EnergyTabItemFragment extends BaseFragment implements OnChartValueS
         float totalYesterday = Generator.getSumFromEntryList(lastsEntries, curEntries.size());
         float linkRadio = Math.round((totalToday - totalYesterday) / totalYesterday * 10000)
                 / 100f;
+        float linkRadioMax=Math.round( Float.MAX_VALUE*10000 )/100f;
+        String linkRadioValue=linkRadio==linkRadioMax?"— — — ":linkRadio+"%";
         textFirst.setText(String.valueOf(totalToday));
         textSecend.setText(String.valueOf(totalYesterday));
-        textLast.setText(linkRadio + "%");
+        textLast.setText(linkRadioValue);
         int resId = linkRadio < 0 ? R.drawable.ic_arrow_downward_green_a700_24dp : R
                 .drawable.ic_arrow_upward_red_a200_24dp;
         ViewHelper.drawTextBounds(textLast, resId, 0, 0, 0);
