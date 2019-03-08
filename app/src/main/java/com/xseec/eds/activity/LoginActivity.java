@@ -24,7 +24,6 @@ import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.util.ContentHelper;
 import com.xseec.eds.util.RecordHelper;
 import com.xseec.eds.util.TagsFilter;
-import com.xseec.eds.util.Update.UpdateHelper;
 import com.xseec.eds.util.ViewHelper;
 import com.xseec.eds.util.WAJsonHelper;
 import com.xseec.eds.util.WAServiceHelper;
@@ -38,9 +37,9 @@ import butterknife.OnClick;
 
 import static com.xseec.eds.model.LoginListener.LoginType.ACCOUNT;
 
-public class LoginActivity extends AppCompatActivity implements LoginListener{
+public class LoginActivity extends AppCompatActivity implements LoginListener {
 
-    private static final String KEY_LOGIN_TYPE="login_type";
+    private static final String KEY_LOGIN_TYPE = "login_type";
 
     @InjectView(R.id.fab_server)
     FloatingActionButton fabServer;
@@ -48,7 +47,7 @@ public class LoginActivity extends AppCompatActivity implements LoginListener{
     public static void start(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
         //nj--退回登录界面时优先使用账户登录方式
-        intent.putExtra( KEY_LOGIN_TYPE,false );
+        intent.putExtra(KEY_LOGIN_TYPE, false);
         context.startActivity(intent);
     }
 
@@ -57,27 +56,22 @@ public class LoginActivity extends AppCompatActivity implements LoginListener{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.inject(this);
-        UpdateHelper.checkUpdate( this );
-        UpdateHelper.setUpdateListener( new UpdateHelper.UpdateListener() {
-            @Override
-            public void updateResult(boolean isUpdate) {
-                if (isUpdate){
-                    //nj--更新时取消自动登录
-                    loginTypeChange( ACCOUNT,false );
-                }else {
-                    getLoginType();
-                }
-            }
-        } );
-        checkSimCard();
-        int orientation= ViewHelper.isPort()? ActivityInfo.SCREEN_ORIENTATION_PORTRAIT:ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
-        setRequestedOrientation( orientation );
+
+        if (!ContentHelper.isChinaSimCard(this)) {
+            setLoginType(ACCOUNT);
+        }
+
+        int orientation = ViewHelper.isPort() ? ActivityInfo.SCREEN_ORIENTATION_PORTRAIT :
+                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+        setRequestedOrientation(orientation);
+
+        loadLoginType();
     }
 
     @Override
-    public void onSuccess(final User user,String deviceName,LoginType loginType) {
+    public void onSuccess(final User user, String deviceName, LoginType loginType) {
         //nj--记录用户登录的方式
-        setLoginType( loginType );
+        setLoginType(loginType);
         WAServicer.setUser(user);
         final Basic basic = WAJsonHelper.getBasicList(WAServiceHelper
                 .getBaiscQueryRequest(deviceName));
@@ -86,10 +80,12 @@ public class LoginActivity extends AppCompatActivity implements LoginListener{
                 (WAServiceHelper.getTagListRequest(deviceName));
         TagsFilter.setAllTagList(tagList);
         //Ie数据只需要采集一次
-        List<Tag> IeList= WAJsonHelper.refreshTagValue(WAServiceHelper.getValueRequest(TagsFilter.filterDeviceTagList(tagList,"Ie")));
+        List<Tag> IeList = WAJsonHelper.refreshTagValue(WAServiceHelper.getValueRequest
+                (TagsFilter.filterDeviceTagList(tagList, "Ie")));
         TagsFilter.refreshTagValue(IeList);
 
-        final ArrayList<OverviewTag> overviewTagList= (ArrayList<OverviewTag>) WAJsonHelper.getOverviewTagList(WAServiceHelper.getOverviewtagQueryRequest(deviceName));
+        final ArrayList<OverviewTag> overviewTagList = (ArrayList<OverviewTag>) WAJsonHelper
+                .getOverviewTagList(WAServiceHelper.getOverviewtagQueryRequest(deviceName));
 
         //nj--添加登录操作信息
         String actionInfo = getString(R.string.action_login);
@@ -98,55 +94,48 @@ public class LoginActivity extends AppCompatActivity implements LoginListener{
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                MainActivity.start(LoginActivity.this, tagList,overviewTagList, basic);
+                MainActivity.start(LoginActivity.this, tagList, overviewTagList, basic);
                 finish();
             }
         });
     }
 
     @Override
-    public void onReplaceFragment(LoginType  loginType,boolean isAutoLogin) {
-        loginTypeChange( loginType,isAutoLogin );
+    public void onReplaceFragment(LoginType loginType, boolean isAutoLogin) {
+        loginTypeChange(loginType, isAutoLogin);
     }
 
     //NJ--记录上次登录类型，用户或手机号登录
-    private void setLoginType(LoginType loginType){
-        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences( this )
+    private void setLoginType(LoginType loginType) {
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this)
                 .edit();
-        editor.putInt( KEY_LOGIN_TYPE,loginType.ordinal() );
+        editor.putInt(KEY_LOGIN_TYPE, loginType.ordinal());
         editor.apply();
     }
 
-    private void getLoginType(){
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences( this );
-        int type=preferences.getInt( KEY_LOGIN_TYPE, ACCOUNT.ordinal() );
-        Boolean isAutoLogin=getIntent().getBooleanExtra( KEY_LOGIN_TYPE,true );
-        LoginType loginType=LoginType.values()[type];
-        loginTypeChange( loginType,isAutoLogin );
+    private void loadLoginType() {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        int type = preferences.getInt(KEY_LOGIN_TYPE, ACCOUNT.ordinal());
+        Boolean isAutoLogin = getIntent().getBooleanExtra(KEY_LOGIN_TYPE, true);
+        LoginType loginType = LoginType.values()[type];
+        loginTypeChange(loginType, isAutoLogin);
     }
 
-    private void loginTypeChange(LoginType loginType,boolean isAutoLogin) {
-        switch (loginType){
+    private void loginTypeChange(LoginType loginType, boolean isAutoLogin) {
+        switch (loginType) {
             case ACCOUNT:
-                replaceFragment( AccountLoginFragment.newInstance() );
+                replaceFragment(AccountLoginFragment.newInstance());
                 break;
             case PHONE:
-                replaceFragment( PhoneLoginFragment.newInstance(isAutoLogin) );
+                replaceFragment(PhoneLoginFragment.newInstance(isAutoLogin));
                 break;
         }
     }
 
-    //NJ--检查SIM卡
-    private void checkSimCard(){
-        if( !ContentHelper.isChinaSimCard( this ) ){
-            setLoginType( ACCOUNT );
-        }
-    }
-
-    private void replaceFragment(Fragment fragment){
-        FragmentManager fragmentManager=getSupportFragmentManager();
-        FragmentTransaction transaction=fragmentManager.beginTransaction();
-        transaction.replace( R.id.login_content,fragment );
+    private void replaceFragment(Fragment fragment) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+        transaction.replace(R.id.login_content, fragment);
         transaction.commit();
     }
 

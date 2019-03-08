@@ -95,6 +95,11 @@ public class PhoneLoginFragment extends BaseFragment {
         String number=Generator.replaceBlank( editNumber.getText().toString() );
         phone = new Phone( number );
         String code = editCode.getText().toString();
+        if(code.length()!=4){
+            String codeError = getString( R.string.login_phone_code_error );
+            onAlertDialog( codeError, 3 );
+            return;
+        }
         phone.setCode( code );
         ViewHelper.startViewAnimator( btnLogin );
         queryPhone( phone );
@@ -177,7 +182,6 @@ public class PhoneLoginFragment extends BaseFragment {
                         break;
                     case 3:
                     case 4:
-                    case 7:
                         ViewHelper.resetViewAnimator( btnLogin );
                         break;
                 }

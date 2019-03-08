@@ -19,8 +19,6 @@ import org.json.JSONObject;
 
 public class UpdateHelper {
 
-    private static UpdateListener updateListener;
-
     private static int getVersionCode(Context context) {
         int code = 0;
         PackageManager packageManager = context.getPackageManager();
@@ -54,20 +52,11 @@ public class UpdateHelper {
                                     .setUpdateLog(jsonObject.getString("update_log"))
                                     .setTargetSize(jsonObject.getString("size"))
                                     .setConstraint(jsonObject.getBoolean("constraint"));
-                            updateListener.updateResult( updateAppBean.isUpdate() );
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                         return updateAppBean;
                     }
                 });
-    }
-
-    public static void setUpdateListener(UpdateListener update){
-        updateListener=update;
-    }
-
-    public interface UpdateListener{
-        void updateResult(boolean isUpdate);
     }
 }

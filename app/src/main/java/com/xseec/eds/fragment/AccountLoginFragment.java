@@ -76,6 +76,7 @@ public class AccountLoginFragment extends BaseFragment {
         //============程序调试区==========================//
 
         //===============================================//
+        textFailure.setVisibility(View.INVISIBLE);
         String username = editUsername.getText().toString();
         String password = editPassword.getText().toString();
         final String authority = CodeHelper.encode( username + ":" + password );
@@ -94,6 +95,11 @@ public class AccountLoginFragment extends BaseFragment {
                     loginListener.onSuccess( user, deviceName, LoginType.ACCOUNT );
                     setLoginInfo();
                 } else {
+                    try {
+                        Thread.sleep(ViewHelper.ANIMATION_DURATION);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     getActivity().runOnUiThread( new Runnable() {
                         @Override
                         public void run() {
@@ -148,7 +154,7 @@ public class AccountLoginFragment extends BaseFragment {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 textFailure.setVisibility( View.INVISIBLE );
-                ViewHelper.resetViewAnimator( btnLogin );
+//                ViewHelper.resetViewAnimator( btnLogin );
             }
 
             @Override

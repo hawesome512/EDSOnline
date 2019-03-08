@@ -24,6 +24,7 @@ import com.xseec.eds.R;
 public class ViewHelper {
 
     public static final int CHART_ANIMATE_DURATION=2000;
+    public static final int ANIMATION_DURATION=500;
 
     public static final int DEFAULT_HOME_RES= R.drawable.ic_arrow_back_white_24dp;
 
@@ -93,14 +94,17 @@ public class ViewHelper {
         float scaleValue = view.getHeight() * 1.0f / view.getWidth();
         animator.scaleX(scaleValue);
         animator.alpha(0f);
-        animator.setDuration(500);
+        animator.setDuration(ANIMATION_DURATION);
         animator.setInterpolator(new FastOutSlowInInterpolator());
         animator.start();
     }
 
     public static void resetViewAnimator(View view) {
+        //startAnimator执行时长500ms,必须确保重置发生在动画执行完成之前
+        view.setVisibility(View.VISIBLE);
         view.setScaleX(1f);
         view.setAlpha(1f);
+        view.postInvalidate();
     }
 
     public static void drawTextBounds(TextView view,int start,int top,int end,int bottom){

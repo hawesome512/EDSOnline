@@ -35,6 +35,7 @@ import com.xseec.eds.model.servlet.Basic;
 import com.xseec.eds.model.tags.OverviewTag;
 import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.util.ApiLevelHelper;
+import com.xseec.eds.util.Update.UpdateHelper;
 import com.xseec.eds.util.ViewHelper;
 
 import java.util.ArrayList;
@@ -120,6 +121,7 @@ public class MainActivity extends BaseActivity implements NavigationView
             }).show();
         }
         setCheckExit(true, getString(R.string.app_name));
+        UpdateHelper.checkUpdate(this);
     }
 
     @Override

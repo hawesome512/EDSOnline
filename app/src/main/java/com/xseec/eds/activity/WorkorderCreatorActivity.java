@@ -87,7 +87,7 @@ public class WorkorderCreatorActivity extends BaseActivity {
         context.startActivityForResult(intent, requestCode);
     }
 
-    public static void start(Activity context, Alarm alarm,int requestCode) {
+    public static void start(Activity context, Alarm alarm, int requestCode) {
         Intent intent = new Intent(context, WorkorderCreatorActivity.class);
         intent.putExtra(EXT_ALARM, alarm);
         context.startActivityForResult(intent, requestCode);
@@ -110,32 +110,34 @@ public class WorkorderCreatorActivity extends BaseActivity {
     private void initIfAlarm() {
         alarm = getIntent().getParcelableExtra(EXT_ALARM);
         if (alarm != null) {
-            Device device=Device.initWith(alarm.getDevice());
-            String status= Generator.getAlarmStateText(alarm.getAlarmCode(),device.getStatusItems());
+            Device device = Device.initWith(alarm.getDevice());
+            String status = Generator.getAlarmStateText(alarm.getAlarmCode(), device
+                    .getStatusItems());
             //异常工单：后期可优化，不直接用1，用枚举
             spinnerType.setSelection(1);
             editTitle.setText(spinnerType.getSelectedItem().toString());
             StringBuilder builder = new StringBuilder();
             builder.append(getString(R.string.alarm_device, device.getDeviceAlias()));
-            builder.append("\r\n" + getString(R.string.alarm_time, DateHelper.getString(alarm.getTime())));
+            builder.append("\r\n" + getString(R.string.alarm_time, DateHelper.getString(alarm
+                    .getTime())));
             builder.append("\r\n" + getString(R.string.alarm_type, status));
             editTask.setText(builder.toString());
         }
     }
 
     //nj--为admin系统管理员时初始化Spinner控件
-    private void initIfSysUse(){
-        if (!WAServicer.getUser().isAdministrator()){
-            String[] types= getResources().getStringArray( R.array.workorder_types );
-            List<String> workorderType= new ArrayList<>(  );
-            for (int i=0;i<types.length;i++){
-                workorderType.add( types[i] );
+    private void initIfSysUse() {
+        if (!WAServicer.getUser().isAdministrator()) {
+            String[] types = getResources().getStringArray(R.array.workorder_types);
+            List<String> workorderType = new ArrayList<>();
+            for (int i = 0; i < types.length; i++) {
+                workorderType.add(types[i]);
             }
-            workorderType.remove( workorderType.size()-1 );
-            ArrayAdapter<String> adapter=new ArrayAdapter<>( this,
-                    android.R.layout.simple_spinner_item,workorderType );
-            adapter.setDropDownViewResource( android.R.layout.simple_spinner_dropdown_item );
-            spinnerType.setAdapter( adapter );
+            workorderType.remove(workorderType.size() - 1);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                    android.R.layout.simple_spinner_item, workorderType);
+            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinnerType.setAdapter(adapter);
         }
     }
 
@@ -154,9 +156,9 @@ public class WorkorderCreatorActivity extends BaseActivity {
             Toast.makeText(this, R.string.workorder_range_error, Toast.LENGTH_SHORT).show();
         } else {
             //nj--判断用户类型设置 2018/12/25
-            String sysId=getString( R.string.woekorder_sys_id );
-            String user=WAServicer.getUser().getDeviceName();
-            String id=WAServicer.getUser().isAdministrator()? sysId :user;
+            String sysId = getString(R.string.woekorder_sys_id);
+            String user = WAServicer.getUser().getDeviceName();
+            String id = WAServicer.getUser().isAdministrator() ? sysId : user;
 
             workorder.genId(id);
             workorder.setType(type);
@@ -184,8 +186,9 @@ public class WorkorderCreatorActivity extends BaseActivity {
                 if (result.isSuccess()) {
 
                     //nj--添加工单创建成功信息
-                    String actionInfo= getString( R.string.action_workorder_create,workorder.getTitle());
-                    RecordHelper.actionLog( actionInfo );
+                    String actionInfo = getString(R.string.action_workorder_create, workorder
+                            .getTitle());
+                    RecordHelper.actionLog(actionInfo);
 
                     setResult(RESULT_OK);
                     finish();
@@ -193,7 +196,7 @@ public class WorkorderCreatorActivity extends BaseActivity {
                         alarm.setConfirm(1);
                         alarm.setReport(workorder.getId());
                         saveAlarm();
-                    }else {
+                    } else {
                         onFinish();
                     }
                 } else {
@@ -212,13 +215,13 @@ public class WorkorderCreatorActivity extends BaseActivity {
 
             @Override
             public void onResponse(Response response) throws IOException {
-                String s=response.body().string();
+                String s = response.body().string();
                 onFinish();
             }
         });
     }
 
-    private void onFinish(){
+    private void onFinish() {
         setResult(RESULT_OK);
         finish();
     }
@@ -297,10 +300,14 @@ public class WorkorderCreatorActivity extends BaseActivity {
     }
 
     private void onSaveFailed() {
+        try {
+            Thread.sleep(ViewHelper.ANIMATION_DURATION);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                //未知bug,不能重新显示Button图标
                 ViewHelper.resetViewAnimator(btnSave);
                 Snackbar.make(btnSave, R.string.workorder_fail, Snackbar.LENGTH_LONG).show();
             }
