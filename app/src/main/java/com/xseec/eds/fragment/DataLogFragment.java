@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -75,6 +76,7 @@ public class DataLogFragment extends BaseFragment {
 
     private List<StoredTag> storedTagList;
     private DataLogFactor defaultFactor;
+    private boolean customYAxisRange=false;
 
     private static final String EXT_TAG = "tags";
     private static final String EXT_FACTOR = "default_factor";
@@ -141,7 +143,6 @@ public class DataLogFragment extends BaseFragment {
         XAxis xAxis = lineChart.getXAxis();
         IAxisValueFormatter iAxisValueFormatter = new TimeXAxisValueFormatter(lineChart,defaultFactor);
         xAxis.setValueFormatter(iAxisValueFormatter);
-
         LineData data = lineChart.getData();
         if (data != null) {
             data.clearValues();
@@ -195,7 +196,23 @@ public class DataLogFragment extends BaseFragment {
                 }
                 break;
             case R.id.query_config:
-
+                customYAxisRange=!customYAxisRange;
+                YAxis yAxis=lineChart.getAxisLeft();
+                if(customYAxisRange){
+                    LineData lineData=lineChart.getLineData();
+                    float range=Math.abs(lineData.getYMax()-lineData.getYMin());
+                    float min=lineData.getYMin()-9*range;
+                    yAxis.setAxisMinimum(min<0?0:min);
+                    Toast.makeText(getContext(),R.string.detail_percision_low,Toast.LENGTH_SHORT).show();
+                }else {
+                    yAxis.resetAxisMinimum();
+                    LineData lineData=lineChart.getLineData();
+                    yAxis.calculate(lineData.getYMin(),lineData.getYMax());
+                    Toast.makeText(getContext(),R.string.detail_percision_hight,Toast.LENGTH_SHORT).show();
+                }
+                lineChart.resetZoom();
+                lineChart.animateX(2000);
+                lineChart.invalidate();
                 break;
             default:
                 break;

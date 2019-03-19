@@ -77,6 +77,7 @@ public class ViewHelper {
                 }
             };
         }
+        builder.setCancelable(false);
         builder.show();
     }
 

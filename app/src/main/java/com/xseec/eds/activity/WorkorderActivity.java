@@ -171,7 +171,7 @@ public class WorkorderActivity extends BaseActivity implements UploadListener,
                     @Override
                     public void run() {
                         progress.setVisibility(View.GONE);
-                        if(workorders==null){
+                        if(workorders==null||workorders.size()==0){
                             Toast.makeText(WorkorderActivity.this, R.string.record_null, Toast.LENGTH_SHORT).show();
                         }else {
                             workorder=workorders.get(0);

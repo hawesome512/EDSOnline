@@ -46,7 +46,7 @@ public class SettingActivity extends BaseActivity {
                 break;
             case ENERGY:
             case OVERVIEWTAG:
-                ViewHelper.singleAlertDialog( this, "/该功能待完善中/取消", new DialogInterface.OnClickListener() {
+                ViewHelper.singleAlertDialog( this, "/该功能待完善/取消", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         finish();

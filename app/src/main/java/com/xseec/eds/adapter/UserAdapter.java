@@ -57,7 +57,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                     oldHolder.deleteImage.setVisibility( View.GONE );
                     if(oldHolder==holder){
                         oldHolder=null;
-                        notifyDataSetChanged();
                         return;
                     }
                 }
@@ -65,7 +64,6 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> {
                 holder.modifyImage.setVisibility( View.VISIBLE );
                 holder.deleteImage.setVisibility( View.VISIBLE );
                 oldHolder=holder;
-                notifyDataSetChanged();
             }
         } );
     }

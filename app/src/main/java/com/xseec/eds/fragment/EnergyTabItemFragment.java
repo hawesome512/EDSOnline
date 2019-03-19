@@ -199,24 +199,28 @@ public class EnergyTabItemFragment extends BaseFragment implements OnChartValueS
 
         //环比值曲线
         List<Entry> lastsEntries = Generator.convertEntryList(last, minXValue);
-        LineDataSet lastDataSet = new LineDataSet(lastsEntries, showNames[1]);
-        lastDataSet.setDrawFilled(true);
-        Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable
-                .chart_fade_blue);
-        lastDataSet.setFillDrawable(drawable);
-        lastDataSet.setColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
-        lastDataSet.setCircleColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
-        lineData.addDataSet(lastDataSet);
+        if (last.size() > 0) {
+            LineDataSet lastDataSet = new LineDataSet(lastsEntries, showNames[1]);
+            lastDataSet.setDrawFilled(true);
+            Drawable drawable = ContextCompat.getDrawable(getContext(), R.drawable
+                    .chart_fade_blue);
+            lastDataSet.setFillDrawable(drawable);
+            lastDataSet.setColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+            lastDataSet.setCircleColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+            lineData.addDataSet(lastDataSet);
+        }
 
         //当前值曲线
         List<Entry> curEntries = Generator.convertEntryList(current, minXValue);
-        LineDataSet curDataSet = new LineDataSet(curEntries, showNames[0]);
-        curDataSet.setColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
-        curDataSet.setCircleColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
-        curDataSet.setLineWidth(2f);
-        curDataSet.setCircleRadius(4f);
-        lineChart.getAxisLeft().setAxisMinimum(0);
-        lineData.addDataSet(curDataSet);
+        if (current.size() > 0) {
+            LineDataSet curDataSet = new LineDataSet(curEntries, showNames[0]);
+            curDataSet.setColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
+            curDataSet.setCircleColor(ContextCompat.getColor(getContext(), R.color.colorAccent));
+            curDataSet.setLineWidth(2f);
+            curDataSet.setCircleRadius(4f);
+            lineChart.getAxisLeft().setAxisMinimum(0);
+            lineData.addDataSet(curDataSet);
+        }
 
         lineData.setDrawValues(false);
         lineChart.setData(lineData);
@@ -228,8 +232,8 @@ public class EnergyTabItemFragment extends BaseFragment implements OnChartValueS
         float totalYesterday = Generator.getSumFromEntryList(lastsEntries, curEntries.size());
         float linkRadio = Math.round((totalToday - totalYesterday) / totalYesterday * 10000)
                 / 100f;
-        float linkRadioMax=Math.round( Float.MAX_VALUE*10000 )/100f;
-        String linkRadioValue=linkRadio==linkRadioMax?"— — — ":linkRadio+"%";
+        float linkRadioMax = Math.round(Float.MAX_VALUE * 10000) / 100f;
+        String linkRadioValue = linkRadio == linkRadioMax ? "— — — " : linkRadio + "%";
         textFirst.setText(String.valueOf(totalToday));
         textSecend.setText(String.valueOf(totalYesterday));
         textLast.setText(linkRadioValue);
@@ -294,8 +298,8 @@ public class EnergyTabItemFragment extends BaseFragment implements OnChartValueS
         barChart.getAxisRight().setEnabled(false);
         barChart.getAxisLeft().setAxisMinimum(0);
         //非常容易误触发
-        barChart.setTouchEnabled(false);
-        barChart.setOnChartValueSelectedListener(this);
+//        barChart.setTouchEnabled(false);
+//        barChart.setOnChartValueSelectedListener(this);
         XAxis xAxis = barChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
     }
@@ -363,8 +367,8 @@ public class EnergyTabItemFragment extends BaseFragment implements OnChartValueS
         //能耗属于累加值，多取1点
         DataLogFactor factor = new DataLogFactor(startTime, intervalType, 1, countOfLast +
                 countOfNow + 1);
-        if(field==Calendar.YEAR){
-            countOfLast=12;
+        if (field == Calendar.YEAR) {
+            countOfLast = 12;
         }
         WAServiceHelper.sendTagLogRequest(factor, energyTagList, new Callback() {
             @Override
@@ -444,7 +448,7 @@ public class EnergyTabItemFragment extends BaseFragment implements OnChartValueS
                 }
             }
             //年模式：日值→月值
-            if (field==Calendar.YEAR) {
+            if (field == Calendar.YEAR) {
                 tagLogs[i] = Generator.getMonthList(tagLogs[i], (Calendar) startTime.clone());
             }
         }

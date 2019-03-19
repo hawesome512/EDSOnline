@@ -165,6 +165,8 @@
     <string name="detail_range_error">起始时间不能晚于截止时间</string>
     <string name="detail_endtime_error">自动校正超出的截止时间</string>
     <string name="detail_range_month">自动配对月查询模式</string>
+    <string name="detail_percision_hight">高精度模式</string>
+    <string name="detail_percision_low">低精度模式</string>
 
     <!--Device Activity-->
     <string name="device_state">状态</string>
