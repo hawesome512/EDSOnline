@@ -55,13 +55,12 @@
                 android:textColor="@color/colorPrimaryText"
                 android:textSize="@dimen/font_big" />
 
-            <TextView
-                android:id="@+id/text_task"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_task"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:lineSpacingExtra="@dimen/view_margin_normal"
                 android:paddingHorizontal="@dimen/view_padding_normal"
-                android:paddingVertical="@dimen/view_padding_small" />
+                android:paddingVertical="@dimen/view_padding_small"></android.support.v7.widget.RecyclerView>
 
             <View style="@style/DividerLine" />
 

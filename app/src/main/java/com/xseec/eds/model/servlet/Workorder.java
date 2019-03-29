@@ -4,18 +4,25 @@ import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.util.Pair;
 
 import com.xseec.eds.R;
 import com.xseec.eds.util.DateHelper;
 import com.xseec.eds.util.EDSApplication;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2018/10/8.
  */
 
 public class Workorder extends BaseModel implements Comparable,Parcelable {
+
+    private static final String TASK_DONE="_1";
+    private static final String TASK_UNDONE="_0";
 
     protected Workorder(Parcel in) {
         id = in.readString();
@@ -198,6 +205,19 @@ public class Workorder extends BaseModel implements Comparable,Parcelable {
         }
     }
 
+    public int getTypeColorRes(){
+        switch (getType()){
+            case 0:
+                return R.color.colorNormal;
+            case 1:
+                return R.color.colorOn;
+            case 2:
+                return R.color.colorOff;
+            default:
+                return R.color.colorOffline;
+        }
+    }
+
     public int getStateImgRes() {
         switch (getWorkorderState()) {
             case DUE:
@@ -264,12 +284,38 @@ public class Workorder extends BaseModel implements Comparable,Parcelable {
             return -1;
         } else {
             if (end.before(target.getEnd())) {
-                return 1;
-            } else if (end.after(target.getEnd())) {
                 return -1;
+            } else if (end.after(target.getEnd())) {
+                return 1;
             }
         }
         return 0;
+    }
+
+    public String getShowTask(){
+        return task.replaceAll("_\\d","");
+    }
+
+    public Map<String,Boolean> getTaskMap(){
+        LinkedHashMap map=new LinkedHashMap();
+        String[] contents = getShowString(task).split("\n");
+        for (String content : contents) {
+            boolean result = false;
+            if (content.endsWith(TASK_DONE)) {
+                result = true;
+            }
+            content = content.replaceAll("_\\d$", "");
+            map.put(content,result);
+        }
+        return map;
+    }
+
+    public void setTask(Map<String,Boolean> taskMap){
+        String info="";
+        for(Map.Entry<String,Boolean> kv:taskMap.entrySet()){
+            info+=kv.getKey()+(kv.getValue()?TASK_DONE:TASK_UNDONE)+"\n";
+        }
+        task=getServletString(info);
     }
 
     //换行符“\n"传输至服务器被删除，先替换为“；”在上传

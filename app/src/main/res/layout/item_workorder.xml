@@ -1,14 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="@dimen/view_padding_normal"
     android:orientation="vertical">
 
+    <View
+        android:id="@+id/view_type"
+        android:layout_width="@dimen/view_margin_small"
+        android:layout_height="@dimen/image_size_small"
+        android:background="@drawable/shape_workorder_type"
+        android:layout_marginRight="@dimen/view_margin_small"
+        android:layout_centerVertical="true"/>
+
     <LinearLayout
+        android:id="@+id/layout_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginVertical="@dimen/view_margin_tiny"
+        android:layout_toRightOf="@id/view_type"
+        android:layout_toLeftOf="@id/image_workorder"
         android:orientation="horizontal">
 
         <TextView
@@ -16,10 +27,10 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:textColor="@color/colorPrimaryText"
-            android:textSize="@dimen/font_big"
+            android:ellipsize="end"
             android:maxLines="1"
-            android:ellipsize="end"/>
+            android:textColor="@color/colorPrimaryText"
+            android:textSize="@dimen/font_big" />
 
         <TextView
             android:id="@+id/text_time"
@@ -28,11 +39,15 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/layout_task"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginVertical="@dimen/view_margin_tiny"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_toRightOf="@id/view_type"
+        android:layout_toLeftOf="@id/image_workorder"
+        android:layout_below="@id/layout_title">
 
         <TextView
             android:id="@+id/text_task"
@@ -46,19 +61,30 @@
             android:id="@+id/image_execute"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/view_margin_normal"/>
+            android:layout_marginHorizontal="@dimen/view_margin_normal" />
 
         <TextView
             android:id="@+id/text_execute"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="right"
             android:layout_weight="1"
-            android:maxLines="1"
-            android:ellipsize="end"/>
+            android:ellipsize="end"
+            android:gravity="right"
+            android:maxLines="1" />
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/image_workorder"
+        android:layout_width="@dimen/image_size"
+        android:layout_height="@dimen/image_size"
+        android:layout_alignParentRight="true"
+        android:layout_above="@id/view_divider"
+        android:scaleType="centerCrop"
+        android:visibility="gone"
+        android:layout_marginLeft="@dimen/view_margin_normal"/>
 
     <View
         android:id="@+id/view_divider"
-        style="@style/DividerLine" />
-</LinearLayout>
+        style="@style/DividerLine"
+        android:layout_below="@id/layout_task"/>
+</RelativeLayout>

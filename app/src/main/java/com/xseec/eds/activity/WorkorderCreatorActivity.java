@@ -103,8 +103,8 @@ public class WorkorderCreatorActivity extends BaseActivity {
         setTitle(R.string.nav_workorder);
         ViewHelper.initToolbar(this, toolbar, R.drawable.ic_arrow_back_white_24dp);
         workorder = new Workorder();
-        initIfAlarm();
         initIfSysUse();
+        initIfAlarm();
     }
 
     private void initIfAlarm() {

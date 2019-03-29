@@ -11,6 +11,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -34,6 +35,7 @@ import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import com.xseec.eds.R;
 import com.xseec.eds.adapter.PhotoAdapter;
+import com.xseec.eds.adapter.WorkorderTaskAdapter;
 import com.xseec.eds.model.servlet.UploadListener;
 import com.xseec.eds.model.servlet.Workorder;
 import com.xseec.eds.util.ContentHelper;
@@ -88,8 +90,6 @@ public class WorkorderActivity extends BaseActivity implements UploadListener,
     RecyclerView recyclerImage;
     @InjectView(R.id.layout_execute)
     LinearLayout layoutExecute;
-    @InjectView(R.id.text_task)
-    TextView textTask;
     @InjectView(R.id.text_range)
     TextView textRange;
     @InjectView(R.id.text_location)
@@ -110,9 +110,12 @@ public class WorkorderActivity extends BaseActivity implements UploadListener,
     ImageView imageCall;
     @InjectView(R.id.progress)
     ProgressBar progress;
+    @InjectView(R.id.recycler_task)
+    RecyclerView recyclerTask;
 
     private Workorder workorder;
     private PhotoAdapter adapter;
+    private WorkorderTaskAdapter taskAdapter;
     private boolean editing = false;
     private List<LocalMedia> sourceImageList;
     private List<String> compressImageList;
@@ -148,15 +151,15 @@ public class WorkorderActivity extends BaseActivity implements UploadListener,
             initViews();
         } else {
             //在runOnUiThread中设置Title失效，可能存在风险：workorder_types变更时此处存在问题，待优化
-            String title=getResources().getStringArray(R.array.workorder_types)[1];
+            String title = getResources().getStringArray(R.array.workorder_types)[1];
             setTitle(title);
             initWorkorderWithId();
         }
     }
 
-    private void initWorkorderWithId(){
-        String woId=getIntent().getStringExtra(EXT_WORKORDER_ID);
-        Workorder wo=new Workorder(woId);
+    private void initWorkorderWithId() {
+        String woId = getIntent().getStringExtra(EXT_WORKORDER_ID);
+        Workorder wo = new Workorder(woId);
         progress.setVisibility(View.VISIBLE);
         WAServiceHelper.sendWorkorderQueryRequest(wo, null, null, new Callback() {
             @Override
@@ -166,15 +169,16 @@ public class WorkorderActivity extends BaseActivity implements UploadListener,
 
             @Override
             public void onResponse(Response response) throws IOException {
-                final List<Workorder> workorders= WAJsonHelper.getWorkorderList(response);
+                final List<Workorder> workorders = WAJsonHelper.getWorkorderList(response);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         progress.setVisibility(View.GONE);
-                        if(workorders==null||workorders.size()==0){
-                            Toast.makeText(WorkorderActivity.this, R.string.record_null, Toast.LENGTH_SHORT).show();
-                        }else {
-                            workorder=workorders.get(0);
+                        if (workorders == null || workorders.size() == 0) {
+                            Toast.makeText(WorkorderActivity.this, R.string.record_null, Toast
+                                    .LENGTH_SHORT).show();
+                        } else {
+                            workorder = workorders.get(0);
                             initViews();
                         }
                     }
@@ -192,10 +196,9 @@ public class WorkorderActivity extends BaseActivity implements UploadListener,
 
     private void initViews() {
         setTitle(workorder.getTitle());
-        imageArea.setImageResource(Generator.getImageRes("schedule_"+workorder.getType()));
+        imageArea.setImageResource(Generator.getImageRes("schedule_" + workorder.getType()));
         imageState.setImageResource(workorder.getStateImgRes());
         textState.setText(workorder.getStateTextRes());
-        textTask.setText(Workorder.getShowString(workorder.getTask()));
         textRange.setText(workorder.getDateRange());
         textLocation.setText(workorder.getLocation());
         textWorker.setText(workorder.getWorker());
@@ -210,6 +213,10 @@ public class WorkorderActivity extends BaseActivity implements UploadListener,
         }
         //FABProgressListener
         fabProgressCircle.attachListener(this);
+
+        recyclerTask.setLayoutManager(new LinearLayoutManager(this));
+        taskAdapter=new WorkorderTaskAdapter(this,workorder.getTaskMap());
+        recyclerTask.setAdapter(taskAdapter);
     }
 
     @Override
@@ -263,6 +270,7 @@ public class WorkorderActivity extends BaseActivity implements UploadListener,
         editLog.setSelection(editLog.getText().length());
         fabExecute.setImageResource(R.drawable.ic_cloud_upload_white_24dp);
         adapter.setAddable(true);
+        taskAdapter.setEditable(true);
     }
 
 /*
@@ -293,6 +301,7 @@ public class WorkorderActivity extends BaseActivity implements UploadListener,
         workorder.setImage(image);
         String log = editLog.getText().toString() + "\n" + DateHelper.getString(new Date());
         workorder.setLog(Workorder.getServletString(log));
+        workorder.setTask(taskAdapter.getTaskMap());
         workorder.setStateDone();
         WAServiceHelper.sendWorkorderUpdateRequest(workorder, new Callback() {
             @Override
@@ -304,8 +313,9 @@ public class WorkorderActivity extends BaseActivity implements UploadListener,
             public void onResponse(Response response) throws IOException {
 
                 //nj--工单执行操作记录 18/11/5
-                String actionInfo=getString( R.string.action_workorder_execute,workorder.getTitle());
-                RecordHelper.actionLog( actionInfo );
+                String actionInfo = getString(R.string.action_workorder_execute, workorder
+                        .getTitle());
+                RecordHelper.actionLog(actionInfo);
 
                 onWorkorderUploaded();
             }
@@ -338,8 +348,8 @@ public class WorkorderActivity extends BaseActivity implements UploadListener,
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.workorder_menu, menu);
         //nj--检查用户功能权限
-        MenuItem deleteItem=menu.findItem( R.id.menu_delete );
-        UserLevelHelper.checkWorkorderActivity( fabExecute,deleteItem );
+        MenuItem deleteItem = menu.findItem(R.id.menu_delete);
+        UserLevelHelper.checkWorkorderActivity(fabExecute, deleteItem);
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -364,7 +374,8 @@ public class WorkorderActivity extends BaseActivity implements UploadListener,
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 //nj--添加删除工单记录的名称
-                final String actionInfo=getString( R.string.action_workorder_delet,workorder.getTitle());
+                final String actionInfo = getString(R.string.action_workorder_delet, workorder
+                        .getTitle());
 
                 workorder.setTitle(null);
                 WAServiceHelper.sendWorkorderUpdateRequest(workorder, new Callback() {
@@ -377,7 +388,7 @@ public class WorkorderActivity extends BaseActivity implements UploadListener,
                     public void onResponse(Response response) throws IOException {
 
                         //nj--执行工单删除记录操作 18/11/5
-                        RecordHelper.actionLog( actionInfo );
+                        RecordHelper.actionLog(actionInfo);
                         finish();
                     }
                 });
@@ -387,6 +398,7 @@ public class WorkorderActivity extends BaseActivity implements UploadListener,
 
     private void disenableEdit() {
         adapter.setAddable(false);
+        taskAdapter.setEditable(false);
         editLog.setFocusable(false);
     }
 
