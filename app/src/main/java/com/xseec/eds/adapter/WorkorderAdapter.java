@@ -29,6 +29,7 @@ public class WorkorderAdapter extends RecyclerView.Adapter<WorkorderAdapter.View
 
     private List<Workorder> workorderList;
     private Context context;
+    private static final String DD="dd";
 
     public WorkorderAdapter(Context context,List<Workorder> workorderList) {
         this.context=context;
