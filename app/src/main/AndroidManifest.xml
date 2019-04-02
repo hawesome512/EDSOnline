@@ -77,7 +77,6 @@
             android:theme="@style/TransStatusBarTheme"
             android:windowSoftInputMode="adjustPan"></activity>
 
-        //nj--添加报表自定义时间段 activity 2018/11/20
         <activity android:name=".activity.ReportTimeSettingActivity"
             android:theme="@style/DialogActivity"/>
         <activity android:name=".activity.ReportActivity"/>

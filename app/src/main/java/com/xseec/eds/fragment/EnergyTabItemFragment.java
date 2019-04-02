@@ -191,7 +191,7 @@ public class EnergyTabItemFragment extends BaseFragment implements OnChartValueS
         List<String> yValues = tagLogs[currentIndex];
         List<String> current = new ArrayList<>();
         List<String> last = new ArrayList<>();
-        if (countOfLast < yValues.size()) {
+        if (countOfLast <= yValues.size()) {
             current = yValues.subList(countOfLast, yValues.size());
             last = yValues.subList(0, countOfLast);
         }

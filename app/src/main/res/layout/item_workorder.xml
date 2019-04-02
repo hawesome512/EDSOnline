@@ -81,7 +81,8 @@
         android:layout_above="@id/view_divider"
         android:scaleType="centerCrop"
         android:visibility="gone"
-        android:layout_marginLeft="@dimen/view_margin_normal"/>
+        android:layout_marginLeft="@dimen/view_margin_normal"
+        android:src="@drawable/ic_photo_grey_400_24dp"/>
 
     <View
         android:id="@+id/view_divider"

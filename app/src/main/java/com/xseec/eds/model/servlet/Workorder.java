@@ -293,7 +293,7 @@ public class Workorder extends BaseModel implements Comparable,Parcelable {
     }
 
     public String getShowTask(){
-        return task.replaceAll("_\\d","");
+        return task==null?"":task.replaceAll("_\\d","");
     }
 
     public Map<String,Boolean> getTaskMap(){
@@ -329,7 +329,7 @@ public class Workorder extends BaseModel implements Comparable,Parcelable {
     //替换分隔符“；”改为换行符
     public static String getShowString(String source){
         if(source==null){
-            return null;
+            return "";
         }
         return source.replaceAll("^;+","").replaceAll(";+$","").replaceAll(";+","\n");
     }

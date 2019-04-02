@@ -85,7 +85,7 @@ public class VerificationCodeInput extends LinearLayout implements TextWatcher, 
             editText.setId(i);
             editText.setEms(1);
             editText.addTextChangedListener(this);
-            editText.setEnabled(i==0?true:false);
+            editText.setFocusable(i==0?true:false);
             addView(editText, i);
             editTextList.add(editText);
         }
@@ -129,10 +129,12 @@ public class VerificationCodeInput extends LinearLayout implements TextWatcher, 
         for (int i = 0; i < count; i++) {
             editText = (EditText) getChildAt(i);
             if (i == currentPosition) {
+                editText.setFocusable(true);
+                editText.setFocusableInTouchMode(true);
                 editText.requestFocus();
-                editText.setEnabled(true);
+
             } else {
-                editText.setEnabled(false);
+                editText.setFocusable(false);
             }
 //            if(editText.getText().length()<1){
 //                editText.requestFocus();
