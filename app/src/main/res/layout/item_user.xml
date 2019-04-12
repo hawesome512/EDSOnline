@@ -18,35 +18,42 @@
             android:layout_marginVertical="@dimen/view_margin_small"
             android:layout_marginHorizontal="@dimen/view_margin_normal" />
 
-        <TextView
-            android:id="@+id/text_name"
+        <LinearLayout
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_gravity="center_vertical"
-            android:textColor="@color/colorNormal"
-            android:textSize="@dimen/font_big"
-            android:text="徐海生"/>
-
-        <TextView
-            android:id="@+id/text_phone"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="2"
-            android:layout_gravity="center_vertical"
-            android:textColor="@color/colorNormal"
-            android:textSize="@dimen/font_big"
-            android:text="18759282157"/>
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
+                android:textColor="@color/colorNormal"
+                android:textSize="@dimen/font_big"/>
+
+            <TextView
+                android:id="@+id/text_phone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"/>
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/text_level"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginHorizontal="@dimen/view_margin_normal"
             android:layout_gravity="center_vertical"
-            android:textColor="@color/colorGrayNormal"
+            android:gravity="center_vertical"
+            android:textColor="@color/colorPrimaryText"
             android:enabled="false"
+            android:text="手机管理员"
             android:drawableRight="@drawable/ic_keyboard_arrow_selected"
             />
     </LinearLayout>

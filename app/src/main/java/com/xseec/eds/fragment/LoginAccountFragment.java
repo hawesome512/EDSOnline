@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.xseec.eds.R;
 import com.xseec.eds.model.LoginListener;
@@ -29,7 +30,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class AccountLoginFragment extends BaseFragment {
+public class LoginAccountFragment extends BaseFragment {
 
     private static final String KEY_USERNAME = "username";
     private static final String KEY_PASSWORD = "password";
@@ -39,8 +40,6 @@ public class AccountLoginFragment extends BaseFragment {
     TextInputEditText editUsername;
     @InjectView(R.id.edit_password)
     TextInputEditText editPassword;
-    @InjectView(R.id.text_failure)
-    TextView textFailure;
     @InjectView(R.id.switch_remember)
     Switch switchRemember;
     @InjectView(R.id.btn_login)
@@ -52,8 +51,8 @@ public class AccountLoginFragment extends BaseFragment {
 
     private LoginListener loginListener;
 
-    public static AccountLoginFragment newInstance(){
-        return new AccountLoginFragment();
+    public static LoginAccountFragment newInstance(){
+        return new LoginAccountFragment();
     }
 
     @Override
@@ -66,8 +65,6 @@ public class AccountLoginFragment extends BaseFragment {
 
         loginListener= (LoginListener) getActivity();
         getLoginInfo();
-        onEditTextInput( editUsername );
-        onEditTextInput( editPassword );
         return view;
     }
 
@@ -76,7 +73,6 @@ public class AccountLoginFragment extends BaseFragment {
         //============程序调试区==========================//
 
         //===============================================//
-        textFailure.setVisibility(View.INVISIBLE);
         String username = editUsername.getText().toString();
         String password = editPassword.getText().toString();
         final String authority = CodeHelper.encode( username + ":" + password );
@@ -134,7 +130,7 @@ public class AccountLoginFragment extends BaseFragment {
     }
 
     private void onFailure() {
-        textFailure.setVisibility( View.VISIBLE );
+        Toast.makeText(getContext(), R.string.login_failure, Toast.LENGTH_SHORT).show();
         ViewHelper.resetViewAnimator( btnLogin );
     }
 
@@ -147,26 +143,6 @@ public class AccountLoginFragment extends BaseFragment {
     @Override
     protected void onRefreshViews(String jsonData) {
 
-    }
-
-    private void onEditTextInput(TextInputEditText editText){
-        editText.addTextChangedListener( new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                textFailure.setVisibility( View.INVISIBLE );
-//                ViewHelper.resetViewAnimator( btnLogin );
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        } );
     }
 
     @OnClick(R.id.tv_change_phone)

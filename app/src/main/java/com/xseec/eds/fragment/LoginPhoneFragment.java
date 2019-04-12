@@ -44,7 +44,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 
-public class PhoneLoginFragment extends BaseFragment {
+public class LoginPhoneFragment extends BaseFragment {
 
     private static final String KEY_AUTHORITY = "authority";
     private static final String KEY_LOGIN_INFO = "phone";
@@ -68,8 +68,8 @@ public class PhoneLoginFragment extends BaseFragment {
     private ResponseResult result;
     private CaptchaTimeCount captchaTimeCount;
 
-    public static PhoneLoginFragment newInstance(boolean isAutoLoginForPhone) {
-        PhoneLoginFragment fragment=new PhoneLoginFragment();
+    public static LoginPhoneFragment newInstance(boolean isAutoLoginForPhone) {
+        LoginPhoneFragment fragment=new LoginPhoneFragment();
         Bundle bundle=new Bundle(  );
         bundle.putBoolean( KEY_AUTO_LOGIN,isAutoLoginForPhone );
         fragment.setArguments( bundle );

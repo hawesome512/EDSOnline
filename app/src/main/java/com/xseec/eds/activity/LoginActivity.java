@@ -13,8 +13,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
 import com.xseec.eds.R;
-import com.xseec.eds.fragment.AccountLoginFragment;
-import com.xseec.eds.fragment.PhoneLoginFragment;
+import com.xseec.eds.fragment.LoginAccountFragment;
+import com.xseec.eds.fragment.LoginPhoneFragment;
 import com.xseec.eds.model.LoginListener;
 import com.xseec.eds.model.User;
 import com.xseec.eds.model.WAServicer;
@@ -124,10 +124,10 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
     private void loginTypeChange(LoginType loginType, boolean isAutoLogin) {
         switch (loginType) {
             case ACCOUNT:
-                replaceFragment(AccountLoginFragment.newInstance());
+                replaceFragment(LoginAccountFragment.newInstance());
                 break;
             case PHONE:
-                replaceFragment(PhoneLoginFragment.newInstance(isAutoLogin));
+                replaceFragment(LoginPhoneFragment.newInstance(isAutoLogin));
                 break;
         }
     }
