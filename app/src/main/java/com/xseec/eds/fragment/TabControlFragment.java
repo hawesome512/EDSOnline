@@ -140,7 +140,7 @@ public class TabControlFragment extends ComFragment {
         boolean Usability=UserLevelHelper.checkTabFragment();
         if (!Usability){
             User user= WAServicer.getUser();
-            String info=getString( R.string.device_modify_control,user.getLevelState());
+            String info=getString( R.string.device_modify_control,user.getUserType().getTypeName(getContext()));
             hintUserLevel( info );
             return;
         }

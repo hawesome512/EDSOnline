@@ -52,7 +52,7 @@ public class WAServicer {
     public static void initWAServicer(){
         context= EDSApplication.getContext();
         SharedPreferences preferences=PreferenceManager.getDefaultSharedPreferences(context);
-        //hostUrl=preferences.getString(PREF_HOST,"172.16.65.87");
+//        hostUrl=preferences.getString(PREF_HOST,"172.16.65.103");
         hostUrl=preferences.getString(PREF_HOST,"www.eds.ink");
         projectName=preferences.getString(PREF_PROJECT,"EDS");
         nodeName=preferences.getString(PREF_NODE,"XS");

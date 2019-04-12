@@ -37,6 +37,7 @@ import com.xseec.eds.widget.CaptchaTimeCount;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import butterknife.ButterKnife;
@@ -83,6 +84,7 @@ public class PhoneLoginFragment extends BaseFragment {
         loginListener = (LoginListener) getActivity();
         //nj--判断是否需要自动登录
         getLoginInfo( getArguments().getBoolean( KEY_AUTO_LOGIN ));
+        phone=new Phone();
         onPhoneNumberInput();
         return view;
     }
@@ -92,8 +94,8 @@ public class PhoneLoginFragment extends BaseFragment {
         //============程序调试区==========================//
 
         //===============================================//
-        String number=Generator.replaceBlank( editNumber.getText().toString() );
-        phone = new Phone( number );
+        String number=Generator.getPhoneValue( editNumber.getText().toString() );
+        phone.setId(number);
         String code = editCode.getText().toString();
         if(code.length()!=4){
             String codeError = getString( R.string.login_phone_code_error );
@@ -140,9 +142,10 @@ public class PhoneLoginFragment extends BaseFragment {
     @OnClick(R.id.btn_code)
     public void onBtnCodeClicked() {
         captchaTimeCount.start();
-        String number=Generator.replaceBlank( editNumber.getText().toString() );
-        phone = new Phone( number );
+        String number=Generator.getPhoneValue( editNumber.getText().toString() );
+        phone.setId(number);
         queryPhone( phone );
+        editCode.requestFocus();
     }
 
     @Override
@@ -167,6 +170,12 @@ public class PhoneLoginFragment extends BaseFragment {
                 setLoginInfo( authority );
                 break;
             case 6: //验证码已发送手机
+                Pattern pattern=Pattern.compile("level:(\\d+);name:(\\S+)");
+                Matcher matcher=pattern.matcher(result.getMessage());
+                if(matcher.find()){
+                    phone.setLevel(Integer.valueOf(matcher.group(1)));
+                    phone.setName(matcher.group(2));
+                }
                 Toast.makeText( getContext(), R.string.login_message_send, Toast.LENGTH_LONG ).show();
                 break;
         }
@@ -205,29 +214,22 @@ public class PhoneLoginFragment extends BaseFragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Generator.genPhoneInputFormat( s,start,before,editNumber );
+//                Generator.genPhoneInputFormat( s,start,before,editNumber );
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                String number=Generator.replaceBlank( s.toString() );
-                boolean b=Pattern.matches( "^\\d{11}$", number );
-                if (b) {
-                    btnCode.setEnabled( true );
-                } else {
-                    btnCode.setEnabled( false );
-                }
+                btnCode.setEnabled(s.toString().length()==Phone.NUMBER_LENGTH);
             }
         } );
     }
 
     private void setLoginInfo(String authority) {
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences( getContext() ).edit();
-        String phoneToJson;
         Date loginTime = Calendar.getInstance().getTime();
         phone.setTime( DateHelper.getServletString( loginTime ) );
         Gson gson = new Gson();
-        phoneToJson = gson.toJson( phone );
+        String phoneToJson = gson.toJson( phone );
         editor.putString( KEY_LOGIN_INFO, phoneToJson );
         editor.putString( KEY_AUTHORITY, authority );
         editor.apply();

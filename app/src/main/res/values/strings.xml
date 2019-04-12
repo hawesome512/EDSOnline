@@ -3,6 +3,7 @@
     <string name="cancel">取消</string>
     <string name="ok">确定</string>
     <string name="share">分享</string>
+    <string name="saved">已保存</string>
     <string name="permission_checked">权限已获取，可继续操作</string>
     <string name="permission_unchecked">获取权限失败，拒绝此项操作</string>
     <string name="exit_confirm">确认要退出%1$s？/退出/取消</string>
@@ -33,10 +34,11 @@
     <string name="login_phone_failure">/未加载工程信息，登录失败/取消</string>
     <string name="login_message_send">验证码已发送，请注意查收</string>
 
-    <!--User--> <!--nj:用户权限等级-->
-    <string name="user_admin">管理员</string>
-    <string name="user_operator">运维人员</string>
-    <string name="user_normal">普通访客</string>
+    <string name="user_admin_super">超级管理员</string>
+    <string name="user_admin">系统管理员</string>
+    <string name="user_phone_admin">手机管理员</string>
+    <string name="user_phone">普通访客</string>
+    <string name="user_phone_temp">临时访客</string>
 
     <!--Login Setting-->
     <string name="setting_server">服务器</string>
@@ -59,6 +61,7 @@
     <string name="setting_energy">能耗设置</string>
     <string name="setting_overview">快捷点</string>
     <string name="setting_limit">/当前用户身份为：【%1$s】, 无法进行自定义操作/取消</string>
+    <string name="setting_limit_admin">当前用户无法授权系统管理员</string>
 
     <!--MainActivity-->
     <string name="main_failure">未加载到工程信息</string>
@@ -76,6 +79,7 @@
     <string name="nav_exit">退出</string>
 
     <!--userManage-->  <!--nj-->
+    <string name="user_phone_name">用户</string>
     <string name="user_phone_number">手机号</string>
     <string name="user_level">用户权限</string>
     <string name="user_creator">创建</string>
@@ -83,13 +87,17 @@
     <string name="user_created_number">已创建用户数：%1$s</string>
     <string name="user_limit_number">最多创建：%1$s</string>
     <string name="user_created">/该手机号已经注册，请重新输入/好</string>
-    <string name="user_wrong_format">/输入手机号为空或格式不正确，请重新输入/好</string>
+    <string name="user_number_format">手机号格式不正确，请重新输入</string>
     <string name="user_create_confirm">创建:%1$s新用户?/创建/取消</string>
     <string name="user_modify_confirm">对：%1$s用户进行修改?/修改/取消</string>
     <string name="user_delete_confirm">删除：%1$s用户？/删除/取消</string>
     <string name="user_fill">/当前用户注册数量已满，无法注册新用户/好</string>
+    <string name="user_saved"></string>
     <string-array name="user_level">
+        <item>系统管理员</item>
+        <item>手机管理员</item>
         <item>普通访客</item>
+        <item>临时访客</item>
     </string-array>
 
     <!--Overview-->
@@ -356,7 +364,7 @@
     <string name="svl_overviewtag_request">{\"id\":\"%1$s\",\"item1\":\"%2$s\",\"item2\":\"%3$s\",\"item3\":\"%4$s\",\"item4\":\"%5$s\",\"item5\":\"%6$s\",\"item6\":\"%7$s\"}</string>
     <string name="svl_phone_query">http://%1$s:8080/EDSServlet/QueryPhoneServlet</string>
     <string name="svl_phone_update">http://%1$s:8080/EDSServlet/UpdatePhoneServlet</string>
-    <string name="svl_phone_request">{\"id\":\"%1$s\",\"code\":\"%2$s\",\"time\":\"%3$s\",\"level\":%4$d,\"account\":\"%5$s\"}</string>
+    <string name="svl_phone_request">{\"id\":\"%1$s\",\"code\":\"%2$s\",\"time\":\"%3$s\",\"level\":%4$d,\"account\":\"%5$s\",\"name\":\"%6$s\"}</string>
     <string name="svl_upload">http://%1$s:8080/EDSServlet/UploadServlet</string>
     <string name="svl_download">http://%1$s:8080/EDSServlet/upload/</string>
 

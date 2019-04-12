@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import com.xseec.eds.R;
 import com.xseec.eds.util.EDSApplication;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -62,30 +64,21 @@ public class Account extends BaseModel implements Parcelable {
         this.phone = phone;
     }
 
-    public void addPhone(String newPhone){
-        phone=phone+SPILT_PHONE+newPhone;
-    }
-
-    public void updatePhone(String oldPhone,String newPhone){
-        phone=phone.replace( oldPhone,newPhone );
-    }
-
-    public void deletePhone(String oldPhone){
-        String regex=oldPhone+SPILT_PHONE;
-        Pattern pattern=Pattern.compile( regex );
-        Matcher matcher=pattern.matcher( phone );
-        if (matcher.find()){
-            phone=phone.replace( oldPhone+SPILT_PHONE,"" );
-        }else {
-            phone=phone.replace( SPILT_PHONE+oldPhone,"" );
+    public List<Phone> getPhones(){
+        String[] temps=phone.split(SPILT_PHONE);
+        List<Phone> phones=new ArrayList<>();
+        for(String info:temps){
+            phones.add(Phone.initWithInfo(info));
         }
+        return phones;
     }
 
-    public boolean isCreatedForPhone(String newPhone){
-        String regex=newPhone;
-        Pattern pattern=Pattern.compile( regex );
-        Matcher matcher=pattern.matcher( phone );
-        return matcher.find();
+    public void setPhones(List<Phone> phones){
+        StringBuilder builder=new StringBuilder();
+        for (Phone phone1 : phones) {
+            builder.append(phone1.getPhoneInfo()+Phone.SPIT);
+        }
+        phone=builder.toString();
     }
 
     @Override

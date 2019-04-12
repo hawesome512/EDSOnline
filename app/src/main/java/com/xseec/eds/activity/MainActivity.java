@@ -16,6 +16,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.xseec.eds.R;
@@ -42,7 +43,6 @@ import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import de.hdodenhof.circleimageview.CircleImageView;
 
 
 public class MainActivity extends BaseActivity implements NavigationView
@@ -89,11 +89,14 @@ public class MainActivity extends BaseActivity implements NavigationView
         if (basic != null && tagList != null) {
             User user = WAServicer.getUser();
             if (user != null) {
+                ImageView imageView=navView.getHeaderView(0).findViewById(R.id.image_profile);
+                imageView.setImageResource(user.getUserType().getIconRes());
                 TextView textUser = navView.getHeaderView(0).findViewById(R.id.text_account);
                 textUser.setText(getString(R.string.nav_account, user.getUsername()));
                 //nj--用户权限
-                TextView textLimit=navView.getHeaderView( 0 ).findViewById( R.id.text_limit );
-                textLimit.setText( getString( R.string.nav_limit,user.getLevelState() ) );
+                TextView textLimit = navView.getHeaderView(0).findViewById(R.id.text_limit);
+                textLimit.setText(getString(R.string.nav_limit, user.getUserType().getTypeName
+                        (this)));
             }
             if (savedInstanceState != null) {
                 selectedId = savedInstanceState.getInt(KEY_MENU_ITEM);
@@ -101,13 +104,14 @@ public class MainActivity extends BaseActivity implements NavigationView
                 selectedId = R.id.nav_overview;
             }
             //NJ--用户图像点击时，提示退出
-            CircleImageView profileImage=navView.getHeaderView( 0 ).findViewById( R.id.image_profile );
-            profileImage.setOnClickListener( new View.OnClickListener() {
+            ImageView profileImage = navView.getHeaderView(0).findViewById(R.id
+                    .image_profile);
+            profileImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     checkExitForUser();
                 }
-            } );
+            });
 
             navView.getMenu().performIdentifierAction(selectedId, 0);
             Device.setAliasMap(basic.getAliasMap());
@@ -165,7 +169,7 @@ public class MainActivity extends BaseActivity implements NavigationView
                 fragment = ReportFragment.newInstance();
                 break;
             default:
-                fragment = OverviewFragment.newInstance(tagList,overviewTagList, basic);
+                fragment = OverviewFragment.newInstance(tagList, overviewTagList, basic);
                 break;
         }
         replaceFragment(fragment);
@@ -173,21 +177,21 @@ public class MainActivity extends BaseActivity implements NavigationView
         return true;
     }
 
-    private void checkExitForUser(){
-        String info=getString( R.string.current_user,WAServicer.getUser().getUsername() );
-        ViewHelper.checkExit( this, info, new DialogInterface.OnClickListener() {
+    private void checkExitForUser() {
+        String info = getString(R.string.current_user, WAServicer.getUser().getUsername());
+        ViewHelper.checkExit(this, info, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                LoginActivity.start( getApplicationContext() );
+                LoginActivity.start(getApplicationContext());
                 finish();
             }
-        } );
+        });
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        basic=WAServicer.getBasic();
+        basic = WAServicer.getBasic();
         Device.setAliasMap(basic.getAliasMap());
     }
 

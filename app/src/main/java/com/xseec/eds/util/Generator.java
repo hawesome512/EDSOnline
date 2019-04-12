@@ -38,37 +38,44 @@ import java.util.regex.Pattern;
 
 public class Generator {
 
-    public static final String NULL_VALUE="#";
+    public static final String NULL_VALUE = "#";
 
     public static List<Function> genFunctions(Basic basic) {
         List<Function> functions = new ArrayList<>();
-        functions.add(new Function(R.drawable.ic_workorder, R.string.nav_workorder,R.id.nav_schedule,
+        functions.add(new Function(R.drawable.ic_workorder, R.string.nav_workorder, R.id
+                .nav_schedule,
                 WorkorderListFragment.newInstance()));
-        functions.add(new Function(R.drawable.ic_report, R.string.nav_report,R.id.nav_trend, ReportFragment
-                .newInstance()));
-        functions.add(new Function(R.drawable.ic_alarm, R.string.nav_alarm,R.id.nav_alarm, AlarmListFragment
-                .newInstance()));
-        functions.add(new Function(R.drawable.ic_meter, R.string.nav_energy,R.id.nav_energy, EnergyFragment
-                .newInstance(basic.getEnergy())));
-        functions.add(new Function(R.drawable.ic_action, R.string.nav_action,R.id.nav_action, ActionListFragment
-                .newInstance()));
-        functions.add(new Function(R.drawable.ic_setting, R.string.nav_setting,R.id.nav_setting, SettingFragment
-                .newInstance()));
+        functions.add(new Function(R.drawable.ic_report, R.string.nav_report, R.id.nav_trend,
+                ReportFragment
+                        .newInstance()));
+        functions.add(new Function(R.drawable.ic_alarm, R.string.nav_alarm, R.id.nav_alarm,
+                AlarmListFragment
+                        .newInstance()));
+        functions.add(new Function(R.drawable.ic_meter, R.string.nav_energy, R.id.nav_energy,
+                EnergyFragment
+                        .newInstance(basic.getEnergy())));
+        functions.add(new Function(R.drawable.ic_action, R.string.nav_action, R.id.nav_action,
+                ActionListFragment
+                        .newInstance()));
+        functions.add(new Function(R.drawable.ic_setting, R.string.nav_setting, R.id.nav_setting,
+                SettingFragment
+                        .newInstance()));
         return functions;
     }
 
-    public static List<Custom> genSettings(){
-        List<Custom> customList=new ArrayList<>(  );
-        customList.add( new Custom( R.drawable.ic_building_blue_700_24dp,R.string.setting_basic,
-                Custom.CustomType.AREA) );
-        customList.add( new Custom( R.drawable.ic_devices_other_blue_700_24dp,R.string.setting_device,
-                Custom.CustomType.ALIAS) );
-        customList.add( new Custom( R.drawable.ic_users_manage,R.string.setting_user,
-                Custom.CustomType.USER ) );
-        customList.add( new Custom( R.drawable.ic_energy_setting,R.string.setting_energy,
-                Custom.CustomType.ENERGY) );
-        customList.add( new Custom( R.drawable.ic_overview_tag_setting,R.string.setting_overview,
-                Custom.CustomType.OVERVIEWTAG) );
+    public static List<Custom> genSettings() {
+        List<Custom> customList = new ArrayList<>();
+        customList.add(new Custom(R.drawable.ic_building_blue_700_24dp, R.string.setting_basic,
+                Custom.CustomType.AREA));
+        customList.add(new Custom(R.drawable.ic_devices_other_blue_700_24dp, R.string
+                .setting_device,
+                Custom.CustomType.ALIAS));
+        customList.add(new Custom(R.drawable.ic_users_manage, R.string.setting_user,
+                Custom.CustomType.USER));
+        customList.add(new Custom(R.drawable.ic_energy_setting, R.string.setting_energy,
+                Custom.CustomType.ENERGY));
+        customList.add(new Custom(R.drawable.ic_overview_tag_setting, R.string.setting_overview,
+                Custom.CustomType.OVERVIEWTAG));
         return customList;
     }
 
@@ -208,18 +215,18 @@ public class Generator {
         return jsonData.replaceAll("(,\"#\")+]", "]");
     }
 
-    public static List<String> getMonthList(List<String> dayList,Calendar start){
-        int index=0;
+    public static List<String> getMonthList(List<String> dayList, Calendar start) {
+        int index = 0;
         int toIndex;
-        List<String> result=new ArrayList<>();
-        List<String> tmps=null;
-        while (index<dayList.size()){
-            toIndex=index+start.getActualMaximum(Calendar.DAY_OF_MONTH);
-            toIndex=toIndex>dayList.size()?dayList.size():toIndex;
-            tmps=dayList.subList(index,toIndex);
+        List<String> result = new ArrayList<>();
+        List<String> tmps = null;
+        while (index < dayList.size()) {
+            toIndex = index + start.getActualMaximum(Calendar.DAY_OF_MONTH);
+            toIndex = toIndex > dayList.size() ? dayList.size() : toIndex;
+            tmps = dayList.subList(index, toIndex);
             result.add(String.valueOf(calSum(tmps)));
-            index=toIndex;
-            start.add(Calendar.MONTH,1);
+            index = toIndex;
+            start.add(Calendar.MONTH, 1);
         }
         return result;
     }
@@ -262,10 +269,10 @@ public class Generator {
     public static List<String> addTwoTagLogs(List<String> first, List<String> secend) {
         int length = Math.max(first.size(), secend.size());
         List<String> result = new ArrayList<>();
-        String str1,str2;
+        String str1, str2;
         for (int i = 0; i < length; i++) {
-            str1=getListItem(first,i);
-            str2=getListItem(secend,i);
+            str1 = getListItem(first, i);
+            str2 = getListItem(secend, i);
             if (str1.equals(StoredTag.NULL_VALUE) && str2.equals(StoredTag.NULL_VALUE)) {
                 result.add(StoredTag.NULL_VALUE);
             } else {
@@ -276,8 +283,8 @@ public class Generator {
         return result;
     }
 
-    private static String getListItem(List<String> list,int index){
-        return index>=list.size()?StoredTag.NULL_VALUE:list.get(index);
+    private static String getListItem(List<String> list, int index) {
+        return index >= list.size() ? StoredTag.NULL_VALUE : list.get(index);
     }
 
     /*
@@ -400,29 +407,29 @@ public class Generator {
 
     //nj--环境报表数据总数、平均值2018/11/25
     public static String getReportMax(List<String> sources) {
-        float avg=Float.valueOf( getReportAve( sources ) );
-        float max=0;
-        for (String value:sources){
-            float tmp=floatTryParse( value );
-            max=floatTryParse( value )>max ? floatTryParse( value ):max;
+        float avg = Float.valueOf(getReportAve(sources));
+        float max = 0;
+        for (String value : sources) {
+            float tmp = floatTryParse(value);
+            max = floatTryParse(value) > max ? floatTryParse(value) : max;
         }
-        return String.valueOf( Math.round( max*10 )/10f );
+        return String.valueOf(Math.round(max * 10) / 10f);
     }
 
     public static String getReportMin(List<String> sources) {
-        float avg=Float.valueOf( getReportAve( sources ) );
-        float min=0;
-        for (String value:sources){
-            float tmp=floatTryParse( value );
-            min=tmp<avg?tmp:avg;
+        float avg = Float.valueOf(getReportAve(sources));
+        float min = 0;
+        for (String value : sources) {
+            float tmp = floatTryParse(value);
+            min = tmp < avg ? tmp : avg;
         }
-        return String.valueOf( Math.round(min*10)/10f );
+        return String.valueOf(Math.round(min * 10) / 10f);
     }
 
     public static String getReportSum(List<String> sources) {
         float sum = 0;
-        for (String value:sources) {
-            sum+=Generator.floatTryParse(value);
+        for (String value : sources) {
+            sum += Generator.floatTryParse(value);
         }
         return String.valueOf(sum);
     }
@@ -436,58 +443,18 @@ public class Generator {
         return String.valueOf(ave);
     }
 
-    //nj--editText输入时手机号按344格式化
-    public static void genPhoneInputFormat(CharSequence charSequence, int start, int before, EditText editText) {
-        if (charSequence == null || charSequence.length() == 0){
-            return;
-        }
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < charSequence.length(); i++) {
-            if (i != 3 && i != 8 && charSequence.charAt(i) == ' ') {
-                continue;
-            } else {
-                sb.append(charSequence.charAt(i));
-                if ((sb.length() == 4 || sb.length() == 9) && sb.charAt(sb.length() - 1) != ' ') {
-                    sb.insert(sb.length() - 1, ' ');
-                }
-            }
-        }
-        if (!sb.toString().equals(charSequence.toString())) {
-            int index = start + 1;
-            if (sb.charAt(start) == ' ') {
-                if (before == 0) {
-                    index++;
-                } else {
-                    index--;
-                }
-            } else {
-                if (before == 1) {
-                    index--;
-                }
-            }
-            editText.setText(sb.toString());
-            editText.setSelection(index);
+    public static String getPhoneShow(String input){
+        input=getPhoneValue(input);
+        Pattern pattern=Pattern.compile("(\\d{3})(\\d{4})(\\d{4})");
+        Matcher matcher=pattern.matcher(input);
+        if(matcher.find()){
+            return String.format("%1$s %2$s %3$s",matcher.group(1),matcher.group(2),matcher.group(3));
+        }else {
+            return input;
         }
     }
 
-    public static String phoneFormat(String phone){
-        StringBuffer sb=new StringBuffer( phone );
-        sb.insert( 3," " );
-        sb.insert( 8," " );
-        phone=sb.toString();
-        return phone;
-    }
-
-    //nj--获取不含空格的号码
-    public static String replaceBlank(String str) {
-        String dest = "";
-        if (str != null) {
-            Pattern p = Pattern.compile("\\s*|\t|\r|\n");
-            Matcher m = p.matcher(str);
-            if (m.find()) {
-                dest = m.replaceAll("");
-            }
-        }
-        return dest;
+    public static String getPhoneValue(String input){
+        return input.replaceAll("\\D","");
     }
 }

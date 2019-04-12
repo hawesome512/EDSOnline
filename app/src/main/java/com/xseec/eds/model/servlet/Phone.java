@@ -5,31 +5,36 @@ import android.os.Parcelable;
 
 import com.xseec.eds.R;
 import com.xseec.eds.model.User;
+import com.xseec.eds.model.UserType;
 import com.xseec.eds.util.DateHelper;
 import com.xseec.eds.util.EDSApplication;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Administrator on 2019/1/21.
  */
 
 public class Phone extends BaseModel implements Parcelable {
+    public static final int NUMBER_LENGTH=11;
+
     private String code;
     private String time;
     private int level;
     private String account;
+    private String name;
 
-    public Phone(String id){
-        this.id=id;
-        //nj--暂时设置手机用户登录时，用户权限为普通访客
-        this.level=1;
+    public Phone() {
     }
 
     protected Phone(Parcel in) {
-        id=in.readString();
+        id = in.readString();
         code = in.readString();
         time = in.readString();
         level = in.readInt();
         account = in.readString();
+        name = in.readString();
     }
 
     public static final Creator<Phone> CREATOR = new Creator<Phone>() {
@@ -76,28 +81,16 @@ public class Phone extends BaseModel implements Parcelable {
         this.account = account;
     }
 
-    //nj--用户权限等级名称
-    public String getLevelState(){
-        switch (level) {
-            case 0:
-                return  EDSApplication.getContext().getResources().getString( R.string.user_admin ) ;
-            case 1:
-                return  EDSApplication.getContext().getResources().getString( R.string.user_normal  );
-            default:
-                return  EDSApplication.getContext().getResources().getString( R.string.user_operator ) ;
-        }
+    public String getName() {
+        return name;
     }
 
-    //NJ--用户权限等级图标
-    public int getLevelImgRes(){
-        switch (level){
-            case User.LEVEL_ADMIN:
-                return R.drawable.ic_account_admin;
-            case User.LEVEL_NORMAL:
-                return R.drawable.ic_user_normal;
-            default:
-                return R.drawable.ic_user_operator;
-        }
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public UserType getUserType() {
+        return UserType.initWithIndex(level);
     }
 
     @Override
@@ -105,17 +98,35 @@ public class Phone extends BaseModel implements Parcelable {
         return 0;
     }
 
+    public static Phone initWithInfo(String info){
+        Phone phone=new Phone();
+        Pattern pattern=Pattern.compile("(\\d{11})\\/(\\d)\\/(\\S+)");
+        Matcher matcher=pattern.matcher(info);
+        if(matcher.find()){
+            phone.setId(matcher.group(1));
+            phone.setLevel(Integer.valueOf(matcher.group(2)));
+            phone.setName(matcher.group(3));
+        }
+        return phone;
+    }
+
+    public String getPhoneInfo(){
+        return String.format("%1$s/%2$d/%3$s",id,level,name);
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString( id );
+        dest.writeString(id);
         dest.writeString(code);
         dest.writeString(time);
         dest.writeInt(level);
         dest.writeString(account);
+        dest.writeString(name);
     }
 
     @Override
     public String toJson() {
-        return EDSApplication.getContext().getString(R.string.svl_phone_request,id,code,time,level,account);
+        return EDSApplication.getContext().getString(R.string.svl_phone_request, id, code, time,
+                level, account, name);
     }
 }

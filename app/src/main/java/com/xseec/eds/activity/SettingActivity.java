@@ -11,7 +11,7 @@ import android.support.v4.app.FragmentTransaction;
 
 import com.xseec.eds.R;
 import com.xseec.eds.fragment.SetBasicFragment;
-import com.xseec.eds.fragment.SetUserListFragment;
+import com.xseec.eds.fragment.UserListFragment;
 import com.xseec.eds.model.Custom;
 import com.xseec.eds.util.ViewHelper;
 
@@ -42,7 +42,7 @@ public class SettingActivity extends BaseActivity {
                 replaceFragment( SetBasicFragment.newInstance( custom ) );
                 break;
             case USER:
-                replaceFragment( SetUserListFragment.newInstance() );
+                replaceFragment( UserListFragment.newInstance());
                 break;
             case ENERGY:
             case OVERVIEWTAG:

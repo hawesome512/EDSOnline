@@ -127,7 +127,7 @@ public class WorkorderCreatorActivity extends BaseActivity {
 
     //nj--为admin系统管理员时初始化Spinner控件
     private void initIfSysUse() {
-        if (!WAServicer.getUser().isAdministrator()) {
+        if (!WAServicer.getUser().isSuperAdmin()) {
             String[] types = getResources().getStringArray(R.array.workorder_types);
             List<String> workorderType = new ArrayList<>();
             for (int i = 0; i < types.length; i++) {
@@ -158,7 +158,7 @@ public class WorkorderCreatorActivity extends BaseActivity {
             //nj--判断用户类型设置 2018/12/25
             String sysId = getString(R.string.woekorder_sys_id);
             String user = WAServicer.getUser().getDeviceName();
-            String id = WAServicer.getUser().isAdministrator() ? sysId : user;
+            String id = WAServicer.getUser().isSuperAdmin() ? sysId : user;
 
             workorder.genId(id);
             workorder.setType(type);

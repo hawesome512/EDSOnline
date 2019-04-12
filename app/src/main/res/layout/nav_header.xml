@@ -6,7 +6,7 @@
     android:layout_height="@dimen/view_header_hei"
     android:background="@drawable/header"
     >
-    <de.hdodenhof.circleimageview.CircleImageView
+    <ImageView
         android:id="@+id/image_profile"
         android:layout_width="@dimen/image_size"
         android:layout_height="@dimen/image_size"

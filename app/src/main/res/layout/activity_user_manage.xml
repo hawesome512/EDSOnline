@@ -26,18 +26,38 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:text="@string/user_phone_name"/>
+            <EditText
+                android:id="@+id/edit_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:layout_weight="3"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/view_margin_small"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="@string/user_phone_number"/>
             <EditText
                 android:id="@+id/edit_phone"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2.7" />
+                android:inputType="number"
+                android:layout_weight="2.7"/>
             <ImageView
-                android:id="@+id/image_content"
-                android:layout_width="wrap_content"
+                android:id="@+id/image_contact"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:inputType="number"
+                android:layout_weight="0.3"
                 android:layout_gravity="center"
-                android:background="@drawable/ic_contacts_grey_600_24dp" />
+                android:src="@drawable/ic_contacts_grey_600_24dp"/>
         </LinearLayout>
 
         <LinearLayout

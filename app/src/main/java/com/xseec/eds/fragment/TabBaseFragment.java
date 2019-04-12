@@ -100,7 +100,7 @@ public abstract class TabBaseFragment extends ComFragment implements TagListener
                     onTagClick(tag,v);
                 }else {
                     User user= WAServicer.getUser();
-                    String hintInfo=getString( R.string.device_modify_level,user.getLevelState() );
+                    String hintInfo=getString( R.string.device_modify_level,user.getUserType().getTypeName(getContext()));
                     hintUserLevel( hintInfo );
                 }
             }

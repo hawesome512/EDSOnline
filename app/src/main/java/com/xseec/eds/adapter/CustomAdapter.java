@@ -58,7 +58,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.ViewHolder
                     if (UserLevelHelper.checkCustom()){
                         SettingActivity.start( context,customList.get( getAdapterPosition() ) );
                     }else{
-                        String info=context.getString( R.string.setting_limit, WAServicer.getUser().getLevelState() );
+                        String info=context.getString( R.string.setting_limit, WAServicer.getUser().getUserType().getTypeName(context) );
                         ViewHelper.singleAlertDialog( context,info,null );
                     }
                 }
