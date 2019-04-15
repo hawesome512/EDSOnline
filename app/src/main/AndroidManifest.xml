@@ -26,8 +26,7 @@
         </activity>
         <activity
             android:name=".activity.MainActivity"
-            android:theme="@style/TransStatusBarTheme">
-        </activity>
+            android:theme="@style/TransStatusBarTheme"></activity>
 
         <service
             android:name=".service.ComService"
@@ -75,17 +74,18 @@
             android:name=".activity.WorkorderActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:theme="@style/TransStatusBarTheme"
-            android:windowSoftInputMode="adjustPan"></activity>
-
-        <activity android:name=".activity.ReportTimeSettingActivity"
-            android:theme="@style/DialogActivity"/>
-        <activity android:name=".activity.ReportActivity"/>
-
-        <activity android:name=".activity.UserManageActivity"
-            android:theme="@style/DialogActivity"/>
-
-        <activity android:name=".activity.FilterActivity"/>
-        <activity android:name=".activity.SettingActivity"/>
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".activity.ReportTimeSettingActivity"
+            android:theme="@style/DialogActivity" />
+        <activity android:name=".activity.ReportActivity" />
+        <activity
+            android:name=".activity.UserManageActivity"
+            android:theme="@style/DialogActivity" />
+        <activity android:name=".activity.FilterActivity" />
+        <activity android:name=".activity.SettingActivity" />
+        <activity android:name=".activity.QRCodeActivity"
+            android:theme="@style/DialogActivity"></activity>
     </application>
 
 </manifest>

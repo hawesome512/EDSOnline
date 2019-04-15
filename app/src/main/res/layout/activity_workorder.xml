@@ -141,6 +141,8 @@
                     android:id="@+id/text_id"
                     style="@style/TextHorItemValue" />
             </LinearLayout>
+
+            <include layout="@layout/item_qrcode"/>
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>

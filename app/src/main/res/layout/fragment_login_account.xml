@@ -41,30 +41,24 @@
             android:switchPadding="@dimen/view_padding_normal"
             android:textColor="@color/colorSecondaryText"
             android:layout_gravity="right|center_vertical|end"
+            android:checked="true"
             android:text="@string/login_remember"/>
     </LinearLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/view_margin_normal">
+        android:layout_marginVertical="@dimen/view_margin_normal">
         <Button
             android:id="@+id/btn_login"
             style="@style/RadiusButton"
-            android:text="@string/login_sign_in"/>
+            android:paddingHorizontal="@dimen/view_padding_normal"
+            android:text="@string/login_account"/>
         <ProgressBar
             android:id="@+id/progress_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"/>
     </FrameLayout>
-    <TextView
-        android:id="@+id/tv_change_phone"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/view_padding_normal"
-        android:layout_marginTop="@dimen/view_margin_small"
-        android:layout_gravity="center"
-        android:textAlignment="center"
-        android:text="@string/login_phone" />
+    <include layout="@layout/login_options"/>
 </LinearLayout>

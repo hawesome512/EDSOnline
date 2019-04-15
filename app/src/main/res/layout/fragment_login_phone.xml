@@ -34,9 +34,9 @@
         </android.support.design.widget.TextInputLayout>
         <TextView
             android:id="@+id/btn_code"
-            android:enabled="false"
             android:layout_width="0dp"
             android:layout_weight="1"
+            android:enabled="false"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:paddingVertical="@dimen/view_margin_tiny"
@@ -46,28 +46,20 @@
             android:textSize="@dimen/font_big"
             android:background="@drawable/ic_phone_code" />
     </LinearLayout>
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/view_margin_normal">
+        android:layout_marginVertical="@dimen/view_margin_normal">
         <Button
             android:id="@+id/btn_login"
             style="@style/RadiusButton"
-            android:text="@string/login_sign_in"/>
+            android:paddingHorizontal="@dimen/view_padding_normal"
+            android:text="@string/login_phone"/>
         <ProgressBar
             android:id="@+id/progress_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"/>
     </FrameLayout>
-    <TextView
-        android:id="@+id/tv_change_account"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/view_padding_normal"
-        android:layout_marginTop="@dimen/view_margin_small"
-        android:layout_gravity="center"
-        android:textAlignment="center"
-        android:text="@string/login_account" />
+    <include layout="@layout/login_options"/>
 </LinearLayout>

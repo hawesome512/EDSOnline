@@ -90,22 +90,26 @@ public class ViewHelper {
         }
     }
 
-    public static void startViewAnimator(View view) {
-        ViewPropertyAnimator animator = view.animate();
-        float scaleValue = view.getHeight() * 1.0f / view.getWidth();
-        animator.scaleX(scaleValue);
-        animator.alpha(0f);
-        animator.setDuration(ANIMATION_DURATION);
-        animator.setInterpolator(new FastOutSlowInInterpolator());
-        animator.start();
+    public static void startViewAnimator(View... views) {
+        for (View view : views) {
+            ViewPropertyAnimator animator = view.animate();
+            float scaleValue = view.getHeight() * 1.0f / view.getWidth();
+            animator.scaleX(scaleValue);
+            animator.alpha(0f);
+            animator.setDuration(ANIMATION_DURATION);
+            animator.setInterpolator(new FastOutSlowInInterpolator());
+            animator.start();
+        }
     }
 
-    public static void resetViewAnimator(View view) {
-        //startAnimator执行时长500ms,必须确保重置发生在动画执行完成之前
-        view.setVisibility(View.VISIBLE);
-        view.setScaleX(1f);
-        view.setAlpha(1f);
-        view.postInvalidate();
+    public static void resetViewAnimator(View... views) {
+        for (View view : views) {
+            //startAnimator执行时长500ms,必须确保重置发生在动画执行完成之前
+            view.setVisibility(View.VISIBLE);
+            view.setScaleX(1f);
+            view.setAlpha(1f);
+            view.postInvalidate();
+        }
     }
 
     public static void drawTextBounds(TextView view,int start,int top,int end,int bottom){

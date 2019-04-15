@@ -22,17 +22,26 @@
     <string name="login_sign_in">登录</string>
     <string name="login_failure">登录失败</string>
 
+    <!--QrCode-->
+    <string name="qr_format">Node:%1$s;Key:%2$s;Type:%3$d;Param:%4$s</string>
+    <string name="qr_invalid">无效的二维码</string>
+    <string name="qr_menu">二维码</string>
+    <string name="qr_login">登录码：</string>
+    <string name="qr_valid">临时账户,%1$s前扫码有效</string>
+    <string name="qr_go">正在跳转页面……</string>
+
     <!--nj 手机登录-->
     <string name="login_phone_number">手机号码</string>
     <string name="login_code">验证码</string>
     <string name="login_code_gain">获取</string>
-    <string name="login_phone">手机快捷登录</string>
-    <string name="login_account">账号密码登录</string>
+    <string name="login_phone">手机号登录</string>
+    <string name="login_account">账号登录</string>
     <string name="login_phone_unregistered">/该手机号在系统内未注册/取消</string>
     <string name="login_phone_code_error">/验证码错误，请重新输入/重试</string>
     <string name="login_phone_code_timeout">/验证超时，请重新获取验证码/好</string>
     <string name="login_phone_failure">/未加载工程信息，登录失败/取消</string>
     <string name="login_message_send">验证码已发送，请注意查收</string>
+    <string name="login_24hour">24小时免验证</string>
 
     <string name="user_admin_super">超级管理员</string>
     <string name="user_admin">系统管理员</string>

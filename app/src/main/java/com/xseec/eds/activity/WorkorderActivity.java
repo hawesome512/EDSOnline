@@ -36,12 +36,14 @@ import com.squareup.okhttp.Response;
 import com.xseec.eds.R;
 import com.xseec.eds.adapter.PhotoAdapter;
 import com.xseec.eds.adapter.WorkorderTaskAdapter;
+import com.xseec.eds.model.QrCode;
 import com.xseec.eds.model.servlet.UploadListener;
 import com.xseec.eds.model.servlet.Workorder;
 import com.xseec.eds.util.ContentHelper;
 import com.xseec.eds.util.DateHelper;
 import com.xseec.eds.util.Generator;
 import com.xseec.eds.util.PhotoPicker;
+import com.xseec.eds.util.QrCodeHelper;
 import com.xseec.eds.util.RecordHelper;
 import com.xseec.eds.util.UserLevelHelper;
 import com.xseec.eds.util.ViewHelper;
@@ -112,6 +114,8 @@ public class WorkorderActivity extends BaseActivity implements UploadListener,
     ProgressBar progress;
     @InjectView(R.id.recycler_task)
     RecyclerView recyclerTask;
+    @InjectView(R.id.image_qrcode)
+    ImageView imageQrcode;
 
     private Workorder workorder;
     private PhotoAdapter adapter;
@@ -215,8 +219,10 @@ public class WorkorderActivity extends BaseActivity implements UploadListener,
         fabProgressCircle.attachListener(this);
 
         recyclerTask.setLayoutManager(new LinearLayoutManager(this));
-        taskAdapter=new WorkorderTaskAdapter(this,workorder.getTaskMap());
+        taskAdapter = new WorkorderTaskAdapter(this, workorder.getTaskMap());
         recyclerTask.setAdapter(taskAdapter);
+
+        imageQrcode.setImageBitmap(QrCodeHelper.getQrCode(QrCode.QrCodeType.WORKORDER, workorder.getId()));
     }
 
     @Override

@@ -65,6 +65,10 @@ public class User implements Parcelable {
         return userName;
     }
 
+    public void setUserType(UserType userType) {
+        this.userType = userType;
+    }
+
     public boolean isSuperAdmin() {
         return getUsername().equals(SYSTEM_USER_NAME);
     }

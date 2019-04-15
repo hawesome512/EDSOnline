@@ -4,7 +4,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.xseec.eds"
-        minSdkVersion 14
+        minSdkVersion 16
         targetSdkVersion 27
         versionCode 35
         versionName "1.1.8"
@@ -47,4 +47,5 @@ dependencies {
     implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.3'
     implementation 'com.qianwen:update-app:3.5.2'
     implementation 'com.zhy:okhttputils:2.6.2'
+    implementation 'com.github.yuzhiqiang1993:zxing:2.2.8'
 }

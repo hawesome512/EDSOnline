@@ -68,8 +68,8 @@ public class ContentHelper {
     /**
      * 判断是否是国内的 SIM 卡，优先判断注册时的mcc
      */
-    public static boolean isChinaSimCard(Context c) {
-        String mcc = getSimOperator(c);
+    public static boolean isChinaSimCard(Context context) {
+        String mcc = getSimOperator(context);
         if (isOperatorEmpty(mcc)) {
             return false;
         } else {

@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -26,6 +27,7 @@ import com.squareup.okhttp.Response;
 import com.xseec.eds.R;
 import com.xseec.eds.adapter.AlarmAdapter;
 import com.xseec.eds.model.Device;
+import com.xseec.eds.model.QrCode;
 import com.xseec.eds.model.State;
 import com.xseec.eds.model.WAServicer;
 import com.xseec.eds.model.servlet.Alarm;
@@ -33,11 +35,12 @@ import com.xseec.eds.model.tags.Tag;
 import com.xseec.eds.util.Device.DeviceConverterCenter;
 import com.xseec.eds.util.EDSApplication;
 import com.xseec.eds.util.Generator;
+import com.xseec.eds.util.QrCodeHelper;
 import com.xseec.eds.util.TagsFilter;
 import com.xseec.eds.util.WAJsonHelper;
 import com.xseec.eds.util.WAServiceHelper;
-import com.xseec.eds.widget.PercentageValueFormatter;
 import com.xseec.eds.widget.ItemXAxisValueFormatter;
+import com.xseec.eds.widget.PercentageValueFormatter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -65,6 +68,8 @@ public class TabOerviewFragment extends ComFragment {
     ProgressBar progress;
     @InjectView(R.id.recyclerView_alarm)
     RecyclerView recyclerViewAlarm;
+    @InjectView(R.id.image_qrcode)
+    ImageView imageQrcode;
 
 
     private int[] colors = {getColor(R.color.colorPrimaryLight), getColor(R.color
@@ -97,13 +102,13 @@ public class TabOerviewFragment extends ComFragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerViewAlarm.setLayoutManager(layoutManager);
         queryAlarms();
-
+        imageQrcode.setImageBitmap(QrCodeHelper.getQrCode(QrCode.QrCodeType.DEVICE,tagList.get(0).getDeviceID()));
         initChart();
         return view;
     }
 
-    private void queryAlarms(){
-        Alarm alarm=new Alarm(WAServicer.getUser().getDeviceName());
+    private void queryAlarms() {
+        Alarm alarm = new Alarm(WAServicer.getUser().getDeviceName());
         WAServiceHelper.sendAlarmQueryRequest(alarm, null, null, new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
@@ -112,23 +117,23 @@ public class TabOerviewFragment extends ComFragment {
 
             @Override
             public void onResponse(Response response) throws IOException {
-                List<Alarm> alarms= WAJsonHelper.getAlarmList(response);
-                Collections.sort(alarms,Collections.<Alarm>reverseOrder());
-                Device device=Device.initWith(tagList.get(0).getTagName());
-                List<Alarm> deviceAlarms=new ArrayList<>();
-                for(Alarm alarm:alarms){
-                    if(alarm.getDevice().equals(device.getDeviceName())){
+                List<Alarm> alarms = WAJsonHelper.getAlarmList(response);
+                Collections.sort(alarms, Collections.<Alarm>reverseOrder());
+                Device device = Device.initWith(tagList.get(0).getTagName());
+                List<Alarm> deviceAlarms = new ArrayList<>();
+                for (Alarm alarm : alarms) {
+                    if (alarm.getDevice().equals(device.getDeviceName())) {
                         deviceAlarms.add(alarm);
                         //最多展示3条记录
-                        if(deviceAlarms.size()==3){
+                        if (deviceAlarms.size() == 3) {
                             break;
                         }
                     }
                 }
-                if(deviceAlarms.size()==0){
+                if (deviceAlarms.size() == 0) {
                     return;
                 }
-                final AlarmAdapter alarmAdapter=new AlarmAdapter(deviceAlarms,getContext());
+                final AlarmAdapter alarmAdapter = new AlarmAdapter(deviceAlarms, getContext());
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -144,7 +149,7 @@ public class TabOerviewFragment extends ComFragment {
         barChart.getAxisRight().setEnabled(false);
         XAxis xAxis = barChart.getXAxis();
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        String[] xItems={"Ia","Ib","Ic"};
+        String[] xItems = {"Ia", "Ib", "Ic"};
         xAxis.setValueFormatter(new ItemXAxisValueFormatter(xItems));
         xAxis.setLabelCount(3);
         barChart.getLegend().setEnabled(false);

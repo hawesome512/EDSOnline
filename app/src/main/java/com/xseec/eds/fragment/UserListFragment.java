@@ -8,6 +8,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -18,6 +21,7 @@ import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 import com.xseec.eds.R;
+import com.xseec.eds.activity.QRCodeActivity;
 import com.xseec.eds.activity.UserManageActivity;
 import com.xseec.eds.adapter.UserAdapter;
 import com.xseec.eds.model.User;
@@ -68,6 +72,7 @@ public class UserListFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
             savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_set_account_list, container, false);
+        setHasOptionsMenu(true);
         ButterKnife.inject(this, view);
         ViewHelper.initToolbar((AppCompatActivity) getActivity(), toolbar, R.drawable
                 .ic_arrow_back_white_24dp);
@@ -150,8 +155,8 @@ public class UserListFragment extends BaseFragment {
 
             @Override
             public void onResponse(Response response) throws IOException {
-                ResponseResult result=WAJsonHelper.getServletResult(response);
-                if(result.isSuccess()){
+                ResponseResult result = WAJsonHelper.getServletResult(response);
+                if (result.isSuccess()) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -178,5 +183,23 @@ public class UserListFragment extends BaseFragment {
         } else {
             ViewHelper.singleAlertDialog(getActivity(), getString(R.string.user_fill), null);
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.user_menu, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_qr:
+                QRCodeActivity.start(getContext());
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

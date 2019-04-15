@@ -114,7 +114,6 @@ public class MainActivity extends BaseActivity implements NavigationView
             });
 
             navView.getMenu().performIdentifierAction(selectedId, 0);
-            Device.setAliasMap(basic.getAliasMap());
         } else {
             Snackbar.make(drawerLayout, R.string.main_failure, Snackbar.LENGTH_LONG).setAction(R
                     .string.main_exit, new View.OnClickListener() {
@@ -182,17 +181,10 @@ public class MainActivity extends BaseActivity implements NavigationView
         ViewHelper.checkExit(this, info, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                LoginActivity.start(getApplicationContext());
+                LoginActivity.start(MainActivity.this);
                 finish();
             }
         });
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        basic = WAServicer.getBasic();
-        Device.setAliasMap(basic.getAliasMap());
     }
 
     @Override

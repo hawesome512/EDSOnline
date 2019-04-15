@@ -4,16 +4,15 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.TextInputEditText;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.xseec.eds.R;
@@ -21,7 +20,6 @@ import com.xseec.eds.model.LoginListener;
 import com.xseec.eds.model.LoginListener.LoginType;
 import com.xseec.eds.model.User;
 import com.xseec.eds.util.CodeHelper;
-import com.xseec.eds.util.ContentHelper;
 import com.xseec.eds.util.ViewHelper;
 import com.xseec.eds.util.WAJsonHelper;
 import com.xseec.eds.util.WAServiceHelper;
@@ -46,24 +44,26 @@ public class LoginAccountFragment extends BaseFragment {
     Button btnLogin;
     @InjectView(R.id.progress_login)
     ProgressBar progressLogin;
-    @InjectView(R.id.tv_change_phone)
-    TextView tvChangePhone;
+    @InjectView(R.id.image_left)
+    ImageView imageLeft;
+    @InjectView(R.id.image_right)
+    ImageView imageRight;
+    @InjectView(R.id.layout_options)
+    LinearLayout layoutOptions;
 
     private LoginListener loginListener;
 
-    public static LoginAccountFragment newInstance(){
+    public static LoginAccountFragment newInstance() {
         return new LoginAccountFragment();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate( R.layout.fragment_login_account, container, false );
-        ButterKnife.inject( this, view );
-        //NJ--检查到不为国内SIM卡时，禁止使用手机登录
-        int visible=ContentHelper.isChinaSimCard( getActivity() )?View.VISIBLE:View.GONE;
-        tvChangePhone.setVisibility( visible );
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
+            savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_login_account, container, false);
+        ButterKnife.inject(this, view);
 
-        loginListener= (LoginListener) getActivity();
+        loginListener = (LoginListener) getActivity();
         getLoginInfo();
         return view;
     }
@@ -75,20 +75,20 @@ public class LoginAccountFragment extends BaseFragment {
         //===============================================//
         String username = editUsername.getText().toString();
         String password = editPassword.getText().toString();
-        final String authority = CodeHelper.encode( username + ":" + password );
-        ViewHelper.startViewAnimator( btnLogin );
-        onLoginThread( authority );
+        final String authority = CodeHelper.encode(username + ":" + password);
+        ViewHelper.startViewAnimator(btnLogin,layoutOptions);
+        onLoginThread(authority);
     }
 
     private void onLoginThread(final String authority) {
-        new Thread( new Runnable() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
-                String deviceName = WAJsonHelper.getUserProjectInfo( WAServiceHelper
-                        .getLoginRequest( authority ) );
-                if (!TextUtils.isEmpty( deviceName )) {
-                    User user=new User( authority,deviceName );
-                    loginListener.onSuccess( user, deviceName, LoginType.ACCOUNT );
+                String deviceName = WAJsonHelper.getUserProjectInfo(WAServiceHelper
+                        .getLoginRequest(authority));
+                if (!TextUtils.isEmpty(deviceName)) {
+                    User user = new User(authority, deviceName);
+                    loginListener.onSuccess(user, deviceName, LoginType.ACCOUNT,null);
                     setLoginInfo();
                 } else {
                     try {
@@ -96,48 +96,50 @@ public class LoginAccountFragment extends BaseFragment {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    getActivity().runOnUiThread( new Runnable() {
+                    getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             onFailure();
                         }
-                    } );
+                    });
                 }
             }
-        } ).start();
+        }).start();
     }
 
     private void getLoginInfo() {
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences( getActivity() );
-        switchRemember.setChecked( preferences.getBoolean( KEY_REMEMBER, false ) );
-        editUsername.setText( preferences.getString( KEY_USERNAME, null ) );
-        editPassword.setText( preferences.getString( KEY_PASSWORD, null ) );
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity
+                ());
+        switchRemember.setChecked(preferences.getBoolean(KEY_REMEMBER, true));
+        editUsername.setText(preferences.getString(KEY_USERNAME, null));
+        editPassword.setText(preferences.getString(KEY_PASSWORD, null));
     }
 
     private void setLoginInfo() {
-        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences( getActivity() )
+        SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences
+                (getActivity())
                 .edit();
         if (switchRemember.isChecked()) {
-            editor.putBoolean( KEY_REMEMBER, true );
-            editor.putString( KEY_USERNAME, editUsername.getText().toString() );
-            editor.putString( KEY_PASSWORD, editPassword.getText().toString() );
+            editor.putBoolean(KEY_REMEMBER, true);
+            editor.putString(KEY_USERNAME, editUsername.getText().toString());
+            editor.putString(KEY_PASSWORD, editPassword.getText().toString());
         } else {
-            editor.putBoolean( KEY_REMEMBER, false );
-            editor.putString( KEY_USERNAME, null );
-            editor.putString( KEY_PASSWORD, null );
+            editor.putBoolean(KEY_REMEMBER, false);
+            editor.putString(KEY_USERNAME, null);
+            editor.putString(KEY_PASSWORD, null);
         }
         editor.apply();
     }
 
     private void onFailure() {
         Toast.makeText(getContext(), R.string.login_failure, Toast.LENGTH_SHORT).show();
-        ViewHelper.resetViewAnimator( btnLogin );
+        ViewHelper.resetViewAnimator(btnLogin,layoutOptions);
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.reset( this );
+        ButterKnife.reset(this);
     }
 
     @Override
@@ -145,10 +147,16 @@ public class LoginAccountFragment extends BaseFragment {
 
     }
 
-    @OnClick(R.id.tv_change_phone)
-    public void onTvChangePhoneClicked() {
-        switchRemember.setChecked( false );
-        setLoginInfo();
-        loginListener.onReplaceFragment( LoginType.PHONE,false );
+    @OnClick({R.id.image_left, R.id.image_right})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.image_left:
+                setLoginInfo();
+                loginListener.onReplaceFragment(LoginType.PHONE);
+                break;
+            case R.id.image_right:
+                loginListener.onScan();
+                break;
+        }
     }
 }

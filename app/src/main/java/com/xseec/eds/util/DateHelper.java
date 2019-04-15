@@ -83,6 +83,15 @@ public class DateHelper {
         return sdf.format(now.getTime());
     }
 
+    public static Date getSdfDate(String strDate) {
+        try {
+            return sdf.parse(strDate);
+
+        } catch (Exception exp) {
+            return null;
+        }
+    }
+
     public static String getSecondTime(Calendar calendar) {
         return getMinuteTime(calendar) + ":" + calendar.get(Calendar.SECOND);
     }
