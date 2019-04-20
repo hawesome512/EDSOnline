@@ -6,8 +6,8 @@ android {
         applicationId "com.xseec.eds"
         minSdkVersion 16
         targetSdkVersion 27
-        versionCode 35
-        versionName "1.1.8"
+        versionCode 37
+        versionName "1.2.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         javaCompileOptions { annotationProcessorOptions { includeCompileClasspath = true } }
     }

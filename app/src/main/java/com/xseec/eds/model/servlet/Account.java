@@ -68,7 +68,10 @@ public class Account extends BaseModel implements Parcelable {
         String[] temps=phone.split(SPILT_PHONE);
         List<Phone> phones=new ArrayList<>();
         for(String info:temps){
-            phones.add(Phone.initWithInfo(info));
+            Phone phone=Phone.initWithInfo(info);
+            if(phone!=null){
+                phones.add(phone);
+            }
         }
         return phones;
     }

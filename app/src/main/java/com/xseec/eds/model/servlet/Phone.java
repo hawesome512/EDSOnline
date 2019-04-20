@@ -99,10 +99,11 @@ public class Phone extends BaseModel implements Parcelable {
     }
 
     public static Phone initWithInfo(String info){
-        Phone phone=new Phone();
+        Phone phone=null;
         Pattern pattern=Pattern.compile("(\\d{11})\\/(\\d)\\/(\\S+)");
         Matcher matcher=pattern.matcher(info);
         if(matcher.find()){
+            phone=new Phone();
             phone.setId(matcher.group(1));
             phone.setLevel(Integer.valueOf(matcher.group(2)));
             phone.setName(matcher.group(3));

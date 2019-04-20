@@ -64,11 +64,11 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
         setContentView(R.layout.activity_login);
         ButterKnife.inject(this);
 
-        int orientation = ViewHelper.isPort() ? ActivityInfo.SCREEN_ORIENTATION_PORTRAIT :
-                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
-        setRequestedOrientation(orientation);
+//        int orientation = ViewHelper.isPort() ? ActivityInfo.SCREEN_ORIENTATION_PORTRAIT :
+//                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+//        setRequestedOrientation(orientation);
 
-        onReplaceFragment(LoginType.ACCOUNT);
+        onReplaceFragment(LoginType.PHONE);
     }
 
     @Override
@@ -77,7 +77,6 @@ public class LoginActivity extends AppCompatActivity implements LoginListener {
         final Basic basic = WAJsonHelper.getBasicList(WAServiceHelper
                 .getBaiscQueryRequest(deviceName));
         WAServicer.setBasic(basic);
-        Device.setAliasMap(basic.getAliasMap());
 
         final ArrayList<Tag> tagList = (ArrayList<Tag>) WAJsonHelper.getTagList
                 (WAServiceHelper.getTagListRequest(deviceName));

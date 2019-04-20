@@ -61,6 +61,9 @@ public enum Device {
     }
 
     public String getDeviceAlias() {
+        if(aliasMap==null){
+            aliasMap=getAliasMap();
+        }
         if (aliasMap.containsKey(getDeviceName())) {
             return aliasMap.get(getDeviceName());
         } else {
@@ -85,10 +88,6 @@ public enum Device {
     }
 
     public static LinkedHashMap<String, String> getAliasMap() {
-        return aliasMap;
-    }
-
-    public static void setAliasMap(LinkedHashMap<String, String> aliasMap) {
-        Device.aliasMap = aliasMap;
+        return WAServicer.getBasic().getAliasMap();
     }
 }
